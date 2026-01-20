@@ -1,12 +1,11 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom'
 import { Sidebar } from './sidebar'
+import { Topbar } from './Topbar'
 
 export function Dashboard() {
   return (
     <>
       <Sidebar />
+      <Topbar />
     </>
   )
 }

@@ -4,7 +4,7 @@ import logo from '../assets/prova_logo.svg'
 
 export function Sidebar() {
   return (
-    <div className="bg-blue-950 text-white h-screen w-64 fixed flex flex-col justify-between p-8 font-sans shadow-lg">
+    <div className="bg-blue-950 text-white h-screen w-64 fixed flex flex-col justify-between p-8 font-sans shadow-lg border-4 border-amber-700">
       <div className="mb-10 flex items-center">
         <img src={logo} alt="Logo App" className="w-10 h-10 mr-5" />
         {/*<span className="text-xl font-bold">Smart Factory</span> */}
