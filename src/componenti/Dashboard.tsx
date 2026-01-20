@@ -1,7 +1,7 @@
 import { Sidebar } from './sidebar'
 import { Topbar } from './Topbar'
 
-export function Dashboard() {
+export default function Dashboard() {
   return (
     <>
       <Sidebar />
