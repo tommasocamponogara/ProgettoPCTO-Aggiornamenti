@@ -13,6 +13,7 @@ Il progetto include la formattazione automatica del codice tramite **Prettier**.
 - TypeScript
 - Tailwind CSS
 - Prettier
+- React Router
 
 ---
 
@@ -36,6 +37,8 @@ npm -v
 
 ```bash
 2. install npm
+```
 
+```bash
 3. npm run dev
 ```
