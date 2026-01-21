@@ -1,0 +1,10 @@
+{
+  "lines": [
+    {
+      "id": "line-1",
+      "name": "Linea 1 - Assemblaggio",
+      "description": "Linea di assemblaggio demo",
+      "order": 1
+    }
+  ]
+}

@@ -42,3 +42,5 @@ npm -v
 ```bash
 3. npm run dev
 ```
+
+4. Avvio del server : ./server.py 3000
