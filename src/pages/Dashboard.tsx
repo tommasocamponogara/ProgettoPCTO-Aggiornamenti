@@ -1,5 +1,5 @@
-import { Sidebar } from './sidebar'
-import { Topbar } from './Topbar'
+import { Sidebar } from '../componenti/sidebar'
+import { Topbar } from '../componenti/Topbar'
 
 export default function Dashboard() {
   return (
