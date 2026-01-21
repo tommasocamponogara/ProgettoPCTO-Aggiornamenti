@@ -6,7 +6,7 @@ export function Sidebar() {
   return (
     <div className="bg-slate-900 text-slate-200 h-screen w-64 fixed flex flex-col justify-between px-6 py-6 font-sans border-r-4 border-amber-700 shadow-lg ">
       <div className="flex items-center mb-10">
-        <img src={logo} alt="Logo App" className="w-10 h-10 mr-4" />
+        <img src={logo} alt="Logo App" className="w-20 h-20 mr-1" />
       </div>
 
       <nav className="flex-1">
