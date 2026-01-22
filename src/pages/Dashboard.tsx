@@ -2,46 +2,8 @@ import { useEffect, useState } from 'react'
 import { Sidebar } from '../componenti/sidebar'
 import { Topbar } from '../componenti/Topbar'
 import { data } from 'react-router-dom'
-
-type Machine = {
-  id: String
-  lineId: String
-  name: String
-  type: String
-  plc: {
-    vendor: String
-    model: String
-  }
-  order: Number
-}
-
-type Line = {
-  id: String
-  name: String
-  description: String
-  order: Number
-}
-
-type Telemetry = {
-  machineId: String
-  type: String
-  ts: String
-  reported: {
-    state: String
-    orderCode: String
-    temperature: Number
-    pressure: Number
-    alarms:
-      | [
-          {
-            code: String
-            message: String
-            locking: Boolean
-          },
-        ]
-      | []
-  }
-}
+import type { Line, Machine, Telemetry } from '../Types/Type'
+import { getLines, getMachines, getTelemetries } from '../utils/api'
 
 export default function Dashboard() {
   const [machines, setMachines] = useState<Machine[]>([])
@@ -49,17 +11,9 @@ export default function Dashboard() {
   const [telemetries, setTelemetries] = useState<Telemetry[]>([])
 
   useEffect(() => {
-    Promise.all([
-      fetch('http://localhost:3000/machines').then((res) => res.json()),
-      fetch('http://localhost:3000/lines').then((res) => res.json()),
-      fetch('http://localhost:3000/telemetries').then((res) => res.json()),
-    ])
-      .then(([machinesData, linesData, telemetriesData]) => {
-        setMachines(machinesData)
-        setLines(linesData)
-        setTelemetries(telemetriesData)
-      })
-      .catch((err) => console.error(err))
+    getMachines().then((machines) => setMachines(machines))
+    getLines().then((lines) => setLines(lines))
+    getTelemetries().then((telemetries) => setTelemetries(telemetries))
   }, [])
 
   return (
