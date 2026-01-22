@@ -49,27 +49,41 @@ export default function Dashboard() {
   const [telemetries, setTelemetries] = useState<Telemetry[]>([])
 
   useEffect(() => {
-    fetch('http://localhost:3000/machines.json')
-      .then((res) => {
-        if (!res.ok) {
-          console.log('Error Empty')
-        }
-        return res.json()
+    Promise.all([
+      fetch('http://localhost:3000/machines').then((res) => res.json()),
+      fetch('http://localhost:3000/lines').then((res) => res.json()),
+      fetch('http://localhost:3000/telemetries').then((res) => res.json()),
+    ])
+      .then(([machinesData, linesData, telemetriesData]) => {
+        setMachines(machinesData)
+        setLines(linesData)
+        setTelemetries(telemetriesData)
       })
-      .then((data: Machine[]) => {
-        console.warn({ data })
-        setMachines(data)
-      })
+      .catch((err) => console.error(err))
   }, [])
 
   return (
     <>
       <Sidebar />
       <Topbar />
-      <div className="m-90">
-        <h3>Macchine</h3>
-        <p>Numero macchine:</p>
-        {machines.length}
+      <div className="flex">
+        <div className="m-90">
+          <h3>Macchine</h3>
+          <p>Numero macchine:</p>
+          {machines.length}
+        </div>
+
+        <div className="m-90">
+          <h3>Linee</h3>
+          <p>Numero linee:</p>
+          {lines.length}
+        </div>
+
+        <div className="m-90">
+          <h3>Telemetrie</h3>
+          <p>Numero dati raccolti:</p>
+          {telemetries.length}
+        </div>
       </div>
     </>
   )

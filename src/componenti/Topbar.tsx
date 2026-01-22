@@ -12,7 +12,6 @@ export function Topbar() {
 
   return (
     <div className="fixed top-0 left-64 w-[calc(100%-16rem)] h-24 bg-slate-900 text-slate-200 flex items-center justify-between px-6 border-b-4 border-amber-700 shadow-sm z-50">
-      {/* Breadcrumbs */}
       <div className="flex items-center space-x-3 text-xl font-extralight overflow-x-auto">
         {topbarList.map((element, index) => (
           <b key={index}>

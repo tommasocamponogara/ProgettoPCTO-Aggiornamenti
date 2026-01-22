@@ -1,57 +1,59 @@
-[
-  {
-    "id": "press-01",
-    "lineId": "line-1",
-    "name": "Pressa Idraulica 01",
-    "type": "PRESS",
-    "plc": {
-      "vendor": "Siemens",
-      "model": "S7-1500"
+{
+  "machines": [
+    {
+      "id": "press-01",
+      "lineId": "line-1",
+      "name": "Pressa Idraulica 01",
+      "type": "PRESS",
+      "plc": {
+        "vendor": "Siemens",
+        "model": "S7-1500"
+      },
+      "order": 10
     },
-    "order": 10
-  },
-  {
-    "id": "robot-01",
-    "lineId": "line-1",
-    "name": "Robot Manipolatore 01",
-    "type": "ROBOT",
-    "plc": {
-      "vendor": "ABB",
-      "model": "IRC5"
+    {
+      "id": "robot-01",
+      "lineId": "line-1",
+      "name": "Robot Manipolatore 01",
+      "type": "ROBOT",
+      "plc": {
+        "vendor": "ABB",
+        "model": "IRC5"
+      },
+      "order": 20
     },
-    "order": 20
-  },
-  {
-    "id": "cnc-01",
-    "lineId": "line-1",
-    "name": "Centro di Lavoro CNC 01",
-    "type": "CNC",
-    "plc": {
-      "vendor": "Fanuc",
-      "model": "Series 0i-MF"
+    {
+      "id": "cnc-01",
+      "lineId": "line-1",
+      "name": "Centro di Lavoro CNC 01",
+      "type": "CNC",
+      "plc": {
+        "vendor": "Fanuc",
+        "model": "Series 0i-MF"
+      },
+      "order": 30
     },
-    "order": 30
-  },
-  {
-    "id": "qc-01",
-    "lineId": "line-1",
-    "name": "Stazione Controllo Qualità",
-    "type": "QC",
-    "plc": {
-      "vendor": "Beckhoff",
-      "model": "CX2040"
+    {
+      "id": "qc-01",
+      "lineId": "line-1",
+      "name": "Stazione Controllo Qualità",
+      "type": "QC",
+      "plc": {
+        "vendor": "Beckhoff",
+        "model": "CX2040"
+      },
+      "order": 40
     },
-    "order": 40
-  },
-  {
-    "id": "packer-01",
-    "lineId": "line-1",
-    "name": "Imballatrice Automatica",
-    "type": "PACKER",
-    "plc": {
-      "vendor": "Siemens",
-      "model": "S7-1200"
-    },
-    "order": 50
-  }
-]
+    {
+      "id": "packer-01",
+      "lineId": "line-1",
+      "name": "Imballatrice Automatica",
+      "type": "PACKER",
+      "plc": {
+        "vendor": "Siemens",
+        "model": "S7-1200"
+      },
+      "order": 50
+    }
+  ]
+}
