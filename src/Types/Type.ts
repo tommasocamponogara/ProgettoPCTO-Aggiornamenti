@@ -1,13 +1,13 @@
 export type Machine = {
-  id: String
-  lineId: String
-  name: String
-  type: String
+  id: string
+  lineId: string
+  name: string
+  type: string
   plc: {
-    vendor: String
-    model: String
+    vendor: string
+    model: string
   }
-  order: Number
+  order: number
 }
 
 export type MachineWithTelemetries = Machine & {
@@ -15,28 +15,28 @@ export type MachineWithTelemetries = Machine & {
 }
 
 export type Line = {
-  id: String
-  name: String
-  description: String
-  order: Number
+  id: string
+  name: string
+  description: string
+  order: number
   machines: Machine[]
 }
 
 export type Telemetry = {
-  machineId: String
-  type: String
-  ts: String
+  machineId: string
+  type: string
+  ts: string
   reported: {
-    state: String
-    orderCode: String
-    temperature: Number
-    pressure: Number
+    state: string
+    orderCode: string
+    temperature: number
+    pressure: number
     alarms:
       | [
           {
-            code: String
-            message: String
-            locking: Boolean
+            code: string
+            message: string
+            locking: boolean
           },
         ]
       | []

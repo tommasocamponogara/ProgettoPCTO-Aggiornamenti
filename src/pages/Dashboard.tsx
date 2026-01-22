@@ -4,6 +4,7 @@ import { Topbar } from '../componenti/Topbar'
 import { data } from 'react-router-dom'
 import type { Line, Machine, Telemetry } from '../Types/Type'
 import { getLines, getMachines, getTelemetries } from '../utils/api'
+import { Widget_Dashboard } from '../componenti/Widget_Dashboard'
 
 export default function Dashboard() {
   const [machines, setMachines] = useState<Machine[]>([])
@@ -20,25 +21,7 @@ export default function Dashboard() {
     <>
       <Sidebar />
       <Topbar />
-      <div className="flex">
-        <div className="m-90">
-          <h3>Macchine</h3>
-          <p>Numero macchine:</p>
-          {machines.length}
-        </div>
-
-        <div className="m-90">
-          <h3>Linee</h3>
-          <p>Numero linee:</p>
-          {lines.length}
-        </div>
-
-        <div className="m-90">
-          <h3>Telemetrie</h3>
-          <p>Numero dati raccolti:</p>
-          {telemetries.length}
-        </div>
-      </div>
+      <Widget_Dashboard lines={lines} telemetries={telemetries} />
     </>
   )
 }
