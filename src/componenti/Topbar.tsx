@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import accountDefault from '../assets/default_account.png'
 import { UserMenu } from './UserMenu'
 import { useState } from 'react'
+import { HiBell } from 'react-icons/hi'
+import { TbBellRingingFilled } from 'react-icons/tb'
 
 export function Topbar() {
   const [showMenu, setShowMenu] = useState(false)
@@ -24,6 +26,10 @@ export function Topbar() {
           </b>
         ))}
       </div>
+      {/*}
+      <HiBell />
+      <TbBellRingingFilled />
+      */}
 
       <div className="relative ml-4">
         <img

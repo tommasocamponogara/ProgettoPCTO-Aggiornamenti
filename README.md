@@ -14,6 +14,7 @@ Il progetto include la formattazione automatica del codice tramite **Prettier**.
 - Tailwind CSS
 - Prettier
 - React Router
+- React Icons
 
 ---
 
@@ -43,4 +44,8 @@ npm -v
 3. npm run dev
 ```
 
-4. Avvio del server : ./server.py 3000
+4. Avvio del server : **Entrare in cartella 'database'** ->
+
+```bash
+json-server --watch db.json
+```

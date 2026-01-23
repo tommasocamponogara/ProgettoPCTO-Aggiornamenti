@@ -1,6 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
+import { HiBell, HiCollection } from 'react-icons/hi'
+
+import { MdHome } from 'react-icons/md'
+import { IoIosBuild } from 'react-icons/io'
 
 export function Sidebar() {
   return (
@@ -14,32 +18,37 @@ export function Sidebar() {
           <li>
             <Link
               to="/dashboard"
-              className="block py-3 px-4 rounded-md hover:bg-amber-700 hover:text-white transition-colors"
+              className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
+              {' '}
+              <MdHome />
               Dashboard
             </Link>
           </li>
           <li>
             <Link
               to="/dashboard/linee"
-              className="block py-3 px-4 rounded-md hover:bg-amber-700 hover:text-white transition-colors"
+              className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
+              <HiCollection />
               Linee
             </Link>
           </li>
           <li>
             <Link
               to="/dashboard/macchinari"
-              className="block py-3 px-4 rounded-md hover:bg-amber-700 hover:text-white transition-colors"
+              className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
+              <IoIosBuild />
               Macchinari
             </Link>
           </li>
           <li>
             <Link
               to="/dashboard/allarmi"
-              className="block py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
+              className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
+              <HiBell />
               Allarmi
             </Link>
           </li>
