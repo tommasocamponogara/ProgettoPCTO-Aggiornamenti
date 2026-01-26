@@ -28,7 +28,7 @@ export function Topbar() {
       </div>
       {/*}
       <HiBell />
-      <TbBellRingingFilled />
+      <TbBellRingingFilled /> CONSIGLIO: INSERIRE ICONE AL POSTO DI IMMAGINE PER PROFILO
       */}
 
       <div className="relative ml-4">

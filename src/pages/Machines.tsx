@@ -1,4 +1,4 @@
-import { Sidebar } from '../componenti/sidebar'
+import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
 
 export default function Machines() {

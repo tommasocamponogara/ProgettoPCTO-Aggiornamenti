@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import Lines from './pages/Lines'
 import Machines from './pages/Machines'
 import Alarms from './pages/Alarms'
+import { LineDescription } from './pages/LineDescription'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -12,6 +13,7 @@ createRoot(document.getElementById('root')!).render(
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dashboard/linee" element={<Lines />} />
+      <Route path="/dashboard/linee/:id" element={<LineDescription />} />
       <Route path="/dashboard/macchinari" element={<Machines />} />
       <Route path="/dashboard/allarmi" element={<Alarms />} />
     </Routes>

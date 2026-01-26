@@ -1,7 +1,7 @@
 import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
 
-export default function Alarms() {
+export function LineDescription() {
   return (
     <>
       <Sidebar />

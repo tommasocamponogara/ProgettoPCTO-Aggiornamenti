@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Sidebar } from '../componenti/sidebar'
+import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
 import { data } from 'react-router-dom'
 import type { Line, Machine, Telemetry } from '../Types/Type'
 import { getLines, getMachines, getTelemetries } from '../utils/api'
 import { Widget_Dashboard } from '../componenti/Widget_Dashboard'
+import { SetStatus } from '../utils/SetStatus'
 
 export default function Dashboard() {
   const [machines, setMachines] = useState<Machine[]>([])
@@ -15,6 +16,7 @@ export default function Dashboard() {
     getMachines().then((machines) => setMachines(machines))
     getLines().then((lines) => setLines(lines))
     getTelemetries().then((telemetries) => setTelemetries(telemetries))
+    //setMachines(SetStatus({ telemetries, lines }))
   }, [])
 
   return (

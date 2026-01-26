@@ -22,7 +22,7 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
       <div className="bg-blue-500 border rounded-md w-50 h-50 text-center ">
         Macchinari: <br />{' '}
         {lines.map((line, index) => (
-          <b>{(n_macchinari += line.machines.length)}</b>
+          <b key={index}>{(n_macchinari += line.machines.length)}</b>
         ))}
       </div>
       <div className="bg-red-500 border rounded-md w-50 h-50 text-center ">

@@ -1,8 +1,19 @@
 import type { Line, Machine, Telemetry } from '../Types/Type'
 
+export async function getTelemetries(): Promise<Telemetry[]> {
+  const telemetries: Telemetry[] = await (await fetch('http://localhost:3000/telemetries')).json()
+  return telemetries
+}
+
 export async function getMachines(): Promise<Machine[]> {
-  const response = await fetch('http://localhost:3000/machines')
-  return response.json()
+  const machines = await (await fetch('http://localhost:3000/machines')).json()
+  const telemetries: Telemetry[] = await (await fetch('http://localhost:3000/telemetries')).json()
+  for (const machine of machines) {
+    const lineTelemetries = telemetries.filter((t) => t.machineId === machine.id)
+    machine['telemetries'] = lineTelemetries
+    console.log(machines)
+  }
+  return machines
 }
 
 export async function getMachine(id: string): Promise<Machine | undefined> {
@@ -21,13 +32,8 @@ export async function getLines(): Promise<Line[]> {
   for (const line of lines) {
     const lineMachines = machines.filter((m) => m.lineId === line.id)
     line['machines'] = lineMachines
-    console.log(lines)
+    //console.log(lines)
   }
 
   return lines
-}
-
-export async function getTelemetries(): Promise<Telemetry[]> {
-  const telemetries: Telemetry[] = await (await fetch('http://localhost:3000/telemetries')).json()
-  return telemetries
 }

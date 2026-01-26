@@ -62,6 +62,12 @@
       "name": "Linea 1 - Assemblaggio",
       "description": "Linea di assemblaggio demo",
       "order": 1
+    },
+    {
+      "id": "line-2",
+      "name": "Linea 2 - Verniciatura",
+      "description": "Linea di verniciatura demo",
+      "order": 2
     }
   ],
   "telemetries": [

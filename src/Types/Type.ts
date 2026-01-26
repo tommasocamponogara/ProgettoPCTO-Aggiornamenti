@@ -8,6 +8,8 @@ export type Machine = {
     model: string
   }
   order: number
+  status: 'positive' | 'wait' | 'alarm' | null
+  telemetries: Telemetry[]
 }
 
 export type MachineWithTelemetries = Machine & {
@@ -20,6 +22,7 @@ export type Line = {
   description: string
   order: number
   machines: Machine[]
+  status: 'positive' | 'wait' | 'alarm'
 }
 
 export type Telemetry = {
@@ -47,4 +50,9 @@ export type ReadFileProps = {
   setMachines: (machines: Machine[]) => void
   setLines: (lines: Line[]) => void
   setTelemetries: (telemetries: Telemetry[]) => void
+}
+
+export type StatusProps = {
+  lines: Line[]
+  telemetries: Telemetry[]
 }
