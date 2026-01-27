@@ -36,7 +36,7 @@ export async function getLines(): Promise<Line[]> {
     const { setLineStatus } = getDetailsLineMachine(lineMachines)
     line['status'] = setLineStatus(lineMachines)
 
-    console.log(line)
+    //console.log(line)
   }
   //console.log(lines)
 

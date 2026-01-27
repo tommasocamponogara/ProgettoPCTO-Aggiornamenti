@@ -41,7 +41,7 @@ export function TableLines({ lines }: TableLinesProps) {
                 <tr key={line.id} className="hover:bg-slate-800 transition-colors">
                   <td
                     className="px-6 py-4 hover:cursor-pointer"
-                    onClick={() => navigate(`${line.id}`)}
+                    onClick={() => navigate(`${line.id}`, { state: { line } })}
                   >
                     {'#' + line.id}
                   </td>

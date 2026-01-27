@@ -45,8 +45,8 @@
       "order": 40
     },
     {
-      "id": "packer-012",
-      "lineId": "line-5",
+      "id": "packer-01",
+      "lineId": "line-1",
       "name": "Imballatrice Automatica",
       "type": "PACKER",
       "plc": {
