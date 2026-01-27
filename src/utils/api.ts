@@ -1,4 +1,5 @@
 import type { Line, Machine, Telemetry } from '../Types/Type'
+import { SetStatus } from './SetStatus'
 
 export async function getTelemetries(): Promise<Telemetry[]> {
   const telemetries: Telemetry[] = await (await fetch('http://localhost:3000/telemetries')).json()
@@ -11,7 +12,7 @@ export async function getMachines(): Promise<Machine[]> {
   for (const machine of machines) {
     const lineTelemetries = telemetries.filter((t) => t.machineId === machine.id)
     machine['telemetries'] = lineTelemetries
-    console.log(machines)
+    //console.log(machine)
   }
   return machines
 }
@@ -26,14 +27,18 @@ export async function getMachine(id: string): Promise<Machine | undefined> {
 }
 
 export async function getLines(): Promise<Line[]> {
-  const machines: Machine[] = await (await fetch('http://localhost:3000/machines')).json()
+  const machines: Machine[] = await getMachines()
+  //const machines: Machine[] = await (await fetch('http://localhost:3000/machines')).json()
   const lines = await (await fetch('http://localhost:3000/lines')).json()
-
   for (const line of lines) {
+    //var lineStatus = 'positive'
     const lineMachines = machines.filter((m) => m.lineId === line.id)
     line['machines'] = lineMachines
-    //console.log(lines)
+    line['status'] = SetStatus(lineMachines)
+
+    console.log(line)
   }
+  //console.log(lines)
 
   return lines
 }

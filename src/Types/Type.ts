@@ -8,7 +8,6 @@ export type Machine = {
     model: string
   }
   order: number
-  status: 'positive' | 'wait' | 'alarm' | null
   telemetries: Telemetry[]
 }
 
@@ -22,6 +21,7 @@ export type Line = {
   description: string
   order: number
   machines: Machine[]
+  telemetries: Telemetry[]
   status: 'positive' | 'wait' | 'alarm'
 }
 
@@ -30,7 +30,7 @@ export type Telemetry = {
   type: string
   ts: string
   reported: {
-    state: string
+    state: 'RUN' | 'IDLE' | 'OFFLINE' | 'FAULT' | 'STOP'
     orderCode: string
     temperature: number
     pressure: number
@@ -53,6 +53,5 @@ export type ReadFileProps = {
 }
 
 export type StatusProps = {
-  lines: Line[]
-  telemetries: Telemetry[]
+  lineMachines: Line[]
 }

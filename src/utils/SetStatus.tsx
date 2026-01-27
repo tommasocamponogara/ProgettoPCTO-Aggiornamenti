@@ -1,18 +1,20 @@
 import { useState } from 'react'
-import type { Machine, StatusProps } from '../Types/Type'
+import type { Line, Machine, StatusProps } from '../Types/Type'
 
-export function SetStatus({ telemetries, lines }: StatusProps) {
-  const [machines, setMachines] = useState<Machine[]>([])
-  for (const machine of machines) {
-    if (machine.telemetries.length !== 0) {
-      machine.status = 'alarm'
-    } else {
-      machine.status = 'positive'
-    }
+export function SetStatus(lineMachines: Machine[]) {
+  var lineStatus = 'positive'
+  for (const machine of lineMachines) {
+    machine.telemetries.forEach((telemetry) => {
+      if (
+        telemetry.reported.state === 'STOP' ||
+        telemetry.reported.state === 'FAULT' ||
+        telemetry.reported.state === 'OFFLINE'
+      ) {
+        lineStatus = 'alarm'
+      } else if (telemetry.reported.state === 'IDLE' && lineStatus != 'alarm') {
+        lineStatus = 'wait'
+      }
+    })
   }
-
-  setMachines(machines)
-  console.log(machines)
-
-  return machines
+  return lineStatus
 }

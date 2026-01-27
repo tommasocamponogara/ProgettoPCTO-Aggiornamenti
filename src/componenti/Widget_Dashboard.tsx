@@ -6,8 +6,8 @@ type WidgetDashboardProps = {
 }
 
 export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
-  var n_macchinari = 0
-  var listaconta = ['']
+  const n_macchinari = lines.reduce((acc, line) => acc + line.machines.length, 0)
+  var listaconta: string[] = []
   for (const telemetry of telemetries) {
     if (!listaconta.includes(telemetry.machineId) && telemetry.reported.alarms.length != 0) {
       listaconta.push(telemetry.machineId)
@@ -20,10 +20,8 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
         <b>{lines.length}</b>
       </div>
       <div className="bg-blue-500 border rounded-md w-50 h-50 text-center ">
-        Macchinari: <br />{' '}
-        {lines.map((line, index) => (
-          <b key={index}>{(n_macchinari += line.machines.length)}</b>
-        ))}
+        Macchinari: <br />
+        {n_macchinari}
       </div>
       <div className="bg-red-500 border rounded-md w-50 h-50 text-center ">
         Allarmi: <br /> <b>{listaconta.length}</b>

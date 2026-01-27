@@ -54,6 +54,17 @@
         "model": "S7-1200"
       },
       "order": 50
+    },
+    {
+      "id": "packer-05",
+      "lineId": "line-2",
+      "name": "Imballatrice Automatica",
+      "type": "PACKER",
+      "plc": {
+        "vendor": "Siemens",
+        "model": "S7-1200"
+      },
+      "order": 50
     }
   ],
   "lines": [
@@ -68,6 +79,18 @@
       "name": "Linea 2 - Verniciatura",
       "description": "Linea di verniciatura demo",
       "order": 2
+    },
+    {
+      "id": "line-3",
+      "name": "Linea 3 - Test",
+      "description": "Linea di test demo",
+      "order": 1
+    },
+    {
+      "id": "line-4",
+      "name": "Linea 1 - Assemblaggio",
+      "description": "Linea di assemblaggio demo",
+      "order": 1
     }
   ],
   "telemetries": [
