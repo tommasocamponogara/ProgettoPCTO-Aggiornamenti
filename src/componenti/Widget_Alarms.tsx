@@ -17,6 +17,7 @@ export function Widget_Alarms({ machines }: WidgetAlarmsProps) {
       })
     })
   })
+  const alarmListOrdinata = alarmList.reverse()
 
   return (
     <div className="flex flex-col items-center min-h-screen pt-32 bg-slate-800">
@@ -37,7 +38,7 @@ export function Widget_Alarms({ machines }: WidgetAlarmsProps) {
             </div>
           )}
 
-          {alarmList.map((alarm, index) => (
+          {alarmListOrdinata.map((alarm, index) => (
             <div
               key={index}
               className={`grid grid-cols-[150px_100px_1fr_120px] gap-4 items-center px-6 py-4 rounded-lg border-l-4 transition
