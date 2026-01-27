@@ -1,44 +1,42 @@
-import { useLocation } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import accountDefault from '../assets/default_account.png'
 import { UserMenu } from './UserMenu'
 import { useState } from 'react'
-import { HiBell } from 'react-icons/hi'
-import { TbBellRingingFilled } from 'react-icons/tb'
 
 export function Topbar() {
   const [showMenu, setShowMenu] = useState(false)
   const location = useLocation()
   const path = location.pathname
   const topbarList = path.split('/').filter(Boolean)
+  const lastElement = topbarList.pop()
 
   return (
     <div className="fixed top-0 left-64 w-[calc(100%-16rem)] h-24 bg-slate-900 text-slate-200 flex items-center justify-between px-6 border-b-4 border-amber-700 shadow-sm z-50">
-      <div className="flex items-center space-x-3 text-xl font-extralight overflow-x-auto">
+      <nav className="flex items-center space-x-1 overflow-x-auto">
         {topbarList.map((element, index) => (
-          <b key={index}>
+          <span key={index} className="flex items-center space-x-1">
             <Link
               to={'/' + topbarList.slice(0, index + 1).join('/')}
-              className="flex hover:text-amber-400 transition-colors capitalize whitespace-nowrap"
+              className="text-lg hover:text-amber-400 transition-colors capitalize whitespace-nowrap"
             >
-              {'/' + element}
+              {element}
             </Link>
-          </b>
+            <span className="text-slate-500">/</span>
+          </span>
         ))}
-      </div>
-      {/*}
-      <HiBell />
-      <TbBellRingingFilled /> CONSIGLIO: INSERIRE ICONE AL POSTO DI IMMAGINE PER PROFILO
-      */}
+
+        <span className="text-amber-400 text-2xl font-semibold capitalize whitespace-nowrap hover:cursor-pointer">
+          {lastElement}
+        </span>
+      </nav>
 
       <div className="relative ml-4">
         <img
           src={accountDefault}
           alt="Account"
-          className="w-14 h-20 rounded-full cursor-pointer hover:border-2 hover:border-amber-700 mr-8"
+          className="w-14 h-20 rounded-full cursor-pointer hover:border-2 hover:border-amber-700"
           onClick={() => setShowMenu(!showMenu)}
         />
-
         {showMenu && <UserMenu />}
       </div>
     </div>

@@ -1,6 +1,173 @@
 {
   "machines": [
     {
+      "id": "press-02",
+      "lineId": "line-1",
+      "name": "Pressa Idraulica 02",
+      "type": "PRESS",
+      "plc": { "vendor": "Siemens", "model": "S7-1500" },
+      "order": 40
+    },
+    {
+      "id": "robot-03",
+      "lineId": "line-1",
+      "name": "Robot Scarico Pressa",
+      "type": "ROBOT",
+      "plc": { "vendor": "ABB", "model": "IRC5" },
+      "order": 50
+    },
+
+    {
+      "id": "paint-02",
+      "lineId": "line-2",
+      "name": "Cabina Verniciatura 02",
+      "type": "PAINT",
+      "plc": { "vendor": "Siemens", "model": "S7-1200" },
+      "order": 30
+    },
+    {
+      "id": "oven-02",
+      "lineId": "line-2",
+      "name": "Forno Essiccazione 02",
+      "type": "OVEN",
+      "plc": { "vendor": "Rockwell", "model": "CompactLogix" },
+      "order": 40
+    },
+    {
+      "id": "qc-02",
+      "lineId": "line-2",
+      "name": "Controllo Qualità Verniciatura",
+      "type": "QC",
+      "plc": { "vendor": "Beckhoff", "model": "CX2040" },
+      "order": 50
+    },
+
+    {
+      "id": "cnc-03",
+      "lineId": "line-3",
+      "name": "Centro di Lavoro CNC 03",
+      "type": "CNC",
+      "plc": { "vendor": "Fanuc", "model": "0i-MF Plus" },
+      "order": 40
+    },
+    {
+      "id": "wash-01",
+      "lineId": "line-3",
+      "name": "Lavatrice Industriale",
+      "type": "WASH",
+      "plc": { "vendor": "Siemens", "model": "S7-1200" },
+      "order": 50
+    },
+
+    {
+      "id": "packer-02",
+      "lineId": "line-4",
+      "name": "Imballatrice Automatica 02",
+      "type": "PACKER",
+      "plc": { "vendor": "Siemens", "model": "S7-1200" },
+      "order": 30
+    },
+    {
+      "id": "palletizer-01",
+      "lineId": "line-4",
+      "name": "Pallettizzatore",
+      "type": "PALLETIZER",
+      "plc": { "vendor": "ABB", "model": "AC500" },
+      "order": 40
+    },
+    {
+      "id": "weigher-01",
+      "lineId": "line-4",
+      "name": "Controllo Peso",
+      "type": "WEIGHER",
+      "plc": { "vendor": "Beckhoff", "model": "CX5130" },
+      "order": 50
+    },
+    {
+      "id": "press-01",
+      "lineId": "line-1",
+      "name": "Pressa Idraulica 01",
+      "type": "PRESS",
+      "plc": { "vendor": "Siemens", "model": "S7-1500" },
+      "order": 10
+    },
+    {
+      "id": "robot-01",
+      "lineId": "line-1",
+      "name": "Robot Manipolatore 01",
+      "type": "ROBOT",
+      "plc": { "vendor": "ABB", "model": "IRC5" },
+      "order": 20
+    },
+    {
+      "id": "qc-01",
+      "lineId": "line-1",
+      "name": "Stazione Controllo Qualità",
+      "type": "QC",
+      "plc": { "vendor": "Beckhoff", "model": "CX2040" },
+      "order": 30
+    },
+
+    {
+      "id": "paint-01",
+      "lineId": "line-2",
+      "name": "Cabina Verniciatura 01",
+      "type": "PAINT",
+      "plc": { "vendor": "Siemens", "model": "S7-1200" },
+      "order": 10
+    },
+    {
+      "id": "oven-01",
+      "lineId": "line-2",
+      "name": "Forno Essiccazione 01",
+      "type": "OVEN",
+      "plc": { "vendor": "Rockwell", "model": "CompactLogix" },
+      "order": 20
+    },
+
+    {
+      "id": "cnc-01",
+      "lineId": "line-3",
+      "name": "Centro di Lavoro CNC 01",
+      "type": "CNC",
+      "plc": { "vendor": "Fanuc", "model": "0i-MF" },
+      "order": 10
+    },
+    {
+      "id": "cnc-02",
+      "lineId": "line-3",
+      "name": "Centro di Lavoro CNC 02",
+      "type": "CNC",
+      "plc": { "vendor": "Fanuc", "model": "31i" },
+      "order": 20
+    },
+    {
+      "id": "robot-02",
+      "lineId": "line-3",
+      "name": "Robot Carico CNC",
+      "type": "ROBOT",
+      "plc": { "vendor": "KUKA", "model": "KRC4" },
+      "order": 30
+    },
+
+    {
+      "id": "packer-01",
+      "lineId": "line-4",
+      "name": "Imballatrice Automatica",
+      "type": "PACKER",
+      "plc": { "vendor": "Siemens", "model": "S7-1200" },
+      "order": 10
+    },
+    {
+      "id": "label-01",
+      "lineId": "line-4",
+      "name": "Etichettatrice Automatica",
+      "type": "LABEL",
+      "plc": { "vendor": "Beckhoff", "model": "CX9020" },
+      "order": 20
+    },
+
+    {
       "id": "press-01",
       "lineId": "line-1",
       "name": "Pressa Idraulica 01",
@@ -56,8 +223,8 @@
       "order": 50
     },
     {
-      "id": "packer-05",
-      "lineId": "line-2",
+      "id": "packer-012",
+      "lineId": "line-5",
       "name": "Imballatrice Automatica",
       "type": "PACKER",
       "plc": {
@@ -71,29 +238,419 @@
     {
       "id": "line-1",
       "name": "Linea 1 - Assemblaggio",
-      "description": "Linea di assemblaggio demo",
+      "description": "Linea assemblaggio componenti",
       "order": 1
     },
     {
       "id": "line-2",
       "name": "Linea 2 - Verniciatura",
-      "description": "Linea di verniciatura demo",
+      "description": "Linea verniciatura automatica",
       "order": 2
     },
     {
       "id": "line-3",
-      "name": "Linea 3 - Test",
-      "description": "Linea di test demo",
-      "order": 1
+      "name": "Linea 3 - Lavorazioni Meccaniche",
+      "description": "Linea CNC e robot di carico",
+      "order": 3
     },
     {
       "id": "line-4",
-      "name": "Linea 1 - Assemblaggio",
-      "description": "Linea di assemblaggio demo",
-      "order": 1
+      "name": "Linea 4 - Packaging",
+      "description": "Linea imballaggio ed etichettatura",
+      "order": 4
+    },
+    {
+      "id": "line-5",
+      "name": "Linea 5 - alkdsjf",
+      "description": "Linea imballaggio ed etichettatura",
+      "order": 5
     }
   ],
+
   "telemetries": [
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:03:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "temperature": 65.6,
+        "pressure": 98.1,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-01",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:03:03Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590012",
+        "cicleTime": 821,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "cnc-01",
+      "type": "CNC",
+      "ts": "2026-01-07T08:03:06Z",
+      "reported": {
+        "state": "OFFLINE",
+        "orderCode": "2570002",
+        "rpm": 0,
+        "temperature": null,
+        "alarms": [{ "code": "9000", "message": "Perdita comunicazione PLC", "locking": true }]
+      }
+    },
+    {
+      "machineId": "qc-01",
+      "type": "QC",
+      "ts": "2026-01-07T08:03:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "partsChecked": 1879,
+        "rejectRate": 0.012,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-01",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:03:12Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "speed": 118,
+        "temperature": 41.5,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "paint-01",
+      "type": "PAINT",
+      "ts": "2026-01-07T08:03:15Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590100",
+        "temperature": 56.2,
+        "humidity": 41.3,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "oven-01",
+      "type": "OVEN",
+      "ts": "2026-01-07T08:03:18Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590100",
+        "temperature": 182.4,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:04:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "temperature": 66.1,
+        "pressure": 99.2,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-01",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:04:03Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590012",
+        "cicleTime": 833,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "cnc-01",
+      "type": "CNC",
+      "ts": "2026-01-07T08:04:06Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570002",
+        "rpm": 5050,
+        "temperature": 82.7,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "qc-01",
+      "type": "QC",
+      "ts": "2026-01-07T08:04:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "partsChecked": 1906,
+        "rejectRate": 0.013,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-01",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:04:12Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "speed": 121,
+        "temperature": 41.9,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "cnc-02",
+      "type": "CNC",
+      "ts": "2026-01-07T08:04:30Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570031",
+        "rpm": 4800,
+        "temperature": 77.4,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-02",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:04:33Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570031",
+        "cicleTime": 790,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "label-01",
+      "type": "LABEL",
+      "ts": "2026-01-07T08:04:36Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "speed": 130,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "oven-01",
+      "type": "OVEN",
+      "ts": "2026-01-07T08:05:00Z",
+      "reported": {
+        "state": "FAULT",
+        "orderCode": "2590100",
+        "temperature": 201.7,
+        "alarms": [{ "code": "401", "message": "Sovratemperatura forno", "locking": true }]
+      }
+    },
+    {
+      "machineId": "paint-01",
+      "type": "PAINT",
+      "ts": "2026-01-07T08:05:03Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590100",
+        "temperature": 49.8,
+        "humidity": 45.1,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:00:00Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590002",
+        "temperature": 63.8,
+        "pressure": 94.1,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-01",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:00:03Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590012",
+        "cicleTime": 842,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "cnc-01",
+      "type": "CNC",
+      "ts": "2026-01-07T08:00:06Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570002",
+        "rpm": 5100,
+        "temperature": 79.3,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "qc-01",
+      "type": "QC",
+      "ts": "2026-01-07T08:00:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "partsChecked": 1801,
+        "rejectRate": 0.012,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-01",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:00:12Z",
+      "reported": {
+        "state": "STOP",
+        "orderCode": "2590002",
+        "speed": 0,
+        "temperature": 41.8,
+        "alarms": [{ "code": "104", "message": "Mancanza film imballo", "locking": true }]
+      }
+    },
+
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:01:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "temperature": 64.2,
+        "pressure": 95.4,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-01",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:01:03Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590012",
+        "cicleTime": 818,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "cnc-01",
+      "type": "CNC",
+      "ts": "2026-01-07T08:01:06Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570002",
+        "rpm": 5200,
+        "temperature": 80.1,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "qc-01",
+      "type": "QC",
+      "ts": "2026-01-07T08:01:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "partsChecked": 1827,
+        "rejectRate": 0.013,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-01",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:01:12Z",
+      "reported": {
+        "state": "STOP",
+        "orderCode": "2590002",
+        "speed": 0,
+        "temperature": 41.6,
+        "alarms": [{ "code": "104", "message": "Mancanza film imballo", "locking": true }]
+      }
+    },
+
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:02:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "temperature": 65.1,
+        "pressure": 97.2,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-01",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:02:03Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590012",
+        "cicleTime": 835,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "cnc-01",
+      "type": "CNC",
+      "ts": "2026-01-07T08:02:06Z",
+      "reported": {
+        "state": "FAULT",
+        "orderCode": "2570002",
+        "rpm": 0,
+        "temperature": 93.1,
+        "alarms": [{ "code": "3001", "message": "Sovratemperatura mandrino", "locking": true }]
+      }
+    },
+    {
+      "machineId": "qc-01",
+      "type": "QC",
+      "ts": "2026-01-07T08:02:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "partsChecked": 1853,
+        "rejectRate": 0.014,
+        "alarms": [{ "code": "220", "message": "Soglia scarti in aumento", "locking": false }]
+      }
+    },
+    {
+      "machineId": "packer-01",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:02:12Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590002",
+        "speed": 0,
+        "temperature": 41.2,
+        "alarms": []
+      }
+    },
+
     {
       "machineId": "press-01",
       "type": "PRESS",
@@ -305,6 +862,408 @@
         "speed": 0,
         "temperature": 40.9,
         "alarms": []
+      }
+    },
+    {
+      "machineId": "cnc-02",
+      "type": "CNC",
+      "ts": "2026-01-07T08:06:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570031",
+        "rpm": 4950,
+        "temperature": 79.1,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-02",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:06:03Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570031",
+        "cicleTime": 802,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:06:06Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "temperature": 66.4,
+        "pressure": 99.8,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "qc-01",
+      "type": "QC",
+      "ts": "2026-01-07T08:06:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "partsChecked": 1952,
+        "rejectRate": 0.014,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-01",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:06:12Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "speed": 126,
+        "temperature": 42.2,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "cnc-02",
+      "type": "CNC",
+      "ts": "2026-01-07T08:07:00Z",
+      "reported": {
+        "state": "FAULT",
+        "orderCode": "2570031",
+        "rpm": 0,
+        "temperature": 91.6,
+        "alarms": [{ "code": "3001", "message": "Sovratemperatura mandrino", "locking": true }]
+      }
+    },
+    {
+      "machineId": "robot-02",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:07:03Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2570031",
+        "cicleTime": 0,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "label-01",
+      "type": "LABEL",
+      "ts": "2026-01-07T08:07:06Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590002",
+        "speed": 0,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:07:30Z",
+      "reported": {
+        "state": "STOP",
+        "orderCode": "2590002",
+        "temperature": 64.9,
+        "pressure": 92.3,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-01",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:07:33Z",
+      "reported": {
+        "state": "STOP",
+        "orderCode": "2590012",
+        "cicleTime": 0,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "qc-01",
+      "type": "QC",
+      "ts": "2026-01-07T08:07:36Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590002",
+        "partsChecked": 1964,
+        "rejectRate": 0.015,
+        "alarms": [{ "code": "220", "message": "Soglia scarti in aumento", "locking": false }]
+      }
+    },
+
+    {
+      "machineId": "cnc-02",
+      "type": "CNC",
+      "ts": "2026-01-07T08:08:00Z",
+      "reported": {
+        "state": "OFFLINE",
+        "orderCode": "2570031",
+        "rpm": 0,
+        "temperature": null,
+        "alarms": [{ "code": "9000", "message": "Perdita comunicazione PLC", "locking": true }]
+      }
+    },
+    {
+      "machineId": "robot-02",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:08:03Z",
+      "reported": {
+        "state": "OFFLINE",
+        "orderCode": "2570031",
+        "cicleTime": 0,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "press-01",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:08:30Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590002",
+        "temperature": 63.7,
+        "pressure": 90.1,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-01",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:08:33Z",
+      "reported": {
+        "state": "STOP",
+        "orderCode": "2590002",
+        "speed": 0,
+        "temperature": 41.4,
+        "alarms": [{ "code": "104", "message": "Mancanza film imballo", "locking": true }]
+      }
+    },
+
+    {
+      "machineId": "cnc-02",
+      "type": "CNC",
+      "ts": "2026-01-07T08:09:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570031",
+        "rpm": 4700,
+        "temperature": 78.3,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-02",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:09:03Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570031",
+        "cicleTime": 815,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "label-01",
+      "type": "LABEL",
+      "ts": "2026-01-07T08:09:06Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590002",
+        "speed": 135,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "press-02",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:10:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590022",
+        "temperature": 64.5,
+        "pressure": 95.3,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-03",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:10:03Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590022",
+        "cicleTime": 820,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "paint-02",
+      "type": "PAINT",
+      "ts": "2026-01-07T08:10:06Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590110",
+        "temperature": 55.2,
+        "humidity": 43.1,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "oven-02",
+      "type": "OVEN",
+      "ts": "2026-01-07T08:10:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590110",
+        "temperature": 180.5,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "qc-02",
+      "type": "QC",
+      "ts": "2026-01-07T08:10:12Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590110",
+        "partsChecked": 1200,
+        "rejectRate": 0.011,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "cnc-03",
+      "type": "CNC",
+      "ts": "2026-01-07T08:10:15Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570051",
+        "rpm": 5000,
+        "temperature": 77.5,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "wash-01",
+      "type": "WASH",
+      "ts": "2026-01-07T08:10:18Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2570051",
+        "flowRate": 120,
+        "temperature": 42.5,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-02",
+      "type": "PACKER",
+      "ts": "2026-01-07T08:10:21Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590022",
+        "speed": 125,
+        "temperature": 41.7,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "palletizer-01",
+      "type": "PALLETIZER",
+      "ts": "2026-01-07T08:10:24Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590022",
+        "stackedPallets": 15,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "weigher-01",
+      "type": "WEIGHER",
+      "ts": "2026-01-07T08:10:27Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590022",
+        "weightMeasured": 125.3,
+        "alarms": []
+      }
+    },
+
+    {
+      "machineId": "press-02",
+      "type": "PRESS",
+      "ts": "2026-01-07T08:11:00Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590022",
+        "temperature": 65.2,
+        "pressure": 96.4,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "robot-03",
+      "type": "ROBOT",
+      "ts": "2026-01-07T08:11:03Z",
+      "reported": {
+        "state": "FAULT",
+        "orderCode": "2590022",
+        "cicleTime": 0,
+        "alarms": [{ "code": "512", "message": "Riduzione velocità asse 3", "locking": false }]
+      }
+    },
+    {
+      "machineId": "paint-02",
+      "type": "PAINT",
+      "ts": "2026-01-07T08:11:06Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590110",
+        "temperature": 50.3,
+        "humidity": 45.2,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "oven-02",
+      "type": "OVEN",
+      "ts": "2026-01-07T08:11:09Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590110",
+        "temperature": 182.1,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "qc-02",
+      "type": "QC",
+      "ts": "2026-01-07T08:11:12Z",
+      "reported": {
+        "state": "RUN",
+        "orderCode": "2590110",
+        "partsChecked": 1225,
+        "rejectRate": 0.012,
+        "alarms": []
+      }
+    },
+    {
+      "machineId": "packer-012",
+      "type": "QC",
+      "ts": "2026-01-07T08:11:12Z",
+      "reported": {
+        "state": "IDLE",
+        "orderCode": "2590110",
+        "partsChecked": 1225,
+        "rejectRate": 0.012,
+        "alarms": [{ "code": "512", "message": "Riduzione velocità asse 3", "locking": false }]
       }
     }
   ]

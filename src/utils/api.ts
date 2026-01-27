@@ -12,7 +12,6 @@ export async function getMachines(): Promise<Machine[]> {
   for (const machine of machines) {
     const lineTelemetries = telemetries.filter((t) => t.machineId === machine.id)
     machine['telemetries'] = lineTelemetries
-    //console.log(machine)
   }
   return machines
 }
