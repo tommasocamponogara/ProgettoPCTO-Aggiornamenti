@@ -212,17 +212,6 @@
       "order": 40
     },
     {
-      "id": "packer-01",
-      "lineId": "line-1",
-      "name": "Imballatrice Automatica",
-      "type": "PACKER",
-      "plc": {
-        "vendor": "Siemens",
-        "model": "S7-1200"
-      },
-      "order": 50
-    },
-    {
       "id": "packer-012",
       "lineId": "line-5",
       "name": "Imballatrice Automatica",

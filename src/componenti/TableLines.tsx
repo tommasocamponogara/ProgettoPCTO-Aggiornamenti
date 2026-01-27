@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { getLines } from '../utils/api'
 import { Navigate, useNavigate } from 'react-router-dom'
 import type { Line } from '../Types/Type'
+import { getDetailsLineMachine } from '../utils/getDetailsLineMachine'
 
 type TableLinesProps = {
   lines: Line[]
@@ -33,36 +34,40 @@ export function TableLines({ lines }: TableLinesProps) {
             </tr>
           </thead>
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
-            {lines.map((line) => (
-              <tr key={line.id} className="hover:bg-slate-800 transition-colors">
-                <td
-                  className="px-6 py-4 hover:cursor-pointer"
-                  onClick={() => navigate(`${line.id}`)}
-                >
-                  {'#' + line.id}
-                </td>
-                <td className="px-6 py-4">{line.name}</td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`inline-flex items-center justify-center w-20 h-6 rounded-full text-xs font-semibold ${
-                      line.status === 'positive'
-                        ? 'bg-green-500 text-slate-900'
-                        : line.status === 'wait'
-                          ? 'bg-amber-500 text-slate-900'
-                          : 'bg-red-500 text-slate-900'
-                    }`}
+            {lines.map((line) => {
+              const { numbersOfAlarms } = getDetailsLineMachine(line.machines)
+              const lineNumberAlarms = numbersOfAlarms(line.machines)
+              return (
+                <tr key={line.id} className="hover:bg-slate-800 transition-colors">
+                  <td
+                    className="px-6 py-4 hover:cursor-pointer"
+                    onClick={() => navigate(`${line.id}`)}
                   >
-                    {line.status === 'positive'
-                      ? 'Attiva'
-                      : line.status === 'wait'
-                        ? 'Attesa'
-                        : 'Allarme'}
-                  </span>
-                </td>
-                <td className="px-6 py-4">{line.machines.length}</td>
-                <td className="px-6 py-4">{line.description}</td>
-              </tr>
-            ))}
+                    {'#' + line.id}
+                  </td>
+                  <td className="px-6 py-4">{line.name}</td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-flex items-center justify-center w-20 h-6 rounded-full text-xs font-semibold ${
+                        line.status === 'positive'
+                          ? 'bg-green-500 text-slate-900'
+                          : line.status === 'wait'
+                            ? 'bg-amber-500 text-slate-900'
+                            : 'bg-red-500 text-slate-900'
+                      }`}
+                    >
+                      {line.status === 'positive'
+                        ? `Attiva (${lineNumberAlarms})`
+                        : line.status === 'wait'
+                          ? `Attesa (${lineNumberAlarms})`
+                          : `Bloccata (${lineNumberAlarms})`}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">{line.machines.length}</td>
+                  <td className="px-6 py-4">{line.description}</td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
