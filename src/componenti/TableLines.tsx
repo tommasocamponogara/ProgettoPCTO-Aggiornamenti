@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getLines } from '../utils/api'
 import { Navigate, useNavigate } from 'react-router-dom'
 import type { Line } from '../Types/Type'
@@ -8,8 +8,14 @@ type TableLinesProps = {
   lines: Line[]
 }
 
-export function TableLines({ lines }: TableLinesProps) {
+export function TableLines() {
   const navigate = useNavigate()
+
+  //recall lines per mantenere aggiornate le informazione del database
+  const [lines, setLines] = useState<Line[]>([])
+  useEffect(() => {
+    getLines().then((lines) => setLines(lines))
+  }, [])
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-800 w-full">
       <div className="max-h-[70vh] overflow-y-auto w-3/4 max-w-5xl rounded-lg shadow-lg shadow-black/40">
@@ -41,7 +47,7 @@ export function TableLines({ lines }: TableLinesProps) {
                 <tr key={line.id} className="hover:bg-slate-800 transition-colors">
                   <td
                     className="px-6 py-4 hover:cursor-pointer"
-                    onClick={() => navigate(`${line.id}`, { state: { line } })}
+                    onClick={() => navigate(`${line.id}`)}
                   >
                     {'#' + line.id}
                   </td>

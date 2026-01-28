@@ -275,13 +275,19 @@
     {
       "machineId": "packer-01",
       "type": "PACKER",
-      "ts": "2026-01-07T09:22:30Z",
+      "ts": "2026-01-28T09:22:30Z",
       "reported": {
-        "state": "IDLE",
+        "state": "STOP",
         "orderCode": "2590002",
         "speed": 0,
         "temperature": 40.9,
-        "alarms": []
+        "alarms": [
+          {
+            "code": "9000",
+            "message": "Perdita comunicazione PACKER",
+            "locking": true
+          }
+        ]
       }
     }
   ]

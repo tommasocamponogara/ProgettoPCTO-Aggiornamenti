@@ -42,3 +42,8 @@ export async function getLines(): Promise<Line[]> {
 
   return lines
 }
+
+export async function getLine(id: string): Promise<Line | undefined> {
+  const lines: Line[] = await getLines()
+  return lines.find((l) => l.id === id)
+}

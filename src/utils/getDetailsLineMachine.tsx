@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Line, Machine, StatusProps, Telemetry } from '../Types/Type'
+import { getMachines } from './api'
 
 export function getDetailsLineMachine(lineMachines: Machine[]) {
   const setLineStatus = (lineMachines: Machine[]) => {
@@ -36,7 +37,7 @@ export function getDetailsLineMachine(lineMachines: Machine[]) {
         }
       }
     }
-    console.log(lineNumberAlarms)
+    //console.log(lineNumberAlarms)
     return lineNumberAlarms
   }
 
@@ -48,7 +49,7 @@ export function getDetailsLineMachine(lineMachines: Machine[]) {
           lastTelemetry = telemetry
         }
       })
-      console.log(lastTelemetry)
+      //console.log(lastTelemetry)
       return lastTelemetry
     }
   }

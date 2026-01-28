@@ -16,7 +16,7 @@ export default function Lines() {
     <>
       <Sidebar />
       <Topbar />
-      <TableLines lines={lines} />
+      <TableLines />
     </>
   )
 }

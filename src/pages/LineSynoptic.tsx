@@ -1,19 +1,25 @@
 import React from 'react'
-import type { Machine, Telemetry } from '../Types/Type'
+import type { Line, Machine, Telemetry } from '../Types/Type'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 type SynopticProps = {
   lineName: string
   machines: Machine[]
+  line: Line
 }
 
-export function LineSynopticWithTooltip({ lineName, machines }: SynopticProps) {
+export function LineSynoptic({ lineName, machines, line }: SynopticProps) {
+  const navigate = useNavigate()
   const machineWidth = 160
   const machineHeight = 90
   const spacing = 60
   const startX = 80
   const startY = 110
 
-  const totalWidth = machines.length * (machineWidth + spacing) - spacing + startX * 2
+  const totalWidth = Math.max(
+    600,
+    machines.length * (machineWidth + spacing) - spacing + startX * 2,
+  )
   const conveyorHeight = 14
   const arrowWidth = 20
   const arrowHeight = 14
@@ -65,12 +71,22 @@ export function LineSynopticWithTooltip({ lineName, machines }: SynopticProps) {
             .asset-small { font-family: monospace; font-size: 10px; fill: #ddd; pointer-events: none; text-anchor: middle; }
             .conveyor { fill: #555; stroke: #888; stroke-width: 2; rx: 7; ry: 7; }
             .arrow { fill: #aaa; }
+            @keyframes blink-stop {
+              0%   { stroke: #e7000b; }
+              50%  { stroke: #7a0005; }
+              100% { stroke: #e7000b; }
+            }
+
+            .syn-stop {
+              animation: blink-stop 0.6s steps(1) infinite;
+            }
+
           `}
         </style>
 
         {/* Titolo */}
         <text className="title" x={totalWidth / 2} y={32}>
-          {lineName} (SYNOPTIC)
+          {lineName}
         </text>
 
         {/* Conveyor */}
@@ -102,14 +118,13 @@ export function LineSynopticWithTooltip({ lineName, machines }: SynopticProps) {
           const cls = getMachineClass(machine)
           const tooltip = getTooltipText(machine)
 
-          // colori industriali
           const fillColor =
             cls === 'syn-run'
               ? '#4caf50'
               : cls === 'syn-idle'
-                ? '#ffc107'
+                ? '#ff6900'
                 : cls === 'syn-stop'
-                  ? '#f44336'
+                  ? '#e7000b'
                   : cls === 'syn-fault'
                     ? '#e91e63'
                     : '#9e9e9e'
@@ -117,6 +132,7 @@ export function LineSynopticWithTooltip({ lineName, machines }: SynopticProps) {
           return (
             <g key={machine.id} id={`machine-${machine.id}`}>
               <rect
+                className={cls}
                 x={x}
                 y={y}
                 width={machineWidth}
@@ -129,6 +145,7 @@ export function LineSynopticWithTooltip({ lineName, machines }: SynopticProps) {
                   strokeWidth: 3,
                   cursor: 'pointer',
                 }}
+                onClick={() => navigate(`${machine.id}`, { state: { machine } })}
               />
               <text className="asset-label" x={x + machineWidth / 2} y={y + machineHeight + 16}>
                 {machine.id.toUpperCase()}
