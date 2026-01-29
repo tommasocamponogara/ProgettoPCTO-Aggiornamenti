@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import type { Line, Machine, StatusProps, Telemetry } from '../Types/Type'
-import { getMachines } from './api'
+import type { Machine, Telemetry } from '../Types/Type'
 
 export function getDetailsLineMachine(lineMachines: Machine[]) {
   const setLineStatus = (lineMachines: Machine[]) => {

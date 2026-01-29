@@ -54,6 +54,17 @@
         "model": "S7-1200"
       },
       "order": 50
+    },
+    {
+      "id": "press-03",
+      "lineId": "line-2",
+      "name": "Pressa Idraulica 03",
+      "type": "PRESS",
+      "plc": {
+        "vendor": "Siemens",
+        "model": "S7-1500"
+      },
+      "order": 10
     }
   ],
   "lines": [
@@ -281,6 +292,24 @@
         "orderCode": "2590002",
         "speed": 0,
         "temperature": 40.9,
+        "alarms": [
+          {
+            "code": "9000",
+            "message": "Perdita comunicazione PACKER",
+            "locking": true
+          }
+        ]
+      }
+    },
+    {
+      "machineId": "press-03",
+      "type": "QC",
+      "ts": "2026-01-07T09:22:25Z",
+      "reported": {
+        "state": "FAULT",
+        "orderCode": "2590002",
+        "partsChecked": 1883,
+        "rejectRate": 0.012,
         "alarms": [
           {
             "code": "9000",
