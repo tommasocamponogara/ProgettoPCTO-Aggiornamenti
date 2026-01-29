@@ -1,48 +1,35 @@
 import type { Machine } from '../Types/Type'
+import { getLastTelemetry } from '../utils/getLastTelemetry'
 
 type MachineDescTableProp = {
   machine: Machine
 }
 
 export function MachineDescTable({ machine }: MachineDescTableProp) {
+  const lastTelemetr = getLastTelemetry({ machine })
+
+  const machineDetails: [string, string | undefined][] = [
+    ['ID#', machine.id],
+    ['Linea', machine.lineId],
+    ['Nome', machine.name],
+    ['Tipologia', machine.type],
+    ['Produttore', machine.plc.vendor],
+    ['Modello', machine.plc.model],
+    ['Stato Attuale', lastTelemetr?.reported.state],
+  ]
+
   return (
-    <div>
-      <div className="max-w-4xl mx-auto overflow-x-auto rounded-lg shadow-lg shadow-black/40">
-        <table className="w-full border-collapse">
-          <thead className="bg-amber-700 text-slate-900 sticky top-0 z-10">
-            <tr>
-              <th className="px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
-                ID#
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
-                Linea
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
-                Nome
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
-                Tipologia
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
-                Produttore
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
-                Modello
-              </th>
+    <div className="max-w-md w-full flex justify-center items-center overflow-hidden rounded-lg shadow-lg shadow-black/40 bg-slate-900 text-slate-200">
+      <table className="w-full border-collapse">
+        <tbody>
+          {machineDetails.map(([label, value]) => (
+            <tr key={label} className="hover:bg-slate-800 transition-colors">
+              <td className="px-6 py-3 font-semibold bg-slate-700 text-slate-100 w-36">{label}</td>
+              <td className="px-6 py-3">{value}</td>
             </tr>
-          </thead>
-          <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
-            <tr className="hover:bg-slate-800 transition-colors">
-              <td className="px-6 py-4">{machine.id}</td>
-              <td className="px-6 py-4">{machine.lineId}</td>
-              <td className="px-6 py-4">{machine.name}</td>
-              <td className="px-6 py-4">{machine.type}</td>
-              <td className="px-6 py-4">{machine.plc.vendor}</td>
-              <td className="px-6 py-4">{machine.plc.model}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
