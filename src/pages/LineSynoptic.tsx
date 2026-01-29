@@ -1,6 +1,5 @@
-import React from 'react'
-import type { Line, Machine, Telemetry } from '../Types/Type'
-import { Navigate, useNavigate } from 'react-router-dom'
+import type { Line, Machine } from '../Types/Type'
+import { useNavigate } from 'react-router-dom'
 
 type SynopticProps = {
   lineName: string
@@ -8,7 +7,7 @@ type SynopticProps = {
   line: Line
 }
 
-export function LineSynoptic({ lineName, machines, line }: SynopticProps) {
+export function LineSynoptic({ lineName, machines }: SynopticProps) {
   const navigate = useNavigate()
   const machineWidth = 160
   const machineHeight = 90

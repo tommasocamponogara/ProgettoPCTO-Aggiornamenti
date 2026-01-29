@@ -15,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dashboard/linee" element={<Lines />} />
       <Route path="/dashboard/linee/:lineId" element={<LineDescription />} />
+      <Route path="dashboard/macchinari/:machineId" element={<MachineDescription />} />
       <Route path="/dashboard/macchinari" element={<Machines />} />
       <Route path="/dashboard/linee/:lineId/:machineId" element={<MachineDescription />} />
       <Route path="/dashboard/allarmi" element={<Alarms />} />

@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getLines } from '../utils/api'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { Line } from '../Types/Type'
 import { getDetailsLineMachine } from '../utils/getDetailsLineMachine'
-
-type TableLinesProps = {
-  lines: Line[]
-}
 
 export function TableLines() {
   const navigate = useNavigate()
@@ -46,7 +42,7 @@ export function TableLines() {
               return (
                 <tr key={line.id} className="hover:bg-slate-800 transition-colors">
                   <td
-                    className="px-6 py-4 hover:cursor-pointer"
+                    className="px-6 py-4 hover:cursor-pointer hover:text-amber-400"
                     onClick={() => navigate(`${line.id}`)}
                   >
                     {'#' + line.id}
