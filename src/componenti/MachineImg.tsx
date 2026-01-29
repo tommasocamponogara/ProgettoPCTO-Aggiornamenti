@@ -24,22 +24,15 @@ export function MachineImg({ machine }: MachineImgProps) {
       immagine = corrispondingImg
     }
   })
+
+  const imgClasses =
+    machine.type === 'CNC'
+      ? 'max-w-md max-h-128 object-contain drop-shadow-lg'
+      : 'max-w-sm max-h-100 object-contain drop-shadow-lg'
+
   return (
-    <>
-      <div className="flex justify-center pt-24">
-        {immagine && (
-          <img
-            src={immagine}
-            alt={machine.name}
-            className="
-            max-w-md
-            max-h-96
-            object-contain
-            drop-shadow-lg
-          "
-          />
-        )}
-      </div>
-    </>
+    <div className="flex justify-center items-center h-full">
+      {immagine && <img src={immagine} alt={machine.name} className={imgClasses} />}
+    </div>
   )
 }

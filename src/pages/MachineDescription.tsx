@@ -1,23 +1,35 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { MachineImg } from '../componenti/MachineImg'
 import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
 import type { Machine } from '../Types/Type'
 import { MachineDescTable } from '../componenti/MachineDescTable'
+import { MachineTelemetries } from '../componenti/MachineTelemetries'
 
 export function MachineDescription() {
   const location = useLocation()
-  console.log(location)
   const machine: Machine = location.state?.machine
+
   return (
-    <div className="min-h-screen bg-slate-800 w-full pt-16 px-4 flex flex-col items-center">
+    <div className="min-h-screen flex bg-slate-800 text-slate-200">
       <Sidebar />
-      <Topbar />
-      <div className="w-full flex justify-center mb-8">
-        <MachineImg machine={machine} />
-      </div>
-      <div className="w-full max-w-4xl">
-        <MachineDescTable machine={machine} />
+
+      <div className="flex-1 flex flex-col">
+        <Topbar />
+
+        <div className="flex justify-center items-center gap-3 p-6 mt-28 h-[calc(100vh-6rem)]">
+          <div className="flex flex-col justify-center items-center w-1/4">
+            <MachineImg machine={machine} />
+          </div>
+
+          <div className="flex flex-col justify-center items-center w-1/4">
+            <MachineDescTable machine={machine} />
+          </div>
+
+          <div className="flex flex-col justify-center items-center max-h-[36rem] overflow-auto">
+            <MachineTelemetries machine={machine} />
+          </div>
+        </div>
       </div>
     </div>
   )

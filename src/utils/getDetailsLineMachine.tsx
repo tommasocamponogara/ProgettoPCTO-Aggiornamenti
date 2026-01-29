@@ -1,11 +1,12 @@
 import type { Machine, Telemetry } from '../Types/Type'
+import { getLastTelemetry } from './getLastTelemetry'
 
 export function getDetailsLineMachine(lineMachines: Machine[]) {
   const setLineStatus = (lineMachines: Machine[]) => {
     var lineStatus = 'positive'
     const statiLinea: string[] = []
     for (const machine of lineMachines) {
-      const lastTelemetry = getLastTelemetry(machine)
+      const lastTelemetry = getLastTelemetry({ machine })
       if (lastTelemetry) {
         statiLinea.push(lastTelemetry.reported.state)
       } else {
@@ -28,7 +29,7 @@ export function getDetailsLineMachine(lineMachines: Machine[]) {
   const numbersOfAlarms = (lineMachines: Machine[]) => {
     let lineNumberAlarms: number = 0
     for (const machine of lineMachines) {
-      const lastTelemetry = getLastTelemetry(machine)
+      const lastTelemetry = getLastTelemetry({ machine })
       if (lastTelemetry) {
         if (lastTelemetry.reported.alarms.length !== 0) {
           lineNumberAlarms += 1
@@ -38,7 +39,7 @@ export function getDetailsLineMachine(lineMachines: Machine[]) {
     //console.log(lineNumberAlarms)
     return lineNumberAlarms
   }
-
+  /*
   const getLastTelemetry = (machine: Machine) => {
     let lastTelemetry: Telemetry | null = machine.telemetries[0] || null
     if (lastTelemetry) {
@@ -51,6 +52,7 @@ export function getDetailsLineMachine(lineMachines: Machine[]) {
       return lastTelemetry
     }
   }
+    */
 
   return { setLineStatus, numbersOfAlarms }
 }
