@@ -27,9 +27,9 @@ export function Widget_Alarms({ machines }: WidgetAlarmsProps) {
   const alarmListOrdinata = alarmList.sort((a, b) => b.date.getTime() - a.date.getTime())
 
   return (
-    <div className="flex flex-col items-center min-h-screen pt-32 bg-slate-800">
+    <div className="flex flex-col items-center min-h-screen pt-32 bg-slate-800 font-mono">
       <div className="w-11/12 max-w-6xl mt-20">
-        <div className="grid grid-cols-[150px_150px_282px_195px_163px_50px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-sm font-semibold rounded border-b border-slate-700">
+        <div className="grid grid-cols-[150px_150px_282px_195px_163px_50px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-lg font-semibold rounded border-b border-slate-700">
           <div>MACCHINA</div>
           <div>CODICE</div>
           <div>MESSAGGIO</div>

@@ -19,7 +19,7 @@ export function MachineDescTable({ machine }: MachineDescTableProp) {
   ]
 
   return (
-    <div className="max-w-md w-full flex justify-center items-center overflow-hidden rounded-lg shadow-lg shadow-black/40 bg-slate-900 text-slate-200">
+    <div className="max-w-md w-full flex justify-center items-center overflow-hidden rounded-lg shadow-lg shadow-black/40 bg-slate-900 text-slate-200 font-mono">
       <table className="w-full border-collapse">
         <tbody>
           {machineDetails.map(([label, value]) => (

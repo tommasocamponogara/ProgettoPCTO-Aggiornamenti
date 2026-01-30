@@ -27,8 +27,8 @@ export function MachineImg({ machine }: MachineImgProps) {
 
   const imgClasses =
     machine.type === 'CNC'
-      ? 'max-w-md max-h-128 object-contain drop-shadow-lg'
-      : 'max-w-sm max-h-100 object-contain drop-shadow-lg'
+      ? 'max-w-md max-h-128 object-contain drop-shadow-lg '
+      : 'max-w-sm max-h-100 object-contain drop-shadow-lg '
 
   return (
     <div className="flex justify-center items-center h-full">

@@ -47,7 +47,7 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen pt-32 bg-slate-800">
+    <div className="flex flex-col items-center min-h-screen pt-32 bg-slate-800 font-mono ">
       <div className="w-11/12 max-w-7xl mt-20">
         <div className="flex gap-4 mb-6 items-center">
           <select
@@ -75,7 +75,7 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
           />
         </div>
 
-        <div className="grid grid-cols-[110px_270px_100px_260px_100px_300px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-sm font-semibold text-center rounded border-b border-slate-700">
+        <div className="grid grid-cols-[110px_270px_100px_260px_100px_300px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-lg font-semibold text-center rounded border-b border-slate-700">
           <div>ID#</div>
           <div>NOME</div>
           <div>LINEA</div>
