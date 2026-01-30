@@ -6,7 +6,7 @@ import type { Line } from '../Types/Type'
 import { getLines } from '../utils/api'
 
 export default function Lines() {
-  const [lines, setLines] = useState<Line[]>([])
+  const [, setLines] = useState<Line[]>([])
 
   useEffect(() => {
     getLines().then((lines) => setLines(lines))

@@ -1,7 +1,7 @@
-import type { Machine, Telemetry } from '../Types/Type'
+import type { Machine } from '../Types/Type'
 import { getLastTelemetry } from './getLastTelemetry'
 
-export function getDetailsLineMachine(lineMachines: Machine[]) {
+export function getDetailsLineMachine() {
   const setLineStatus = (lineMachines: Machine[]) => {
     var lineStatus = 'positive'
     const statiLinea: string[] = []

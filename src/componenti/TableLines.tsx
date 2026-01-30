@@ -37,7 +37,7 @@ export function TableLines() {
           </thead>
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
             {lines.map((line) => {
-              const { numbersOfAlarms } = getDetailsLineMachine(line.machines)
+              const { numbersOfAlarms } = getDetailsLineMachine()
               const lineNumberAlarms = numbersOfAlarms(line.machines)
               return (
                 <tr key={line.id} className="hover:bg-slate-800 transition-colors">

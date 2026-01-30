@@ -6,7 +6,7 @@ import { getLines, getMachines, getTelemetries } from '../utils/api'
 import { Widget_Dashboard } from '../componenti/Widget_Dashboard'
 
 export default function Dashboard() {
-  const [machines, setMachines] = useState<Machine[]>([])
+  const [, setMachines] = useState<Machine[]>([])
   const [lines, setLines] = useState<Line[]>([])
   const [telemetries, setTelemetries] = useState<Telemetry[]>([])
 

@@ -32,7 +32,7 @@ export async function getLines(): Promise<Line[]> {
   for (const line of lines) {
     const lineMachines = machines.filter((m) => m.lineId === line.id)
     line['machines'] = lineMachines
-    const { setLineStatus } = getDetailsLineMachine(lineMachines)
+    const { setLineStatus } = getDetailsLineMachine()
     line['status'] = setLineStatus(lineMachines)
   }
 
