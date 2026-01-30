@@ -318,6 +318,24 @@
           }
         ]
       }
+    },
+    {
+      "machineId": "press-03",
+      "type": "QC",
+      "ts": "2026-01-30T22:28:25Z",
+      "reported": {
+        "state": "FAULT",
+        "orderCode": "2590002",
+        "partsChecked": 1883,
+        "rejectRate": 0.012,
+        "alarms": [
+          {
+            "code": "9000",
+            "message": "Perdita comunicazione PACKER",
+            "locking": true
+          }
+        ]
+      }
     }
   ]
 }

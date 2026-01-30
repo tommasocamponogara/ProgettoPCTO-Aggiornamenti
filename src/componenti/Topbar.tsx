@@ -2,6 +2,9 @@ import { useLocation, Link } from 'react-router-dom'
 import accountDefault from '../assets/default_account.png'
 import { UserMenu } from './UserMenu'
 import { useState } from 'react'
+import { BiSolidBell, BiSolidBellRing } from 'react-icons/bi'
+import { useCycleControl } from '../utils/useCycleControl'
+import { BellStatus } from '../utils/BellFunctions'
 
 export function Topbar() {
   const [showMenu, setShowMenu] = useState(false)
@@ -9,6 +12,8 @@ export function Topbar() {
   const path = location.pathname
   const topbarList = path.split('/').filter(Boolean)
   const lastElement = topbarList.pop()
+  const { bellStatus } = useCycleControl()
+  useCycleControl()
 
   return (
     <div className="fixed top-0 left-64 w-[calc(100%-16rem)] h-24 bg-slate-900 text-slate-200 flex items-center justify-between px-6 border-b-4 border-amber-700 shadow-sm z-50">
@@ -29,6 +34,7 @@ export function Topbar() {
           {lastElement}
         </span>
       </nav>
+      {bellStatus ? <BiSolidBell /> : <BiSolidBellRing />}
 
       <div className="relative ml-4">
         <img
