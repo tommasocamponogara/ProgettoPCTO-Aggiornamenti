@@ -14,7 +14,6 @@ export default function Dashboard() {
     getMachines().then((machines) => setMachines(machines))
     getLines().then((lines) => setLines(lines))
     getTelemetries().then((telemetries) => setTelemetries(telemetries))
-    //setMachines(SetStatus({ telemetries, lines }))
   }, [])
 
   return (

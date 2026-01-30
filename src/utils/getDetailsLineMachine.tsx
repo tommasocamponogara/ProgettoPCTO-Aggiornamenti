@@ -13,7 +13,6 @@ export function getDetailsLineMachine(lineMachines: Machine[]) {
         lineStatus = 'wait'
       }
     }
-    //console.log(statiLinea)
     const alarmStates = ['STOP', 'FAULT', 'OFFLINE']
     const waitState = ['IDLE']
     if (statiLinea.some((state) => alarmStates.includes(state))) {
@@ -36,23 +35,9 @@ export function getDetailsLineMachine(lineMachines: Machine[]) {
         }
       }
     }
-    //console.log(lineNumberAlarms)
+
     return lineNumberAlarms
   }
-  /*
-  const getLastTelemetry = (machine: Machine) => {
-    let lastTelemetry: Telemetry | null = machine.telemetries[0] || null
-    if (lastTelemetry) {
-      machine.telemetries.forEach((telemetry) => {
-        if (new Date(lastTelemetry!.ts).getTime() < new Date(telemetry.ts).getTime()) {
-          lastTelemetry = telemetry
-        }
-      })
-      //console.log(lastTelemetry)
-      return lastTelemetry
-    }
-  }
-    */
 
   return { setLineStatus, numbersOfAlarms }
 }

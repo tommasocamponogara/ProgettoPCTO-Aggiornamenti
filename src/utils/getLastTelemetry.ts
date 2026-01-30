@@ -12,7 +12,6 @@ export function getLastTelemetry({ machine }: getLastTelemetryProps) {
         lastTelemetry = telemetry
       }
     })
-    //console.log(lastTelemetry)
     return lastTelemetry
   }
 }

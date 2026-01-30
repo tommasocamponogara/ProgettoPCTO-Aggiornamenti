@@ -83,12 +83,10 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
           `}
         </style>
 
-        {/* Titolo */}
         <text className="title" x={totalWidth / 2} y={32}>
           {lineName}
         </text>
 
-        {/* Conveyor */}
         <rect
           className="conveyor"
           x={startX}
@@ -97,7 +95,6 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
           height={conveyorHeight}
         />
 
-        {/* Frecce */}
         {machines.slice(1).map((_, idx) => {
           const x = startX + idx * (machineWidth + spacing) + machineWidth / 2
           const y = startY + machineHeight / 2
@@ -110,7 +107,6 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
           )
         })}
 
-        {/* Macchine */}
         {machines.map((machine, idx) => {
           const x = startX + idx * (machineWidth + spacing)
           const y = startY
