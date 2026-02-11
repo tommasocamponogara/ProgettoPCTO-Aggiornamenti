@@ -37,7 +37,7 @@ npm -v
 1. Entrare nella cartella
 
 ```bash
-2. install npm
+2. npm install
 ```
 
 ```bash
