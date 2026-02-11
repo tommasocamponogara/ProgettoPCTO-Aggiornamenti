@@ -1,6 +1,6 @@
 import './index.css'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, HashRouter } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Lines from './pages/Lines'
 import Machines from './pages/Machines'
@@ -9,7 +9,7 @@ import { LineDescription } from './pages/LineDescription'
 import { MachineDescription } from './pages/MachineDescription'
 
 createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
+  <HashRouter>
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="/dashboard" element={<Dashboard />} />
@@ -20,5 +20,5 @@ createRoot(document.getElementById('root')!).render(
       <Route path="/dashboard/linee/:lineId/:machineId" element={<MachineDescription />} />
       <Route path="/dashboard/allarmi" element={<Alarms />} />
     </Routes>
-  </BrowserRouter>,
+  </HashRouter>,
 )

@@ -10,7 +10,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     getMachines().then((machines) => setMachines(machines))
-    //setMachines(SetStatus({ telemetries, lines }))
   }, [])
   return (
     <>

@@ -27,18 +27,14 @@ export async function getMachine(id: string): Promise<Machine | undefined> {
 
 export async function getLines(): Promise<Line[]> {
   const machines: Machine[] = await getMachines()
-  //const machines: Machine[] = await (await fetch('http://localhost:3000/machines')).json()
+
   const lines = await (await fetch('http://localhost:3000/lines')).json()
   for (const line of lines) {
-    //var lineStatus = 'positive'
     const lineMachines = machines.filter((m) => m.lineId === line.id)
     line['machines'] = lineMachines
-    const { setLineStatus } = getDetailsLineMachine(lineMachines)
+    const { setLineStatus } = getDetailsLineMachine()
     line['status'] = setLineStatus(lineMachines)
-
-    //console.log(line)
   }
-  //console.log(lines)
 
   return lines
 }

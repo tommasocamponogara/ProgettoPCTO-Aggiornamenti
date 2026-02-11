@@ -16,7 +16,7 @@ export function Topbar() {
   useCycleControl()
 
   return (
-    <div className="fixed top-0 left-64 w-[calc(100%-16rem)] h-24 bg-slate-900 text-slate-200 flex items-center justify-between px-6 border-b-4 border-amber-700 shadow-sm z-50">
+    <div className="fixed top-0 left-64 w-[calc(100%-16rem)] h-24 bg-slate-900 text-slate-200 flex items-center justify-between px-6 border-b-4 border-amber-700 shadow-sm z-50 font-mono">
       <nav className="flex items-center space-x-1 overflow-x-auto">
         {topbarList.map((element, index) => (
           <span key={index} className="flex items-center space-x-1">

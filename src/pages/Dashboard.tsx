@@ -6,7 +6,7 @@ import { getLines, getMachines, getTelemetries } from '../utils/api'
 import { Widget_Dashboard } from '../componenti/Widget_Dashboard'
 
 export default function Dashboard() {
-  const [machines, setMachines] = useState<Machine[]>([])
+  const [, setMachines] = useState<Machine[]>([])
   const [lines, setLines] = useState<Line[]>([])
   const [telemetries, setTelemetries] = useState<Telemetry[]>([])
 
@@ -14,7 +14,6 @@ export default function Dashboard() {
     getMachines().then((machines) => setMachines(machines))
     getLines().then((lines) => setLines(lines))
     getTelemetries().then((telemetries) => setTelemetries(telemetries))
-    //setMachines(SetStatus({ telemetries, lines }))
   }, [])
 
   return (

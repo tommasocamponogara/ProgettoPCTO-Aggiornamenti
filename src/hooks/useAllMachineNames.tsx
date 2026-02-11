@@ -3,7 +3,7 @@ import type { Machine } from '../Types/Type'
 import { getMachines } from '../utils/api'
 
 export function useAllMachineNames() {
-  const [machines, setMachines] = useState<Machine[]>([])
+  const [, setMachines] = useState<Machine[]>([])
   const [namesList, setNamesList] = useState<string[]>([])
 
   useEffect(() => {
