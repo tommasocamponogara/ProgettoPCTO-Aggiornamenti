@@ -5,6 +5,9 @@ type MachineDescTableProp = {
   machine: Machine
 }
 
+// Definisce un componente che mostra una tabella con le informazioni di una macchina (cioe quando l'utente clicca su una macchina specifica nella pagina macchinari, 
+// viene mostrata una tabella con le informazioni di quella macchina)
+
 export function MachineDescTable({ machine }: MachineDescTableProp) {
   // Ottiene l'ultimo stato registrato per la macchina
   const lastTelemetr = getLastTelemetry({ machine })

@@ -4,6 +4,9 @@ type MachineTelemetriesProp = {
   machine: Machine
 }
 
+// Definisce un componente che mostra una tabella con le telemetrie di una macchina (cioe quando l'utente clicca su una macchina specifica nella pagina macchinari, 
+// viene mostrata una tabella con le telemetrie di quella macchina)
+
 export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
   return (
     <div className="flex justify-center items-center w-full font-mono">
@@ -33,7 +36,7 @@ export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
           </thead>
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
             {machine.telemetries
-              // Creazioen copia identica dell'array originale
+              // Creazione copia identica dell'array originale
               .slice()
               // Ordina le telemetrie dalla più recente alla più vecchia facendo la sottrazione tra le date convertite in millisecondi
               .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())

@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { BiSolidBell, BiSolidBellRing } from 'react-icons/bi'
 import { useCycleControl } from '../utils/useCycleControl'
 
+// Crea la barra superiore in cui si vede il percorso in cui l'utente si trova, l'icona della campanella e l'icona dell'account
+
 export function Topbar() {
   const [showMenu, setShowMenu] = useState(false)
   // Ottiene l'URL corrente per costruire la navigazione breadcrumb
@@ -12,8 +14,10 @@ export function Topbar() {
   // Estrae il percorso attuale dall'URL
   const path = location.pathname
 
-  // Scompone l'URL per creare la navigazione breadcrumb
+  // Scompone l'URL per creare la navigazione breadcrumb (rimuove le stringhe vuote tramite filter(Boolean))
   const topbarList = path.split('/').filter(Boolean)
+
+  // Ottinee l'ultimo elemento dell'array che rappresenta la pagina attuale in cui si trova l'utente, e lo rimuove
   const lastElement = topbarList.pop()
 
   // Utilizza l'hook di controllo ciclico per gestire lo stato della campanella
@@ -25,8 +29,9 @@ export function Topbar() {
         {/* Genera i link per i livelli superiori del percorso attuale */}
         {topbarList.map((element, index) => (
           <span key={index} className="flex items-center space-x-1">
+            {/* Crea un lin kepr ogni elemento presente nell'array topBarList */}
             <Link
-              to={'/' + topbarList.slice(0, index + 1).join('/')}
+              to={'/' + topbarList.slice(0, index + 1).join('/')} // Crea il percorso del link degli elementi array (es. topBarList=[dashboardlinee]-> crea un link con percorso /dashboard/linee)
               className="text-lg hover:text-amber-400 transition-colors capitalize whitespace-nowrap"
             >
               {element}

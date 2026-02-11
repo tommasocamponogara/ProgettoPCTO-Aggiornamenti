@@ -4,12 +4,16 @@ import { useNavigate } from 'react-router-dom'
 import type { Line } from '../Types/Type'
 import { getDetailsLineMachine } from '../utils/getDetailsLineMachine'
 
+// Componente che mostra una tabella con le linee di produzione (cioe quando l'utente clicca su linee nella sidebar, viene mostrata una tabella con tutte le linee presenti nel database)
+
 export function TableLines() {
   const navigate = useNavigate()
+  // Crea un array vuoto di oggetti di tipo Line e un funzione per aggiornarlo 
   const [lines, setLines] = useState<Line[]>([])
 
   // Al caricamento recupera le linee per avere i dati aggiornati dal database
   useEffect(() => {
+    // Quando il componente viene montato, chiama la funzione getLines presente in API.ts, per recuperare le linee di produzione dal database, per poi aggiornare lo stato del componente 
     getLines().then((lines) => setLines(lines))
   }, [])
 
@@ -38,6 +42,7 @@ export function TableLines() {
           </thead>
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
             {lines.map((line) => {
+              // Per ogni linea di produzione recupera il numero di allarmi attivi per quella linea (grazie alla funzione numbersOfAlarms definita in getDetailsLineMachine)
               // Calcola il numero di allarmi attivi per ogni singola linea
               const { numbersOfAlarms } = getDetailsLineMachine()
               const lineNumberAlarms = numbersOfAlarms(line.machines)
