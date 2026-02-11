@@ -33,9 +33,11 @@ export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
           </thead>
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
             {machine.telemetries
+              // Creazioen copia identica dell'array originale
               .slice()
-              // Ordina le telemetrie dalla più recente alla più vecchia
+              // Ordina le telemetrie dalla più recente alla più vecchia facendo la sottrazione tra le date convertite in millisecondi
               .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
+              // Per ogni telemetria viene creata una riga della tabella
               .map((telemetry, index) => {
                 const date = new Date(telemetry.ts)
                 const ora = date.toLocaleTimeString('it-IT')
@@ -47,7 +49,11 @@ export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
                     <td className="px-6 py-4">{telemetry.reported.state}</td>
                     <td className="px-6 py-4">{telemetry.reported.orderCode}</td>
                     <td className="px-6 py-4">
-                      {/* Mostra dinamicamente dati extra (es. pressione/temp) escludendo i campi standard */}
+                      {/* 
+                        Mostra dinamicamente dati extra (es. pressione/temp) escludendo i campi standard.
+                        Object.entries: Prende l'oggetto reported (che contiene pressione, temperatura, ecc.) e lo trasforma in una lista di coppie [nome, valore].
+                        .filter: Qui il codice dice: "Voglio mostrare tutto, tranne le chiavi 'state', 'orderCode' e 'alarms' perché le ho già messe in altre colonne".
+                      */}
                       {Object.entries(telemetry.reported ?? {})
                         .filter(([key]) => !['state', 'orderCode', 'alarms'].includes(key))
                         .map(([key, value]) => (

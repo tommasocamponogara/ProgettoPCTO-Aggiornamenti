@@ -17,6 +17,7 @@ export function MachineDescTable({ machine }: MachineDescTableProp) {
     ['Tipologia', machine.type],
     ['Produttore', machine.plc.vendor],
     ['Modello', machine.plc.model],
+    // Optional Chaining: se lastTelemetr vuoto non va oltre il punto di domanda, onde evitare crash
     ['Stato Attuale', lastTelemetr?.reported.state],
   ]
 

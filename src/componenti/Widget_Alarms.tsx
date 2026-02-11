@@ -1,5 +1,8 @@
 import type { Machine } from '../Types/Type'
 
+// Parte di codice riferita a Widget_Alarms, componente che mostra la lista degli allarmi
+// attivi sulle macchine, ordinati per data e ora di attivazione
+
 type WidgetAlarmsProps = { machines: Machine[] }
 type Alarm = {
   machinesId: string

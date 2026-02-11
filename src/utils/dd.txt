@@ -1,1 +1,1 @@
-Scansionando il codice qrcode, dopo aver confermato il dispositivo, vengono mostrati multipli alert, che se cliccati, continuano a mostrare altri alert
+Scansionando il qrcode, dopo aver confermato il dispositivo, vengonomostrati molteplici alert, che se cliccati, continuano a mostrare altri alert 

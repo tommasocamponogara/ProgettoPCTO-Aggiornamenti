@@ -9,10 +9,12 @@ export type Machine = {
     model: string
   }
   order: number
+  // Telemetrie associate alla macchina, se presenti, altrimenti sarà un array vuoto
   telemetries: Telemetry[]
 }
 
 // Estensione del tipo Macchina che garantisce la presenza di telemetrie
+// Oggetto che possiede tutte le proprietà di Machine e aggiunge un array di telemetrie
 export type MachineWithTelemetries = Machine & {
   telemetries: Telemetry[]
 }
@@ -32,13 +34,13 @@ export type Line = {
 export type Telemetry = {
   machineId: string
   type: string
-  ts: string // Timestamp del segnale
+  ts: string // Timestamp del segnale (momento esatto in cui il dato è stato generato: formato data)
   reported: {
     state: 'RUN' | 'IDLE' | 'OFFLINE' | 'FAULT' | 'STOP'
     orderCode: string
     temperature: number
     pressure: number
-    alarms:
+    alarms: // O array vuoto o array che rappresenta gli allarmi attivi sul macchinario
       | [
           {
             code: string

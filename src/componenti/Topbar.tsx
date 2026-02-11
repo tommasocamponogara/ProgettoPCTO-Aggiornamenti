@@ -7,7 +7,9 @@ import { useCycleControl } from '../utils/useCycleControl'
 
 export function Topbar() {
   const [showMenu, setShowMenu] = useState(false)
+  // Ottiene l'URL corrente per costruire la navigazione breadcrumb
   const location = useLocation()
+  // Estrae il percorso attuale dall'URL
   const path = location.pathname
 
   // Scompone l'URL per creare la navigazione breadcrumb
@@ -39,7 +41,9 @@ export function Topbar() {
       </nav>
 
       {/* Cambia icona della campana in base allo stato bellStatus */}
-      {bellStatus ? <BiSolidBell /> : <BiSolidBellRing />}
+      <div className="text-2xl cursor-pointer hover:text-amber-400 transition-colors">
+        {bellStatus ? <BiSolidBell /> : <BiSolidBellRing />}
+      </div>
 
       <div className="relative ml-4">
         <img

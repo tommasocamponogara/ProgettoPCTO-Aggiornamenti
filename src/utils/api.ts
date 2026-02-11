@@ -3,6 +3,8 @@ import { getDetailsLineMachine } from './getDetailsLineMachine'
 
 // Recupera la lista completa delle telemetrie dal server
 export async function getTelemetries(): Promise<Telemetry[]> {
+  // fetch(): Invia una richiesta HTTP all'indirizzo specificato
+  // .json(): Trasforma la risposta del server in un oggetto JavaScript (o array) manipolabile
   const telemetries: Telemetry[] = await (await fetch('http://localhost:3000/telemetries')).json()
   return telemetries
 }

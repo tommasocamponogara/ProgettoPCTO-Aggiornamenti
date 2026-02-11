@@ -5,7 +5,8 @@ type getLastTelemetryProps = {
 }
 
 export function getLastTelemetry({ machine }: getLastTelemetryProps) {
-  // Inizializza con la prima telemetria se presente
+  // Inizializza con la prima telemetria se presente, altrimenti mette null la variabile che sara`
+  // uguale a null successivamente. E' importante impostare anche la variabile null per l'if che segue
   let lastTelemetry: Telemetry | null = machine.telemetries[0] || null
 
   if (lastTelemetry) {

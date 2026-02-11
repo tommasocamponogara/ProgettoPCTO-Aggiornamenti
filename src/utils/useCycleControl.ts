@@ -3,12 +3,15 @@ import type { Telemetry } from '../Types/Type'
 import { getTelemetries } from './api'
 import { BellStatus } from './BellFunctions'
 
+//Controlla ogni 5 minuti se sono arrivati nuovi dati dalle macchine; se non ne sono arrivati, fammi suonare un allarme (la campanella).
+
 export function useCycleControl() {
   //const { setBellOn, setBellOff } = BellStatus()
   const [bellStatus, setBellStatus] = useState(false)
   // Gestione dei minuti con persistenza nel localStorage del browser
   const [minutes, setMinutes] = useState(() => Number(localStorage.getItem('minutes')) || 0)
 
+  // Il controllo delle telemetrie avviene basandosi sul valore di minutes, salvarlo garantisce che quel "ciclo di 5 minuti" sia persistente
   useEffect(() => {
     localStorage.setItem('minutes', minutes.toString())
   }, [minutes])
@@ -29,9 +32,8 @@ export function useCycleControl() {
     })
   }, [])
 
-  // Timer che incrementa il contatore dei minuti ogni 60 secondi
+  // Timer che incrementa il contatore dei minuti ogni 60 secondi, 60*000 ms
   useEffect(() => {
-    // Set up the interval for 1 minute (60,000 ms)
     const intervalId = setInterval(() => {
       setMinutes((prev) => prev + 1)
     }, 60000)

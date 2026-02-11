@@ -4,6 +4,8 @@ import { HiBell, HiCollection } from 'react-icons/hi'
 import { MdHome } from 'react-icons/md'
 import { IoIosBuild } from 'react-icons/io'
 
+// Barra laterale sinistra, fissa e immutabile, con menu di navgazione, logo e copyright
+
 export function Sidebar() {
   return (
     <div className="fixed top-0 left-0 h-screen w-64 bg-slate-900 text-slate-200 flex flex-col justify-between px-6 py-6 border-r-4 border-amber-700 shadow-lg font-mono font-semibold">
@@ -20,6 +22,7 @@ export function Sidebar() {
               to="/dashboard"
               className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
+              {/* Icona Home per la Dashboard */}
               <MdHome /> Dashboard
             </Link>
           </li>
