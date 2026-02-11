@@ -4,20 +4,23 @@ import { UserMenu } from './UserMenu'
 import { useState } from 'react'
 import { BiSolidBell, BiSolidBellRing } from 'react-icons/bi'
 import { useCycleControl } from '../utils/useCycleControl'
-import { BellStatus } from '../utils/BellFunctions'
 
 export function Topbar() {
   const [showMenu, setShowMenu] = useState(false)
   const location = useLocation()
   const path = location.pathname
+
+  // Scompone l'URL per creare la navigazione breadcrumb
   const topbarList = path.split('/').filter(Boolean)
   const lastElement = topbarList.pop()
+
+  // Utilizza l'hook di controllo ciclico per gestire lo stato della campanella
   const { bellStatus } = useCycleControl()
-  useCycleControl()
 
   return (
     <div className="fixed top-0 left-64 w-[calc(100%-16rem)] h-24 bg-slate-900 text-slate-200 flex items-center justify-between px-6 border-b-4 border-amber-700 shadow-sm z-50 font-mono">
       <nav className="flex items-center space-x-1 overflow-x-auto">
+        {/* Genera i link per i livelli superiori del percorso attuale */}
         {topbarList.map((element, index) => (
           <span key={index} className="flex items-center space-x-1">
             <Link
@@ -29,11 +32,13 @@ export function Topbar() {
             <span className="text-slate-500">/</span>
           </span>
         ))}
-
-        <span className="text-amber-400 text-2xl font-semibold capitalize whitespace-nowrap hover:cursor-pointer">
+        {/* Mostra l'ultima parte del percorso in evidenza */}
+        <span className="text-amber-400 text-2xl font-semibold capitalize whitespace-nowrap">
           {lastElement}
         </span>
       </nav>
+
+      {/* Cambia icona della campana in base allo stato bellStatus */}
       {bellStatus ? <BiSolidBell /> : <BiSolidBellRing />}
 
       <div className="relative ml-4">

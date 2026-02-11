@@ -6,8 +6,10 @@ type MachineDescTableProp = {
 }
 
 export function MachineDescTable({ machine }: MachineDescTableProp) {
+  // Ottiene l'ultimo stato registrato per la macchina
   const lastTelemetr = getLastTelemetry({ machine })
 
+  // Organizza i dati in una struttura a coppie [etichetta, valore]
   const machineDetails: [string, string | undefined][] = [
     ['ID#', machine.id],
     ['Linea', machine.lineId],

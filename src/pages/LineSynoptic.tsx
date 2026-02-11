@@ -1,6 +1,7 @@
 import type { Line, Machine } from '../Types/Type'
 import { useNavigate } from 'react-router-dom'
 
+// Definizione delle proprietà attese dal componente
 type SynopticProps = {
   lineName: string
   machines: Machine[]
@@ -9,12 +10,15 @@ type SynopticProps = {
 
 export function LineSynoptic({ lineName, machines }: SynopticProps) {
   const navigate = useNavigate()
+
+  // Costanti per il posizionamento e le dimensioni degli elementi grafici
   const machineWidth = 160
   const machineHeight = 90
   const spacing = 60
   const startX = 80
   const startY = 110
 
+  // Calcolo dinamico della larghezza totale del grafico in base al numero di macchine
   const totalWidth = Math.max(
     600,
     machines.length * (machineWidth + spacing) - spacing + startX * 2,
@@ -23,10 +27,13 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
   const arrowWidth = 20
   const arrowHeight = 14
 
+  // Funzione per determinare la classe CSS (e quindi il colore/animazione) in base allo stato
   const getMachineClass = (machine: Machine) => {
+    // Prende l'ultima telemetria disponibile
     const lastTelemetry = machine.telemetries?.[machine.telemetries.length - 1]
     if (!lastTelemetry) return 'syn-idle'
 
+    // Associa lo stato della telemetria a una classe CSS specifica
     switch (lastTelemetry.reported.state) {
       case 'RUN':
         return 'syn-run'
@@ -43,10 +50,12 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
     }
   }
 
+  // Genera il testo che appare al passaggio del mouse (tooltip)
   const getTooltipText = (machine: Machine) => {
     const lastTelemetry = machine.telemetries?.[machine.telemetries.length - 1]
     if (!lastTelemetry) return `Stato: N/D`
 
+    // Formatta la lista degli allarmi se presenti
     const alarmsText =
       lastTelemetry.reported.alarms.length > 0
         ? lastTelemetry.reported.alarms.map((a) => `${a.code}: ${a.message}`).join('\n')
@@ -75,18 +84,18 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
               50%  { stroke: #7a0005; }
               100% { stroke: #e7000b; }
             }
-
             .syn-stop {
               animation: blink-stop 0.6s steps(1) infinite;
             }
-
           `}
         </style>
 
+        {/* Titolo della linea */}
         <text className="title" x={totalWidth / 2} y={32}>
           {lineName}
         </text>
 
+        {/* Disegno del nastro trasportatore (rettangolo lungo) */}
         <rect
           className="conveyor"
           x={startX}
@@ -95,6 +104,7 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
           height={conveyorHeight}
         />
 
+        {/* Disegno delle frecce di direzione tra le macchine */}
         {machines.slice(1).map((_, idx) => {
           const x = startX + idx * (machineWidth + spacing) + machineWidth / 2
           const y = startY + machineHeight / 2
@@ -107,12 +117,14 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
           )
         })}
 
+        {/* Rendering di ogni singola macchina come gruppo SVG */}
         {machines.map((machine, idx) => {
           const x = startX + idx * (machineWidth + spacing)
           const y = startY
           const cls = getMachineClass(machine)
           const tooltip = getTooltipText(machine)
 
+          // Definizione del colore di riempimento in base alla classe di stato
           const fillColor =
             cls === 'syn-run'
               ? '#4caf50'
@@ -126,6 +138,7 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
 
           return (
             <g key={machine.id} id={`machine-${machine.id}`}>
+              {/* Corpo della macchina (Rettangolo cliccabile) */}
               <rect
                 className={cls}
                 x={x}
@@ -142,12 +155,14 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
                 }}
                 onClick={() => navigate(`${machine.id}`, { state: { machine } })}
               />
+              {/* Etichette ID e Nome sotto la macchina */}
               <text className="asset-label" x={x + machineWidth / 2} y={y + machineHeight + 16}>
                 {machine.id.toUpperCase()}
               </text>
               <text className="asset-small" x={x + machineWidth / 2} y={y + machineHeight + 32}>
                 {machine.name}
               </text>
+              {/* Tooltip nativo del browser */}
               <title>{tooltip}</title>
             </g>
           )

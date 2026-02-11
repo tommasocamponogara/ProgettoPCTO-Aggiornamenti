@@ -6,7 +6,9 @@ import { BellStatus } from './BellFunctions'
 export function useCycleControl() {
   //const { setBellOn, setBellOff } = BellStatus()
   const [bellStatus, setBellStatus] = useState(false)
+  // Gestione dei minuti con persistenza nel localStorage del browser
   const [minutes, setMinutes] = useState(() => Number(localStorage.getItem('minutes')) || 0)
+
   useEffect(() => {
     localStorage.setItem('minutes', minutes.toString())
   }, [minutes])
@@ -16,6 +18,8 @@ export function useCycleControl() {
 
   const [telemetriesBefore, setTelemetriesBefore] = useState<Telemetry[]>([])
   //const [telemetriesAfter, setTelemetriesAfter] = useState<Telemetry[]>([])
+
+  // Al primo avvio, salva il numero attuale di telemetrie se non presente
   useEffect(() => {
     if (localStorage.getItem('telemetriesBeforeLength')) return
 
@@ -25,13 +29,16 @@ export function useCycleControl() {
     })
   }, [])
 
+  // Timer che incrementa il contatore dei minuti ogni 60 secondi
   useEffect(() => {
     // Set up the interval for 1 minute (60,000 ms)
     const intervalId = setInterval(() => {
       setMinutes((prev) => prev + 1)
     }, 60000)
-    return () => clearInterval(intervalId)
+    return () => clearInterval(intervalId) // Pulisce il timer quando il componente smette di esistere
   }, [])
+
+  // Ogni 5 minuti controlla se il numero totale di telemetrie è cambiato
   useEffect(() => {
     if (minutes !== 5) return
     if (!localStorage.getItem('telemetriesBeforeLength')) return
@@ -40,15 +47,18 @@ export function useCycleControl() {
     getTelemetries().then((telemetries) => {
       const beforeLength = Number(localStorage.getItem('telemetriesBeforeLength')) || 0
 
+      // Se il numero di telemetrie è diverso, attiva la campanella
       if (beforeLength !== telemetries.length) {
         setBellOn()
       } else {
         setBellOff()
       }
 
+      // Reset del timer dopo il controllo
       setMinutes(0)
       localStorage.setItem('minutes', '0')
     })
   }, [minutes])
+
   return { bellStatus, setBellOn, setBellOff }
 }

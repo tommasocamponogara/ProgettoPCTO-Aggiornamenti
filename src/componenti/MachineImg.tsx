@@ -9,6 +9,7 @@ type MachineImgProps = {
   machine: Machine
 }
 
+// Dizionario che mappa il tipo stringa al file immagine importato
 const nameImg = {
   PRESS: pressa_idraulica_img,
   ROBOT: robot_manipolatore_img,
@@ -19,12 +20,14 @@ const nameImg = {
 
 export function MachineImg({ machine }: MachineImgProps) {
   let immagine: string | undefined = undefined
+  // Cerca nell'oggetto nameImg se esiste una corrispondenza con il tipo della macchina
   Object.entries(nameImg).map(([type, corrispondingImg]) => {
     if (machine.type === type) {
       immagine = corrispondingImg
     }
   })
 
+  // Applica classi CSS differenti per scalare correttamente le immagini (es. il CNC è più grande)
   const imgClasses =
     machine.type === 'CNC'
       ? 'max-w-md max-h-128 object-contain drop-shadow-lg '

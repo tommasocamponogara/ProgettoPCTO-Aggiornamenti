@@ -5,8 +5,11 @@ type getLastTelemetryProps = {
 }
 
 export function getLastTelemetry({ machine }: getLastTelemetryProps) {
+  // Inizializza con la prima telemetria se presente
   let lastTelemetry: Telemetry | null = machine.telemetries[0] || null
+
   if (lastTelemetry) {
+    // Cicla tutte le telemetrie per trovare quella con la data (ts) più recente
     machine.telemetries.forEach((telemetry) => {
       if (new Date(lastTelemetry!.ts).getTime() < new Date(telemetry.ts).getTime()) {
         lastTelemetry = telemetry

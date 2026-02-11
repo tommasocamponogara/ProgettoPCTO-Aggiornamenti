@@ -34,6 +34,7 @@ export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
             {machine.telemetries
               .slice()
+              // Ordina le telemetrie dalla più recente alla più vecchia
               .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
               .map((telemetry, index) => {
                 const date = new Date(telemetry.ts)
@@ -46,6 +47,7 @@ export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
                     <td className="px-6 py-4">{telemetry.reported.state}</td>
                     <td className="px-6 py-4">{telemetry.reported.orderCode}</td>
                     <td className="px-6 py-4">
+                      {/* Mostra dinamicamente dati extra (es. pressione/temp) escludendo i campi standard */}
                       {Object.entries(telemetry.reported ?? {})
                         .filter(([key]) => !['state', 'orderCode', 'alarms'].includes(key))
                         .map(([key, value]) => (
@@ -56,6 +58,7 @@ export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
                         ))}
                     </td>
                     <td className="px-6 py-4">
+                      {/* Elenco codici e messaggi di errore se presenti */}
                       {telemetry.reported?.alarms.map((details, idx) => (
                         <div key={idx}>
                           {details.code} - {details.message}

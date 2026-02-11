@@ -6,12 +6,13 @@ import { getDetailsLineMachine } from '../utils/getDetailsLineMachine'
 
 export function TableLines() {
   const navigate = useNavigate()
-
-  //recall lines per mantenere aggiornate le informazione del database
   const [lines, setLines] = useState<Line[]>([])
+
+  // Al caricamento recupera le linee per avere i dati aggiornati dal database
   useEffect(() => {
     getLines().then((lines) => setLines(lines))
   }, [])
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-800 w-full font-mono">
       <div className="max-h-[70vh] overflow-y-auto w-3/4 max-w-5xl rounded-lg shadow-lg shadow-black/40">
@@ -37,6 +38,7 @@ export function TableLines() {
           </thead>
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
             {lines.map((line) => {
+              // Calcola il numero di allarmi attivi per ogni singola linea
               const { numbersOfAlarms } = getDetailsLineMachine()
               const lineNumberAlarms = numbersOfAlarms(line.machines)
               return (
@@ -49,6 +51,7 @@ export function TableLines() {
                   </td>
                   <td className="px-6 py-4">{line.name}</td>
                   <td className="px-6 py-4">
+                    {/* Badge colorato in base allo stato della linea */}
                     <span
                       className={`inline-flex items-center justify-center w-25 h-6 rounded-full text-xs font-semibold ${
                         line.status === 'positive'

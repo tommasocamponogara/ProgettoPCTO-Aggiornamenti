@@ -7,6 +7,7 @@ import { MachineDescTable } from '../componenti/MachineDescTable'
 import { MachineTelemetries } from '../componenti/MachineTelemetries'
 
 export function MachineDescription() {
+  // Recupera i dati della macchina passati tramite lo stato della navigazione
   const location = useLocation()
   const machine: Machine = location.state?.machine
 
@@ -17,6 +18,7 @@ export function MachineDescription() {
       <div className="flex-1 flex flex-col">
         <Topbar />
 
+        {/* Layout a tre colonne: Immagine, Tabella Dati, Lista Telemetrie */}
         <div className="flex justify-center items-center gap-3 p-6 mt-28 h-[calc(100vh-6rem)]">
           <div className="flex flex-col justify-center items-center w-1/4">
             <MachineImg machine={machine} />
