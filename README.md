@@ -4,6 +4,8 @@ Applicazione WEB sviluppata con **Vite**, **React**, **TypeScript** e **Tailwind
 
 Il progetto include la formattazione automatica del codice tramite **Prettier**.
 
+
+TEST PERMESSI
 ---
 
 ## Tecnologie utilizzate
