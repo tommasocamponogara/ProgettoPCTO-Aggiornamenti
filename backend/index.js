@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-const gestDb = require('./database.js')
+const db = require('./database.js')
 
 app.use(express.json())
 
@@ -16,70 +16,90 @@ app.listen(port, () => {
 
 // Creare/Modificare/Visualizzare/Eliminare le linee
 app.get('/lines', (req, res) => {
-  res.json(LINES)
+  db.all('SELECT * FROM lines', (err, rows) => {
+    if (err) {
+      console.status(500).error(err.message)
+    } else {
+      res.json(rows)
+    }
+  })
 })
 
 app.get('/lines/:id', (req, res) => {
   const id = req.params.id
-  const lineFound = LINES.find((linea) => linea.id === id)
-  if (lineFound) {
-    res.json(lineFound)
-  }
-  res.status(404).json({
-    status: 'Errore',
-    messaggio: `Nessuna linea trovata con ID: ${id}`,
-    idCercato: id,
+  db.get('SELECT *FROM lines WHERE id_line = ?', [id], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: 'Errore durante la ricerca' })
+    }
+    if (!row) {
+      return res.status(404).json({ message: 'Linea non trovata' })
+    }
+    res.json(row)
   })
 })
 
 app.post('/lines', (req, res) => {
-  const body = req.body
+  const { id_line, name, description, order_nr } = req.body
 
-  const newLine = {
-    id: body.id,
-    name: body.name,
-    description: body.description,
-    order: body.order,
-  }
-
-  LINES.push(newLine)
+  db.run(
+    `INSERT INTO lines (
+    id_line, 
+    name, 
+    description, 
+    order_nr) 
+    VALUES (?, ?, ?, ?)`,
+    [id_line, name, description, order_nr],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Errore durante l'inserimento" })
+      }
+      res.status(201).json({ message: 'Linea creata', id: id_line })
+    },
+  )
 })
 
 app.put('/lines/:id', (req, res) => {
   const id = req.params.id
-  const body = req.body
+  const { name, description, order_nr } = req.body
 
-  const index = LINES.findIndex((m) => m.id === id)
-
-  if (index !== -1) {
-    LINES[index] = {
-      id: id,
-      name: body.name,
-      description: body.description,
-      order: body.order,
-    }
-  }
-
-  return res.json(LINES[index])
+  db.run(
+    `UPDATE lines SET name = ?, description = ?, order_nr = ? WHERE id_line = ?`,
+    [name, description, order_nr, id],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: "Errore durante l'aggiornamento" })
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: 'Nessuna linea trovata con questo ID' })
+      }
+      res.status(200).json({ message: 'Linea modificata', id: id })
+    },
+  )
 })
 
 app.delete('/lines/:id', (req, res) => {
   const id = req.params.id
-  const index = LINES.findIndex((m) => m.id === id)
-  if (index !== -1) {
-    LINES.splice(index, 1)
-  } else {
-    res.status(404).json({
-      status: 'Errore',
-      messaggio: `Nessuna linea trovata con ID: ${id}`,
-      idCercato: id,
-    })
-  }
+
+  db.run(`DELETE FROM lines WHERE id_line = ?`, [id], function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Errore durante l'eliminazione" })
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Nessuna linea trovata con questo ID' })
+    }
+    res.status(200).json({ message: 'Linea eliminata' })
+  })
 })
 
 // Creare/Modificare/Visualizzare/Eliminare i macchinari
 app.get('/machines', (req, res) => {
-  res.json(MACHINES)
+  db.all('SELECT * FROM machines', (err, rows) => {
+    if (err) {
+      console.error(err.message)
+    } else {
+      res.json(rows)
+    }
+  })
 })
 
 app.get('/machines/:id', (req, res) => {
@@ -150,7 +170,13 @@ app.delete('/machines/:id', (req, res) => {
 
 // Visualizzare le telemetrie
 app.get('/telemetries', (req, res) => {
-  res.json(TELEMETRIES)
+  db.all('SELECT * FROM telemetries', (err, rows) => {
+    if (err) {
+      console.error(err.message)
+    } else {
+      res.json(rows)
+    }
+  })
 })
 
 // Dati

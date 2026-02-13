@@ -22,7 +22,7 @@ db.serialize(() => {
         id_line TEXT PRIMARY KEY, 
         name TEXT, 
         description TEXT, 
-        order INTEGER)
+        order_nr INTEGER)
     `,
     (err) => {
       if (err) {
@@ -39,7 +39,8 @@ db.serialize(() => {
         type TEXT,
         plc_vendor TEXT,
         plc_model TEXT,
-        order INTEGER,
+        order_nr INTEGER,
+        id_line TEXT,
         FOREIGN KEY (id_line) REFERENCES lines(id_line))
     `,
     (err) => {
@@ -50,5 +51,24 @@ db.serialize(() => {
       }
     },
   )
-  db.run()
+  db.run(
+    `CREATE TABLE IF NOT EXISTS telemetries (
+        ts TEXT, id_machine TEXT,
+        state TEXT, 
+        orderCode TEXT,
+        data_values TEXT,
+        alarms TEXT,
+        PRIMARY KEY (ts, id_machine),
+        FOREIGN KEY (id_machine) REFERENCES machines(id_machine))
+    `,
+    (err) => {
+      if (err) {
+        console.error(err.message)
+      } else {
+        console.log('Tabella telemetries creata correttamente')
+      }
+    },
+  )
 })
+
+module.exports = db
