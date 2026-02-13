@@ -2,10 +2,17 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+app.use(express.json())
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+
+// Creare/Modificare/Visualizzare/Eliminare le linee
 app.get('/lines', (req, res) => {
   res.json(LINES)
 })
@@ -16,6 +23,11 @@ app.get('/lines/:id', (req, res) => {
   if (lineFound) {
     res.json(lineFound)
   }
+  res.status(404).json({
+    status: 'Errore',
+    messaggio: `Nessuna linea trovata con ID: ${id}`,
+    idCercato: id,
+  })
 })
 
 app.post('/lines', (req, res) => {
@@ -35,35 +47,111 @@ app.put('/lines/:id', (req, res) => {
   const id = req.params.id
   const body = req.body
 
-  const lineFound = LINES.find((linea) => linea.id === id)
+  const index = LINES.findIndex((m) => m.id === id)
 
-  if (lineFound) {
-    lineFound = {
-      id: body.id,
+  if (index !== -1) {
+    LINES[index] = {
+      id: id,
       name: body.name,
       description: body.description,
       order: body.order,
     }
   }
+
+  return res.json(LINES[index])
 })
 
 app.delete('/lines/:id', (req, res) => {
   const id = req.params.id
-  const lineFound = LINES.find((linea) => linea.id === id)
-  if (lineFound) {
-    res.splice(lineFound, 1)
+  const index = LINES.findIndex((m) => m.id === id)
+  if (index !== -1) {
+    LINES.splice(index, 1)
+  } else {
+    res.status(404).json({
+      status: 'Errore',
+      messaggio: `Nessuna linea trovata con ID: ${id}`,
+      idCercato: id,
+    })
   }
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+// Creare/Modificare/Visualizzare/Eliminare i macchinari
+app.get('/machines', (req, res) => {
+  res.json(MACHINES)
 })
 
-const USERS = [
-  { id: 1, nome: 'Mario' },
-  { id: 2, nome: 'Luca' },
-]
+app.get('/machines/:id', (req, res) => {
+  const id = req.params.id
+  const machineFound = MACHINES.find((machine) => machine.id === id)
+  if (machineFound) {
+    res.json(machineFound)
+  } else {
+    res.status(404).json({
+      status: 'Errore',
+      messaggio: `Nessun macchinario trovato con ID: ${id}`,
+      idCercato: id,
+    })
+  }
+})
 
+app.post('/machines', (req, res) => {
+  const body = req.body
+
+  const newMachine = {
+    id: body.id,
+    lineId: body.line,
+    name: body.name,
+    type: body.type,
+    plc: {
+      vendor: body.plc.vendor,
+      model: body.plc.model,
+    },
+    order: body.order,
+  }
+
+  MACHINES.push(newMachine)
+})
+
+app.put('/machines/:id', (req, res) => {
+  const id = req.params.id
+  const body = req.body
+
+  const index = MACHINES.findIndex((m) => m.id === id)
+
+  if (index !== -1) {
+    MACHINES[index] = {
+      id: id,
+      lineId: body.line,
+      name: body.name,
+      type: body.type,
+      plc: body.plc,
+      order: body.order,
+    }
+
+    return res.json(MACHINES[index])
+  }
+})
+
+app.delete('/machines/:id', (req, res) => {
+  const id = req.params.id
+  const index = MACHINES.findIndex((m) => m.id === id)
+  if (index !== -1) {
+    MACHINES.splice(index, 1)
+  } else {
+    res.status(404).json({
+      status: 'Errore',
+      messaggio: `Nessun macchinario trovato con ID: ${id}`,
+      idCercato: id,
+    })
+  }
+})
+
+// Visualizzare le telemetrie
+app.get('/telemetries', (req, res) => {
+  res.json(TELEMETRIES)
+})
+
+// Dati
 const LINES = [
   {
     id: 'line-1',
