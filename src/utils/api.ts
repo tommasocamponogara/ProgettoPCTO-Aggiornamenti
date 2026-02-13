@@ -35,7 +35,7 @@ export async function getMachine(id: string): Promise<Machine | undefined> {
 export async function getLines(): Promise<Line[]> {
   const machines: Machine[] = await getMachines()
 
-  const lines = await (await fetch('http://localhost:4000/lines')).json()
+  const lines = await (await fetch('http://localhost:3000/lines')).json()
   for (const line of lines) {
     // Associa le macchine che appartengono a questa linea
     const lineMachines = machines.filter((m) => m.lineId === line.id)
