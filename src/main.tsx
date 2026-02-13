@@ -7,6 +7,7 @@ import Machines from './pages/Machines'
 import Alarms from './pages/Alarms'
 import { LineDescription } from './pages/LineDescription'
 import { MachineDescription } from './pages/MachineDescription'
+import { AddLines } from './pages/AddLines'
 
 createRoot(document.getElementById('root')!).render(
   <HashRouter>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
       <Route path="/dashboard/macchinari" element={<Machines />} />
       <Route path="/dashboard/linee/:lineId/:machineId" element={<MachineDescription />} />
       <Route path="/dashboard/allarmi" element={<Alarms />} />
+      <Route path="/dashboard/lines/AddLines" element={<AddLines />} />
     </Routes>
   </HashRouter>,
 )

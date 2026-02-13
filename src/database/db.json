@@ -79,6 +79,12 @@
       "name": "Linea 2 - Verniciatura",
       "description": "Linea di verniciatura demo",
       "order": 2
+    },
+    {
+      "id": "line-23",
+      "name": "linea-test",
+      "description": "test",
+      "order": 3
     }
   ],
   "telemetries": [
