@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom'
 export function AddLines() {
   // 1. Un unico stato che contiene tutto l'oggetto della linea
   const [line, setLine] = useState({
-    id: '',
+    id_line: '',
     name: '',
     description: '',
-    order: 0,
+    order_nr: 0,
   })
 
   // 2. Funzione unica per aggiornare i campi
@@ -26,19 +26,17 @@ export function AddLines() {
 
     // 2. Controllo validità (Trim toglie gli spazi vuoti)
     if (
-      line.id.trim() === '' ||
+      line.id_line.trim() === '' ||
       line.name.trim() === '' ||
       line.description.trim() === '' ||
-      line.order <= 0
+      line.order_nr <= 0
     ) {
       alert('Compila tutti i campi correttamente!')
       return // Si ferma qui e non prova a fare la fetch
     }
 
-    
-
     try {
-      const response = await fetch('http://localhost:4000/lines', {
+      const response = await fetch('http://localhost:3000/lines', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(line),
@@ -48,12 +46,12 @@ export function AddLines() {
 
       if (response.ok) {
         alert('Linea aggiunta con successo!')
-        setLine({ id: '', name: '', description: '', order: 0 })
+        setLine({ id_line: '', name: '', description: '', order_nr: 0 })
       } else {
         alert('Errore: ' + (data.error || 'Riprova'))
       }
     } catch (error) {
-      console.error('Dettaglio errore:', error)
+      console.log('Dettaglio errore:', error)
       alert('Errore di rete: il server è irraggiungibile o la connessione è stata interrotta')
     }
   }
@@ -67,9 +65,9 @@ export function AddLines() {
         <h1 className="text-3xl font-bold text-amber-500 mb-6">Aggiungi Linea di Produzione</h1>
 
         <input
-          name="id" // Deve corrispondere alla chiave nello state
+          name="id_line" // Deve corrispondere alla chiave nello state
           type="text"
-          value={line.id}
+          value={line.id_line}
           placeholder="ID Linea"
           className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 w-64"
           onChange={handleChange}
@@ -93,9 +91,9 @@ export function AddLines() {
         />
 
         <input
-          name="order"
+          name="order_nr"
           type="number"
-          value={line.order}
+          value={line.order_nr}
           placeholder="Numero Ordine"
           className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 w-64"
           onChange={handleChange}
