@@ -254,3 +254,88 @@ app.get('/errors', (req, res) => {
     }
   })
 })
+
+// Creare/Modificare/Visualizzare/Eliminare i macchinari
+app.get('/machines', (req, res) => {
+  db.all('SELECT * FROM machines', (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: 'Errore durante la ricerca' })
+    } else {
+      res.json(rows)
+    }
+  })
+})
+
+app.get('/machines/:id', (req, res) => {
+  const id = req.params.id
+  db.get('SELECT * FROM machines WHERE id_machine = ?', [id], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: 'Errore durante la ricerca' })
+    }
+    if (!row) {
+      return res.status(404).json({ message: 'Macchinario non trovato' })
+    }
+    res.json(row)
+  })
+})
+
+app.post('/machines', (req, res) => {
+  const { id_machine, name, type, plc_vendor, plc_model, order_nr, id_line } = req.body
+
+  db.run(
+    `INSERT INTO machines (
+    id_machine, name, type, plc_vendor, plc_model, order_nr, id_line
+  ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [id_machine, name, type, plc_vendor, plc_model, order_nr, id_line],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Errore durante l'inserimento" })
+      }
+      res.status(201).json({ message: 'Macchinario creato', id: id_line })
+    },
+  )
+})
+
+app.put('/machines/:id', (req, res) => {
+  const id = req.params.id
+  const { name, type, plc_vendor, plc_model, order_nr, id_line } = req.body
+
+  db.run(
+    `UPDATE machines SET name = ?, type = ?, plc_vendor = ?, plc_model = ?, order_nr = ?, id_line = ? WHERE id_machine = ?`,
+    [name, type, plc_vendor, plc_model, order_nr, id_line, id],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: "Errore durante l'aggiornamento" })
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: 'Nessun macchinario trovato con questo ID' })
+      }
+      res.status(200).json({ message: 'Macchinario modificato', id: id })
+    },
+  )
+})
+
+app.delete('/machines/:id', (req, res) => {
+  const id = req.params.id
+
+  db.run(`DELETE FROM machines WHERE id_machine = ?`, [id], function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Errore durante l'eliminazione" })
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Nessun macchinario trovato con questo ID' })
+    }
+    res.status(200).json({ message: 'Macchinario eliminato' })
+  })
+})
+
+// Visualizzare le telemetrie
+app.get('/telemetries', (req, res) => {
+  db.all('SELECT * FROM telemetries', (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: "Errore durante l'eliminazione" })
+    } else {
+      res.json(rows)
+    }
+  })
+})

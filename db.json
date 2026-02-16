@@ -1,4 +1,86 @@
 {
+  "machines": [
+    {
+      "id": "press-01",
+      "lineId": "line-1",
+      "name": "Pressa Idraulica 01",
+      "type": "PRESS",
+      "plc": {
+        "vendor": "Siemens",
+        "model": "S7-1500"
+      },
+      "order": 10
+    },
+    {
+      "id": "robot-01",
+      "lineId": "line-1",
+      "name": "Robot Manipolatore 01",
+      "type": "ROBOT",
+      "plc": {
+        "vendor": "ABB",
+        "model": "IRC5"
+      },
+      "order": 20
+    },
+    {
+      "id": "cnc-01",
+      "lineId": "line-1",
+      "name": "Centro di Lavoro CNC 01",
+      "type": "CNC",
+      "plc": {
+        "vendor": "Fanuc",
+        "model": "Series 0i-MF"
+      },
+      "order": 30
+    },
+    {
+      "id": "qc-01",
+      "lineId": "line-1",
+      "name": "Stazione Controllo Qualità",
+      "type": "QC",
+      "plc": {
+        "vendor": "Beckhoff",
+        "model": "CX2040"
+      },
+      "order": 40
+    },
+    {
+      "id": "packer-01",
+      "lineId": "line-1",
+      "name": "Imballatrice Automatica",
+      "type": "PACKER",
+      "plc": {
+        "vendor": "Siemens",
+        "model": "S7-1200"
+      },
+      "order": 50
+    },
+    {
+      "id": "press-03",
+      "lineId": "line-2",
+      "name": "Pressa Idraulica 03",
+      "type": "PRESS",
+      "plc": {
+        "vendor": "Siemens",
+        "model": "S7-1500"
+      },
+      "order": 10
+    }
+  ],
+  "lines": [
+    {
+      "id": "line-1",
+      "name": "Linea 1 - Assemblaggio",
+      "description": "Linea di assemblaggio demo",
+      "order": 1
+    },
+    {
+      "id": "line-2",
+      "name": "Linea 2 - Verniciatura",
+      "description": "Linea di verniciatura demo",
+      "order": 2
+    }
+  ],
   "telemetries": [
     {
       "machineId": "press-01",
@@ -204,13 +286,37 @@
     {
       "machineId": "packer-01",
       "type": "PACKER",
-      "ts": "2026-01-07T09:22:30Z",
+      "ts": "2026-01-28T09:22:30Z",
       "reported": {
-        "state": "IDLE",
+        "state": "STOP",
         "orderCode": "2590002",
         "speed": 0,
         "temperature": 40.9,
-        "alarms": []
+        "alarms": [
+          {
+            "code": "9000",
+            "message": "Perdita comunicazione PACKER",
+            "locking": true
+          }
+        ]
+      }
+    },
+    {
+      "machineId": "press-03",
+      "type": "QC",
+      "ts": "2026-01-07T09:22:25Z",
+      "reported": {
+        "state": "FAULT",
+        "orderCode": "2590002",
+        "partsChecked": 1883,
+        "rejectRate": 0.012,
+        "alarms": [
+          {
+            "code": "9000",
+            "message": "Perdita comunicazione PACKER",
+            "locking": true
+          }
+        ]
       }
     }
   ]

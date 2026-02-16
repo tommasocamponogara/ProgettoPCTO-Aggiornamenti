@@ -70,6 +70,12 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
             className="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-4 py-2 w-64 placeholder:text-slate-500 hover:border-amber-400 transition-all duration-200"
           />
         </div>
+        <button
+          className="px-4 py-2 bg-amber-500 text-slate-900 rounded-lg hover:bg-amber-400 transition-colors"
+          onClick={() => navigate('/dashboard/machines/ManageMachines')}
+        >
+          Aggiungi Macchinario
+        </button>
 
         {/* Intestazione Tabella */}
         <div className="grid grid-cols-[110px_270px_100px_260px_100px_300px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-lg font-semibold text-center rounded border-b border-slate-700">
