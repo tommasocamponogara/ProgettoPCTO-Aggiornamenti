@@ -19,7 +19,16 @@ app.listen(port, () => {
 
 // Creare/Modificare/Visualizzare/Eliminare le linee
 app.get('/lines', (req, res) => {
-  db.all('SELECT * FROM lines', (err, rows) => {
+  const sql = `
+  SELECT 
+    id_line AS id,
+    name,
+    description,
+    order_nr AS order
+    FROM lines
+  `
+
+  db.all(sql, (err, rows) => {
     if (err) {
       return res.status(500).json({ error: 'Errore durante la ricerca' })
     } else {
