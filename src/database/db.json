@@ -57,7 +57,7 @@
     },
     {
       "id": "press-03",
-      "lineId": "line-2",
+      "lineId": null,
       "name": "Pressa Idraulica 03",
       "type": "PRESS",
       "plc": {
@@ -73,6 +73,8 @@
       "name": "Linea 1 - Assemblaggio",
       "description": "Linea di assemblaggio demo",
       "order": 1
+<<<<<<< HEAD
+=======
     },
     {
       "id": "line-2",
@@ -85,6 +87,7 @@
       "name": "linea-test",
       "description": "test",
       "order": 3
+>>>>>>> eb480f4 (Aggiunta la feature di poter aggiungere nuove linee, che vengono salvate nella variabile database di index.js. Manca la parte di salvataggio su database sqlite e aggiornamento della pagina linee, con quelle aggiunte)
     }
   ],
   "telemetries": [
@@ -98,7 +101,8 @@
         "temperature": 63.8,
         "pressure": 94.1,
         "alarms": []
-      }
+      },
+      "id": "60ea"
     },
     {
       "machineId": "robot-01",
@@ -115,7 +119,8 @@
             "locking": false
           }
         ]
-      }
+      },
+      "id": "8984"
     },
     {
       "machineId": "cnc-01",
@@ -127,7 +132,8 @@
         "rpm": 5000,
         "temperature": 78.6,
         "alarms": []
-      }
+      },
+      "id": "9fe5"
     },
     {
       "machineId": "qc-01",
@@ -139,7 +145,8 @@
         "partsChecked": 1830,
         "rejectRate": 0.012,
         "alarms": []
-      }
+      },
+      "id": "73c2"
     },
     {
       "machineId": "packer-01",
@@ -157,7 +164,8 @@
             "locking": true
           }
         ]
-      }
+      },
+      "id": "c709"
     },
     {
       "machineId": "press-01",
@@ -169,7 +177,8 @@
         "temperature": 64.6,
         "pressure": 96.7,
         "alarms": []
-      }
+      },
+      "id": "bc40"
     },
     {
       "machineId": "robot-01",
@@ -180,7 +189,8 @@
         "orderCode": "2590012",
         "cicleTime": 818,
         "alarms": []
-      }
+      },
+      "id": "4297"
     },
     {
       "machineId": "cnc-01",
@@ -198,7 +208,8 @@
             "locking": true
           }
         ]
-      }
+      },
+      "id": "07ef"
     },
     {
       "machineId": "qc-01",
@@ -216,7 +227,8 @@
             "locking": false
           }
         ]
-      }
+      },
+      "id": "c2e5"
     },
     {
       "machineId": "packer-01",
@@ -234,7 +246,8 @@
             "locking": true
           }
         ]
-      }
+      },
+      "id": "5938"
     },
     {
       "machineId": "press-01",
@@ -246,7 +259,8 @@
         "temperature": 65.2,
         "pressure": 97.9,
         "alarms": []
-      }
+      },
+      "id": "6978"
     },
     {
       "machineId": "robot-01",
@@ -257,7 +271,8 @@
         "orderCode": "2590012",
         "cicleTime": 835,
         "alarms": []
-      }
+      },
+      "id": "c756"
     },
     {
       "machineId": "cnc-01",
@@ -275,7 +290,8 @@
             "locking": true
           }
         ]
-      }
+      },
+      "id": "c0a5"
     },
     {
       "machineId": "qc-01",
@@ -287,7 +303,8 @@
         "partsChecked": 1883,
         "rejectRate": 0.012,
         "alarms": []
-      }
+      },
+      "id": "8889"
     },
     {
       "machineId": "packer-01",
@@ -305,7 +322,8 @@
             "locking": true
           }
         ]
-      }
+      },
+      "id": "e105"
     },
     {
       "machineId": "press-03",
@@ -323,7 +341,8 @@
             "locking": true
           }
         ]
-      }
+      },
+      "id": "be32"
     },
     {
       "machineId": "press-03",
@@ -341,7 +360,8 @@
             "locking": true
           }
         ]
-      }
+      },
+      "id": "9168"
     }
   ]
 }
