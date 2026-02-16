@@ -38,6 +38,7 @@ db.serialize(() => {
         name TEXT,
         type TEXT,
         plc_vendor TEXT,
+        dataCollection TEXT,
         plc_model TEXT,
         order_nr INTEGER,
         id_line TEXT,

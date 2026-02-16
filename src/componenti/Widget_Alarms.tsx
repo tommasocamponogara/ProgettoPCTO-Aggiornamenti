@@ -1,36 +1,30 @@
-import type { Machine } from '../Types/Type'
 import React from 'react'
 
-// Parte di codice riferita a Widget_Alarms, componente che mostra la lista degli allarmi
-// attivi sulle macchine, ordinati per data e ora di attivazione
-
+// Definiamo il tipo per il singolo allarme che visualizzeremo nella riga
 type AlarmItem = {
-  id: string
-  code: string
-  message: string
-  isLocking: boolean
-  timestamp: Date
+  machineId: string
+  errorMess: string
+  errorNumb: string
+  lock: boolean
+  date: Date
+  details: any // Qui salviamo i sensori (RPM, Temp) per usarli se serve
 }
 
-type WidgetAlarmsProps = {
-  telemetries: any[]
-}
-
-// 2. Colleghiamo il tipo alle Props usando i due punti :
-export function Widget_Alarms({ telemetries }: WidgetAlarmsProps) {
-  // 3. Diciamo che alarmList è un array di AlarmItem
+// Il componente riceve "telemetries" che è l'array di oggetti formattati da index.js
+export function Widget_Alarms({ telemetries }: { telemetries: any[] }) {
   const alarmList: AlarmItem[] = []
 
   telemetries.forEach((t) => {
-    // Aggiungiamo un controllo extra per sicurezza
+    // Verifichiamo che ci siano allarmi nell'array
     if (t.alarms && Array.isArray(t.alarms)) {
-      t.alarms.forEach((a) => {
+      t.alarms.forEach((picked_alarm: any) => {
         alarmList.push({
-          id: t.id_machine,
-          code: a.code,
-          message: a.message,
-          isLocking: a.locking,
-          timestamp: new Date(t.ts),
+          machineId: t.id_machine,
+          errorMess: picked_alarm.message,
+          errorNumb: picked_alarm.code,
+          lock: picked_alarm.locking,
+          date: new Date(t.ts),
+          details: t.sensors, // Passiamo i sensori (es. t.sensors.temperature)
         })
       })
     }
@@ -39,17 +33,17 @@ export function Widget_Alarms({ telemetries }: WidgetAlarmsProps) {
   return (
     <div className="flex flex-col items-center min-h-screen pt-32 bg-slate-800 font-mono">
       <div className="w-11/12 max-w-6xl mt-20">
-        {/* INTESTAZIONE TABELLA */}
-        <div className="grid grid-cols-[150px_100px_300px_150px_150px_100px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-lg font-semibold rounded-t border-b border-slate-700">
+        {/* INTESTAZIONE TABELLA*/}
+        <div className="grid grid-cols-[150px_100px_250px_150px_150px_120px_80px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-sm font-bold rounded-t border-b border-slate-700">
           <div>MACCHINA</div>
           <div>CODICE</div>
           <div>MESSAGGIO</div>
           <div>DATA</div>
           <div>ORA</div>
+          <div>VALORI</div>
           <div>STATO</div>
         </div>
 
-        {/* CORPO DELLA TABELLA */}
         <div className="max-h-150 overflow-y-auto space-y-2 bg-slate-900 p-2 rounded-b-lg">
           {alarmList.length === 0 ? (
             <div className="text-center text-slate-400 p-6">NESSUN ALLARME ATTIVO</div>
@@ -57,24 +51,31 @@ export function Widget_Alarms({ telemetries }: WidgetAlarmsProps) {
             alarmList.map((alarm, index) => (
               <div
                 key={index}
-                className={`grid grid-cols-[150px_100px_300px_150px_150px_100px] gap-4 items-center px-6 py-4 rounded border-l-4 ${
-                  alarm.isLocking ? 'border-red-500 bg-slate-800' : 'border-yellow-500 bg-slate-800'
+                className={`grid grid-cols-[150px_100px_250px_150px_150px_120px_80px] gap-4 items-center px-6 py-4 rounded border-l-4 transition-all ${
+                  alarm.lock
+                    ? 'border-red-500 bg-slate-800 hover:bg-red-950'
+                    : 'border-yellow-500 bg-slate-800 hover:bg-amber-900'
                 }`}
               >
-                <div className="text-slate-200">{alarm.id}</div>
-                <div className="text-slate-400">{alarm.code}</div>
-                <div className="text-slate-200">{alarm.message}</div>
-                <div className="text-slate-300">{alarm.timestamp.toLocaleDateString()}</div>
-                <div className="text-slate-300">{alarm.timestamp.toLocaleTimeString()}</div>
+                <div className="text-slate-200 font-bold uppercase">{alarm.machineId}</div>
+                <div className="text-slate-400">{alarm.errorNumb}</div>
+                <div className="text-slate-200 text-sm">{alarm.errorMess}</div>
+                <div className="text-slate-300">{alarm.date.toLocaleDateString()}</div>
+                <div className="text-slate-300 font-light">{alarm.date.toLocaleTimeString()}</div>
 
-                {/* ETICHETTA STATO */}
-                <div>
+                {/* Visualizzazione dinamica dei sensori (es: Temp o RPM) */}
+                <div className="text-amber-500 text-xs italic">
+                  {alarm.details.temperature ? `${alarm.details.temperature}°C ` : ''}
+                  {alarm.details.rpm ? `${alarm.details.rpm} RPM` : ''}
+                </div>
+
+                <div className="flex justify-center">
                   <span
-                    className={`px-2 py-1 rounded text-xs font-bold ${
-                      alarm.isLocking ? 'bg-red-600 text-white' : 'bg-yellow-500 text-black'
+                    className={`px-2 py-1 rounded text-[10px] font-black ${
+                      alarm.lock ? 'bg-red-600 text-white' : 'bg-yellow-500 text-black'
                     }`}
                   >
-                    {alarm.isLocking ? 'BLOCK' : 'WARN'}
+                    {alarm.lock ? 'BLOCK' : 'WARN'}
                   </span>
                 </div>
               </div>

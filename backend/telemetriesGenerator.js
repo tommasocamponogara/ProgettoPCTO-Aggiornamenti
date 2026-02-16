@@ -11,8 +11,13 @@ const db = new sqlite3.Database('./factory.db', (err) => {
   }
 })
 
+function randomFloat(min, max) {
+  const randomVal = lcg.range(min, max)
+  return randomVal / 10
+}
+
 function generaTelemetria() {
-  db.all('SELECT id_machine FROM machines', (err, machines) => {
+  db.all('SELECT id_machine, dataCollection FROM machines', (err, machines) => {
     if (err) {
       console.error('Errore recupero macchine:', err.message)
       return
@@ -22,29 +27,46 @@ function generaTelemetria() {
       return
     }
 
-    // 1. Scelta della macchina
     const indiceM = lcg.range(0, machines.length - 1)
-    const idMacchina = machines[indiceM].id_machine
+    const macchinaScelta = machines[indiceM]
+    const idMacchina = macchinaScelta.id_machine
 
-    // 2. Scelta dello stato
     const stati = ['RUN', 'IDLE', 'OFFLINE', 'FAULT', 'STOP']
     const indiceS = lcg.range(0, stati.length - 1)
     const statoScelto = stati[indiceS]
 
     console.log(`Macchina: ${idMacchina} | Stato scelto: ${statoScelto}`)
 
-    // 3. Logica condizionale: se FAULT cerca l'errore, altrimenti salva subito
+    // 3. Generazione valori sensori basata su dataCollection
+    const sensors = JSON.parse(macchinaScelta.dataCollection || '[]')
+    let reportedData = {}
+
+    sensors.forEach((s) => {
+      if (statoScelto === 'OFFLINE') {
+        reportedData[s] = null
+      } else if (statoScelto === 'STOP' || statoScelto === 'IDLE') {
+        reportedData[s] = 0
+      } else {
+        if (s === 'temperature') reportedData[s] = randomFloat(40, 95)
+        if (s === 'rpm') reportedData[s] = lcg.range(1000, 5000)
+        if (s === 'pressure') reportedData[s] = randomFloat(80, 120)
+        if (s === 'partsChecked') reportedData[s] = lcg.range(1000, 5000)
+        if (s === 'speed') reportedData[s] = randomFloat(0.5, 5.0)
+      }
+    })
+
+    // 4. Logica condizionale per gli errori
     if (statoScelto === 'FAULT') {
-      gestisciErroreESalva(idMacchina, statoScelto)
+      gestisciErroreESalva(idMacchina, statoScelto, reportedData)
     } else {
-      salvaNelDatabase(idMacchina, statoScelto, '')
+      salvaNelDatabase(idMacchina, statoScelto, reportedData, '[]')
     }
   })
 }
 
-function gestisciErroreESalva(idMacchina, stato) {
+function gestisciErroreESalva(idMacchina, stato, reportedData) {
   db.all('SELECT code, message FROM errors WHERE id_machine = ?', [idMacchina], (err, errors) => {
-    let alarmData = ''
+    let alarmData = '[]'
 
     if (!err && errors.length > 0) {
       const indiceE = lcg.range(0, errors.length - 1)
@@ -59,17 +81,18 @@ function gestisciErroreESalva(idMacchina, stato) {
       alarmData = JSON.stringify([allarmeOggetto])
     }
 
-    salvaNelDatabase(idMacchina, stato, alarmData)
+    salvaNelDatabase(idMacchina, stato, reportedData, alarmData)
   })
 }
 
-function salvaNelDatabase(idMacchina, stato, allarmeJson) {
+function salvaNelDatabase(idMacchina, stato, dataObj, allarmeJson) {
   const ts = new Date().toISOString()
-  const orderCode = 'ORD-' + lcg.range(1000, 9999)
+  const orderCode = 'ORD-' + lcg.range(100000, 999999)
+  const dataJson = JSON.stringify(dataObj)
 
-  const sql = `INSERT INTO telemetries (ts, id_machine, state, orderCode, alarms) VALUES (?, ?, ?, ?, ?)`
+  const sql = `INSERT INTO telemetries (ts, id_machine, state, orderCode, data, alarms) VALUES (?, ?, ?, ?, ?, ?)`
 
-  db.run(sql, [ts, idMacchina, stato, orderCode, allarmeJson], function (err) {
+  db.run(sql, [ts, idMacchina, stato, orderCode, dataJson, allarmeJson], function (err) {
     if (err) {
       console.error('Errore salvataggio telemetria:', err.message)
     } else {
@@ -94,7 +117,6 @@ if (check) {
   loop()
 }
 
-// Funzioni per controllare il ciclo
 module.exports = {
   start: () => {
     if (!isRunning) {

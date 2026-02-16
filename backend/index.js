@@ -191,29 +191,41 @@ app.get('/telemetries', (req, res) => {
 
 // Visualizzare telemetrie con allarmi
 app.get('/telemetries/critical', (req, res) => {
-  db.all('SELECT * FROM telemetries', (err, rows) => {
+  const sql = `
+    SELECT * FROM telemetries 
+    WHERE state = 'FAULT' OR state = 'STOP' 
+  `
+
+  db.all(sql, (err, rows) => {
     if (err) {
-      res.status(500).json({ error: 'Errore database' })
-      return
+      console.error('Errore query critiche:', err.message)
+      return res.status(500).json({ error: err.message })
     }
 
-    let risultatiFiltrati = []
+    const formattedRows = rows.map((row) => {
+      let parsedData = {}
+      let parsedAlarms = []
 
-    for (let i = 0; i < rows.length; i++) {
-      let rigaAttuale = rows[i]
+      try {
+        parsedData = row.data ? JSON.parse(row.data) : {}
 
-      if (rigaAttuale.state === 'FAULT' || rigaAttuale.alarms !== '') {
-        if (rigaAttuale.alarms !== '') {
-          rigaAttuale.alarms = JSON.parse(rigaAttuale.alarms)
-        } else {
-          rigaAttuale.alarms = []
-        }
-
-        risultatiFiltrati.push(rigaAttuale)
+        // Trasforma la stringa JSON della colonna 'alarms' in array
+        parsedAlarms = row.alarms ? JSON.parse(row.alarms) : []
+      } catch (e) {
+        console.error('Errore nel parsing JSON per la macchina:', row.id_machine)
       }
-    }
 
-    res.json(risultatiFiltrati)
+      return {
+        ts: row.ts,
+        id_machine: row.id_machine,
+        state: row.state,
+        orderCode: row.orderCode,
+        sensors: parsedData, // Contiene RPM, Temperature, ecc.
+        alarms: parsedAlarms, // Contiene l'array degli allarmi [{code, message, locking}]
+      }
+    })
+
+    res.json(formattedRows)
   })
 })
 
