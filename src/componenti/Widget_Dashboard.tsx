@@ -24,7 +24,7 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 w-full max-w-7xl px-10">
         {/* Card Linee */}
         <div
-          onClick={() => navigate(`/dashboard/linee`)}
+          onClick={() => navigate(`/dashboard/lines`)}
           className="bg-slate-900 border-b-4 border-amber-700 rounded-2xl p-10 text-center shadow-lg shadow-black/40 hover:scale-[1.05] hover:cursor-pointer transition-transform"
         >
           <p className="text-slate-300 uppercase tracking-widest text-lg">Linee</p>
@@ -34,7 +34,7 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
 
         {/* Card Macchinari */}
         <div
-          onClick={() => navigate(`/dashboard/macchinari`)}
+          onClick={() => navigate(`/dashboard/machines`)}
           className="bg-slate-900 border-b-4 border-amber-700 rounded-2xl p-10 text-center shadow-lg shadow-black/40 hover:scale-[1.05] hover:cursor-pointer transition-transform"
         >
           <p className="text-slate-300 uppercase tracking-widest text-lg">Macchinari</p>

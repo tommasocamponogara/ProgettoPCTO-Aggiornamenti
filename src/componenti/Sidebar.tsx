@@ -28,7 +28,7 @@ export function Sidebar() {
           </li>
           <li>
             <Link
-              to="/dashboard/linee"
+              to="/dashboard/lines"
               className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
               <HiCollection /> Linee
@@ -36,7 +36,7 @@ export function Sidebar() {
           </li>
           <li>
             <Link
-              to="/dashboard/macchinari"
+              to="/dashboard/machines"
               className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
               <IoIosBuild /> Macchinari

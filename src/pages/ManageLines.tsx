@@ -172,7 +172,7 @@ export function ManageLines() {
         </button>
       </form>
       <Link
-        to="/dashboard/linee"
+        to="/dashboard/lines"
         className="absolute top-4 left-4 text-amber-500 hover:text-amber-400 transition-colors"
       >
         Torna alla lista linee

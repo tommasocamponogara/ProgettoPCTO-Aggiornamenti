@@ -86,14 +86,26 @@ export function TableLines() {
                     </span>
                   </td>
                   <td className="px-6 py-4">{line.machines.length}</td>
-                  <td className="px-6 py-4">{line.description}</td>
+
+                  <td className="px-6 py-4 max-w-xs truncate" title={line.description}>
+                    {line.description}
+                  </td>
+
                   <td className="px-6 py-4">
-                    {' '}
-                    <button onClick={() => navigate(`/dashboard/lines/ManageLines/${line.id}`)}>
-                      {' '}
-                      Modifica
-                    </button>
-                    <button onClick={() => deleteLine(line.id)}> Elimina</button>
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() => navigate(`/dashboard/lines/ManageLines/${line.id}`)}
+                        className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded transition-colors"
+                      >
+                        Modifica
+                      </button>
+                      <button
+                        onClick={() => deleteLine(line.id)}
+                        className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-sm rounded transition-colors"
+                      >
+                        Elimina
+                      </button>
+                    </div>
                   </td>
                 </tr>
               )
