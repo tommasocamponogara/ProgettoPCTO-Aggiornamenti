@@ -17,7 +17,7 @@ function randomFloat(min, max) {
 }
 
 function generaTelemetria() {
-  db.all('SELECT id_machine, dataCollection FROM machines', (err, machines) => {
+  db.all('SELECT id_machine FROM machines', (err, machines) => {
     if (err) {
       console.error('Errore recupero macchine:', err.message)
       return
@@ -47,11 +47,11 @@ function generaTelemetria() {
       } else if (statoScelto === 'STOP' || statoScelto === 'IDLE') {
         reportedData[s] = 0
       } else {
-        if (s === 'temperature') reportedData[s] = randomFloat(40, 95)
-        if (s === 'rpm') reportedData[s] = lcg.range(1000, 5000)
-        if (s === 'pressure') reportedData[s] = randomFloat(80, 120)
-        if (s === 'partsChecked') reportedData[s] = lcg.range(1000, 5000)
-        if (s === 'speed') reportedData[s] = randomFloat(0.5, 5.0)
+        if (s === 'temperature') reportedData[s] = randomFloat(400, 950)
+        if (s === 'rpm') reportedData[s] = lcg.range(10000, 50000)
+        if (s === 'pressure') reportedData[s] = randomFloat(800, 1200)
+        if (s === 'partsChecked') reportedData[s] = lcg.range(10000, 50000)
+        if (s === 'speed') reportedData[s] = randomFloat(5, 50)
       }
     })
 
