@@ -7,12 +7,13 @@ import { Widget_Alarms } from '../componenti/Widget_Alarms'
 
 export default function Dashboard() {
   // Stato per memorizzare la lista delle macchine ottenute dall'API
-  const [machines, setMachines] = useState<Machine[]>([])
+  const [telemetries, setTelemetries] = useState([])
 
-  // Hook che viene eseguito al caricamento del componente
   useEffect(() => {
-    // Recupera i dati delle macchine e aggiorna lo stato
-    getMachines().then((machines) => setMachines(machines))
+    // Esempio di chiamata diretta alla tua nuova API
+    fetch('http://localhost:3000/telemetries/critical')
+      .then((res) => res.json())
+      .then((data) => setTelemetries(data))
   }, [])
 
   return (
@@ -21,7 +22,7 @@ export default function Dashboard() {
       <Sidebar />
       <Topbar />
       {/* Widget che mostra gli allarmi passando la lista delle macchine come proprietà */}
-      <Widget_Alarms machines={machines} />
+      <Widget_Alarms telemetries={telemetries} />
     </>
   )
 }

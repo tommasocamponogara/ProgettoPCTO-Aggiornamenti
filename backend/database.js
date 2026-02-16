@@ -56,7 +56,6 @@ db.serialize(() => {
         ts TEXT, id_machine TEXT,
         state TEXT, 
         orderCode TEXT,
-        data_values TEXT,
         alarms TEXT,
         PRIMARY KEY (ts, id_machine),
         FOREIGN KEY (id_machine) REFERENCES machines(id_machine))
@@ -66,6 +65,21 @@ db.serialize(() => {
         console.error(err.message)
       } else {
         console.log('Tabella telemetries creata correttamente')
+      }
+    },
+  )
+  db.run(
+    `CREATE TABLE IF NOT EXISTS errors (
+        code TEXT, id_machine TEXT,
+        message TEXT, 
+        PRIMARY KEY (code, id_machine),
+        FOREIGN KEY (id_machine) REFERENCES machines(id_machine))
+    `,
+    (err) => {
+      if (err) {
+        console.error(err.message)
+      } else {
+        console.log('Tabella errors creata correttamente')
       }
     },
   )
