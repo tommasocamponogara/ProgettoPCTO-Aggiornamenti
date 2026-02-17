@@ -1,132 +1,146 @@
+/**
+ * In questo file viene gestito il "motore" che crea i dati finti.
+ * Serve a simulare una fabbrica vera, creando ogni pochi secondi dei segnali
+ * (temperature, stati, errori) per le macchine salvate nel database.
+ */
+
 const { LCG } = require('./randomGenerator')
-const lcg = new LCG()
-const { check } = require('./')
+const lcg = new LCG() // Si usa questo strumento per creare numeri casuali "ordinati"
 
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('./factory.db', (err) => {
   if (err) {
     console.error('Errore connessione DB:', err.message)
   } else {
-    console.log('Generatore connesso al database')
+    console.log('Generatore collegato al database correttamente')
   }
 })
 
-function randomFloat(min, max) {
-  const randomVal = lcg.range(min, max)
-  return randomVal / 10
-}
-
+/**
+ * Viene creata una singola telemetria (un pacchetto di dati).
+ * 1. Si scelgono le macchine dal database.
+ * 2. Si seleziona una macchina a caso e le si assegna uno stato (es. RUN o FAULT).
+ * 3. Si inventano i valori dei sensori in base al tipo di macchina.
+ */
 function generaTelemetria() {
-  db.all('SELECT id_machine FROM machines', (err, machines) => {
-    if (err) {
-      console.error('Errore recupero macchine:', err.message)
-      return
-    }
-    if (machines.length === 0) {
-      console.log('Nessuna macchina trovata nel DB')
-      return
-    }
+  db.all('SELECT id_machine, dataCollection FROM machines', (err, listaMacchine) => {
+    if (err || listaMacchine.length === 0) return
 
-    const indiceM = lcg.range(0, machines.length - 1)
-    const macchinaScelta = machines[indiceM]
+    // Si sceglie una macchina a sorte tra quelle disponibili
+    const indiceM = Math.floor(Math.random() * listaMacchine.length)
+    const macchinaScelta = listaMacchine[indiceM]
     const idMacchina = macchinaScelta.id_machine
 
-    const stati = ['RUN', 'IDLE', 'OFFLINE', 'FAULT', 'STOP']
-    const indiceS = lcg.range(0, stati.length - 1)
-    const statoScelto = stati[indiceS]
+    // Si decide cosa sta facendo la macchina (accesa, spenta, rotta, ecc.)
+    const statiPossibili = ['RUN', 'IDLE', 'OFFLINE', 'FAULT', 'STOP']
+    const statoScelto = statiPossibili[Math.floor(Math.random() * statiPossibili.length)]
 
-    console.log(`Macchina: ${idMacchina} | Stato scelto: ${statoScelto}`)
+    // Si leggono quali sensori ha la macchina e si inventano i numeri
+    const sensori = JSON.parse(macchinaScelta.dataCollection || '["temperature"]')
+    let datiSensori = {}
 
-    // 3. Generazione valori sensori basata su dataCollection
-    const sensors = JSON.parse(macchinaScelta.dataCollection || '[]')
-    let reportedData = {}
-
-    sensors.forEach((s) => {
+    sensori.forEach((s) => {
       if (statoScelto === 'OFFLINE') {
-        reportedData[s] = null
+        datiSensori[s] = null // Se è spenta, non c'è segnale
       } else if (statoScelto === 'STOP' || statoScelto === 'IDLE') {
-        reportedData[s] = 0
+        datiSensori[s] = 0 // Se è ferma, i valori sono a zero
       } else {
-        if (s === 'temperature') reportedData[s] = randomFloat(400, 950)
-        if (s === 'rpm') reportedData[s] = lcg.range(10000, 50000)
-        if (s === 'pressure') reportedData[s] = randomFloat(800, 1200)
-        if (s === 'partsChecked') reportedData[s] = lcg.range(10000, 50000)
-        if (s === 'speed') reportedData[s] = randomFloat(5, 50)
+        // Se è accesa, si inventano numeri realistici
+        if (s === 'temperature') datiSensori[s] = (Math.random() * (95 - 40) + 40).toFixed(1)
+        if (s === 'rpm') datiSensori[s] = Math.floor(Math.random() * (5000 - 1000) + 1000)
+        if (s === 'pressure') datiSensori[s] = (Math.random() * (12 - 8) + 8).toFixed(1)
+        if (s === 'speed') datiSensori[s] = (Math.random() * 50).toFixed(1)
       }
     })
 
-    // 4. Logica condizionale per gli errori
+    console.log(`Generazione dati per: ${idMacchina} | Stato: ${statoScelto}`)
+
+    // Se la macchina è in errore (FAULT), si cerca un messaggio di guasto specifico
     if (statoScelto === 'FAULT') {
-      gestisciErroreESalva(idMacchina, statoScelto, reportedData)
+      gestisciErroreESalva(idMacchina, statoScelto, datiSensori)
     } else {
-      salvaNelDatabase(idMacchina, statoScelto, reportedData, '[]')
+      salvaNelDatabase(idMacchina, statoScelto, datiSensori, '[]')
     }
   })
 }
 
-function gestisciErroreESalva(idMacchina, stato, reportedData) {
-  db.all('SELECT code, message FROM errors WHERE id_machine = ?', [idMacchina], (err, errors) => {
-    let alarmData = '[]'
+/**
+ * Viene cercato un errore specifico nel database se la macchina è guasta.
+ */
+function gestisciErroreESalva(idMacchina, stato, datiSensori) {
+  db.all(
+    'SELECT code, message FROM errors WHERE id_machine = ?',
+    [idMacchina],
+    (err, listaErrori) => {
+      let allarmeJson = '[]'
 
-    if (!err && errors.length > 0) {
-      const indiceE = lcg.range(0, errors.length - 1)
-      const erroreScelto = errors[indiceE]
+      if (!err && listaErrori.length > 0) {
+        // Si sceglie un errore a caso tra quelli che la macchina può avere
+        const indiceE = lcg.range(0, listaErrori.length - 1)
+        const errore = listaErrori[indiceE]
 
-      const allarmeOggetto = {
-        code: erroreScelto.code,
-        message: erroreScelto.message,
-        locking: true,
+        const allarmeOggetto = {
+          code: errore.code,
+          message: errore.message,
+          locking: true,
+        }
+        allarmeJson = JSON.stringify([allarmeOggetto])
       }
 
-      alarmData = JSON.stringify([allarmeOggetto])
-    }
-
-    salvaNelDatabase(idMacchina, stato, reportedData, alarmData)
-  })
+      salvaNelDatabase(idMacchina, stato, datiSensori, allarmeJson)
+    },
+  )
 }
 
-function salvaNelDatabase(idMacchina, stato, dataObj, allarmeJson) {
-  const ts = new Date().toISOString()
-  const orderCode = 'ORD-' + lcg.range(100000, 999999)
-  const dataJson = JSON.stringify(dataObj)
+/**
+ * Si salvano i dati finali nella tabella 'telemetries'.
+ * Viene aggiunto il timestamp (l'ora esatta) e un codice ordine finto.
+ */
+function salvaNelDatabase(idMacchina, stato, oggettoDati, allarmeJson) {
+  const oraAttuale = new Date().toISOString()
+  const codiceOrdine = 'ORD-' + lcg.range(100000, 999999)
+  const datiJson = JSON.stringify(oggettoDati)
 
   const sql = `INSERT INTO telemetries (ts, id_machine, state, orderCode, data, alarms) VALUES (?, ?, ?, ?, ?, ?)`
 
-  db.run(sql, [ts, idMacchina, stato, orderCode, dataJson, allarmeJson], function (err) {
+  db.run(sql, [oraAttuale, idMacchina, stato, codiceOrdine, datiJson, allarmeJson], (err) => {
     if (err) {
-      console.error('Errore salvataggio telemetria:', err.message)
+      console.error('Errore durante il salvataggio:', err.message)
     } else {
-      console.log(`>>> Telemetria salvata | Macchina: ${idMacchina} | Stato: ${stato}`)
+      console.log(`>>> Segnale salvato per ${idMacchina}`)
     }
   })
 }
 
-let isRunning = false
+/**
+ * Viene gestito il ciclo continuo.
+ * Il generatore crea un dato, aspetta qualche secondo e poi ricomincia.
+ */
+let attivo = false
 
-function loop() {
-  if (!isRunning) return
-  const secondiAttesa = lcg.range(1, 10)
+function cicloInfinito() {
+  if (!attivo) return
+  // Si aspetta un tempo casuale tra 4 e 6 secondi
+  const secondiAttesa = lcg.range(4, 6)
 
   setTimeout(() => {
     generaTelemetria()
-    loop()
+    cicloInfinito()
   }, secondiAttesa * 1000)
 }
 
-if (check) {
-  loop()
-}
-
 module.exports = {
+  // Funzione per far partire la creazione dei dati
   start: () => {
-    if (!isRunning) {
-      isRunning = true
-      loop()
-      console.log('REGISTRAZIONE AVVIATA')
+    if (!attivo) {
+      attivo = true
+      cicloInfinito()
+      console.log('GENERATORE AUTOMATICO AVVIATO')
     }
   },
+  // Funzione per fermare tutto
   stop: () => {
-    isRunning = false
-    console.log('REGISTRAZIONE FERMATA')
+    attivo = false
+    console.log('GENERATORE AUTOMATICO FERMATO')
   },
 }

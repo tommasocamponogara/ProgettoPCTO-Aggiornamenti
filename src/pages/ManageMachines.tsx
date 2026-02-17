@@ -1,9 +1,19 @@
+/**
+ * In questo file viene gestita la pagina per aggiungere nuovi macchinari al sistema.
+ * Si occupa di raccogliere i dati inseriti dall'utente (nome, tipo, marca del PLC),
+ * di controllarli e di inviarli al database per il salvataggio.
+ */
+
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { Machine } from '../Types/Type'
-import type { Line } from '../Types/Type'
+import { Link } from 'react-router-dom'
+import type { Machine, Line } from '../Types/Type'
 import { getLines } from '../utils/api'
-const initialMachine: Machine = {
+
+/**
+ * Viene definito come deve apparire il modulo (form) all'inizio:
+ * Tutti i campi sono vuoti o impostati a zero.
+ */
+const macchinaIniziale: Machine = {
   id: '',
   lineId: '',
   name: '',
@@ -13,191 +23,183 @@ const initialMachine: Machine = {
     model: '',
   },
   order: 0,
-  telemetries: [], // Inizialmente vuoto
+  telemetries: [],
 }
-const types = ['CNC', 'PACKER', 'PRESS', 'QC', 'ROBOT']
+
+// Lista delle categorie di macchine disponibili nel sistema
+const categorie = ['CNC', 'PACKER', 'PRESS', 'QC', 'ROBOT']
+
 export function ManageMachines() {
-  const [machine, setMachine] = useState<Machine>(initialMachine)
-  const [lines, setLines] = useState<Line[]>([])
+  const [macchina, setMacchina] = useState<Machine>(macchinaIniziale)
+  const [linee, setLinee] = useState<Line[]>([])
 
-  // Al caricamento recupera le linee per avere i dati aggiornati dal database
+  /**
+   * Al caricamento della pagina, vengono scaricate le linee esistenti.
+   * Serve per permettere all'utente di scegliere a quale linea assegnare la nuova macchina.
+   */
   useEffect(() => {
-    // Quando il componente viene montato, chiama la funzione getLines presente in API.ts, per recuperare le linee di produzione dal database, per poi aggiornare lo stato del componente
-    getLines().then((lines) => setLines(lines))
-  }, [lines])
+    getLines().then((dati) => setLinee(dati))
+  }, [])
 
-  const handleChange = (e: any) => {
+  /**
+   * Viene gestito l'inserimento dei dati nei campi del modulo.
+   * Se si cambia il tipo di macchina, il sistema suggerisce automaticamente l'inizio dell'ID.
+   */
+  const gestisciCambio = (e: any) => {
     const { name, value } = e.target
 
     if (name === 'type') {
-      const newId = value ? `${value.toLowerCase()}-` : ''
-      setMachine({
-        ...machine,
-        type: value,
-        id: newId,
-      })
-    }
-    // AGGIUNTA: Gestione specifica per i campi del PLC
-    else if (name === 'vendor' || name === 'model') {
-      setMachine({
-        ...machine,
-        plc: {
-          ...machine.plc,
-          [name]: value,
-        },
+      // Se scelgo "CNC", l'ID inizierà automaticamente con "cnc-"
+      const suggerimentoId = value ? `${value.toLowerCase()}-` : ''
+      setMacchina({ ...macchina, type: value, id: suggerimentoId })
+    } else if (name === 'vendor' || name === 'model') {
+      // Si aggiornano i dati specifici del computer interno (PLC)
+      setMacchina({
+        ...macchina,
+        plc: { ...macchina.plc, [name]: value },
       })
     } else {
-      setMachine({
-        ...machine,
-        [name]: value,
-      })
+      // Si aggiornano tutti gli altri campi (nome, ID, ecc.)
+      setMacchina({ ...macchina, [name]: value })
     }
   }
 
-  async function handleSubmit(e: any) {
-    //todo
+  /**
+   * Viene gestito l'invio del modulo quando si preme il tasto "Registra".
+   * 1. Si controlla che nessun campo sia rimasto vuoto.
+   * 2. Si puliscono i testi (rimozione spazi inutili e lettere maiuscole).
+   * 3. Si inviano i dati definitivi al server.
+   */
+  async function salvaMacchina(e: any) {
     e.preventDefault()
 
     if (
-      machine.id.trim() === '' ||
-      machine.name.trim() === '' ||
-      machine.plc.vendor.trim() === '' ||
-      machine.plc.model.trim() === ''
+      macchina.id.trim() === '' ||
+      macchina.name.trim() === '' ||
+      macchina.plc.vendor.trim() === '' ||
+      macchina.plc.model.trim() === ''
     ) {
-      alert('Compila tutti i campi correttamente!')
-      return // Si ferma qui e non prova a fare la fetch
+      alert('Per favore, compila tutti i campi!')
+      return
     }
-    const cleanID = machine.id.trim().charAt(0).toUpperCase() + machine.id.slice(1).trim()
-    const cleanName = machine.name.trim().charAt(0).toUpperCase() + machine.name.trim().slice(1)
-    const cleanPlcVendor =
-      machine.plc.vendor.trim().charAt(0).toUpperCase() + machine.plc.vendor.trim().slice(1)
-    const cleanPlcModel =
-      machine.plc.model.trim().charAt(0).toUpperCase() + machine.plc.model.trim().slice(1)
 
-    // 2. Creiamo l'oggetto finale da spedire
-    const dataToSave = {
-      ...machine,
-      id: cleanID,
-      name: cleanName,
+    const datiPuliti = {
+      ...macchina,
+      id: macchina.id.trim().toUpperCase(),
+      name: macchina.name.trim(),
       plc: {
-        vendor: cleanPlcVendor,
-        model: cleanPlcModel,
+        vendor: macchina.plc.vendor.trim(),
+        model: macchina.plc.model.trim(),
       },
     }
 
     try {
-      const response = await fetch('http://localhost:3000/machines', {
+      const risposta = await fetch('http://localhost:3000/machines', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSave),
+        body: JSON.stringify(datiPuliti),
       })
 
-      if (response.ok) {
-        alert('Macchinario aggiunto correttamente!')
+      if (risposta.ok) {
+        alert('Macchinario registrato con successo!')
+        setMacchina(macchinaIniziale) // Si svuota il modulo per un nuovo inserimento
       }
     } catch (error) {
-      alert('Errore')
+      alert('Errore: impossibile comunicare con il server.')
     }
   }
 
   return (
     <div className="min-h-screen bg-slate-800 w-full font-mono flex flex-col items-center justify-center p-4">
       <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center min-h-screen bg-slate-800 w-full font-mono p-4"
+        onSubmit={salvaMacchina}
+        className="flex flex-col items-center justify-center w-full max-w-md"
       >
-        <h1 className="text-3xl font-bold text-amber-500 mb-6 uppercase tracking-tighter">
-          Nuovo Macchinario
-        </h1>
+        <h1 className="text-3xl font-bold text-amber-500 mb-6 uppercase">Nuovo Macchinario</h1>
 
-        {/* SELECT TIPO */}
+        {/* Menu a tendina per scegliere il tipo di macchina */}
         <select
           name="type"
-          value={machine.type}
-          onChange={handleChange}
+          value={macchina.type}
+          onChange={gestisciCambio}
           required
-          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-amber-500 w-64 cursor-pointer"
+          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 w-full outline-none"
         >
           <option value="" disabled>
             Seleziona Tipo
           </option>
-          {types.map((type) => (
-            <option key={type} value={type}>
-              {type}
+          {categorie.map((t) => (
+            <option key={t} value={t}>
+              {t}
             </option>
           ))}
         </select>
 
-        {/* INPUT ID */}
+        {/* Campi di testo per ID e Nome */}
         <input
           name="id"
           type="text"
-          value={machine.id}
-          placeholder="ID Macchina"
-          onChange={handleChange}
-          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 w-64"
+          value={macchina.id}
+          placeholder="ID (es. CNC-01)"
+          onChange={gestisciCambio}
+          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 w-full"
         />
 
-        {/* INPUT NOME */}
         <input
           name="name"
           type="text"
-          value={machine.name}
-          placeholder="Nome Macchina"
-          onChange={handleChange}
-          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 w-64"
+          value={macchina.name}
+          placeholder="Nome macchina"
+          onChange={gestisciCambio}
+          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 w-full"
         />
 
-        {/* TEXTAREA VENDOR */}
-        <textarea
+        {/* Dettagli tecnici del PLC */}
+        <input
           name="vendor"
-          value={machine.plc.vendor}
-          placeholder="Vendor"
-          onChange={handleChange}
-          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 w-64 h-32 resize-none"
+          value={macchina.plc.vendor}
+          placeholder="Marca PLC (es. Siemens)"
+          onChange={gestisciCambio}
+          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 w-full"
         />
 
-        {/* INPUT MODEL */}
         <input
           name="model"
           type="text"
-          value={machine.plc.model}
-          placeholder="Model"
-          onChange={handleChange}
-          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 w-64"
+          value={macchina.plc.model}
+          placeholder="Modello PLC"
+          onChange={gestisciCambio}
+          className="mb-4 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 w-full"
         />
 
-        {/* SELECT LINEA */}
+        {/* Menu a tendina per collegare la macchina a una linea */}
         <select
           required
           name="lineId"
-          value={machine.lineId}
-          onChange={handleChange}
-          className="mb-6 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-amber-500 w-64 cursor-pointer"
+          value={macchina.lineId}
+          onChange={gestisciCambio}
+          className="mb-6 px-4 py-2 rounded-lg bg-slate-700 text-slate-200 w-full"
         >
           <option value="" disabled>
-            Seleziona Linea
+            Associa a una Linea
           </option>
-          {lines.map((line) => (
-            <option key={line.id} value={line.id}>
-              {line.id}
+          {linee.map((l) => (
+            <option key={l.id} value={l.id}>
+              {l.name}
             </option>
           ))}
         </select>
 
-        {/* BOTTONE */}
         <button
           type="submit"
-          className="px-4 py-2 bg-amber-500 text-slate-900 font-bold rounded-lg hover:bg-amber-400 transition-colors uppercase w-64"
+          className="px-4 py-2 bg-amber-500 text-slate-900 font-bold rounded-lg hover:bg-amber-400 w-full"
         >
-          Aggiungi macchinario
+          Registra macchinario
         </button>
       </form>
-      <Link
-        to="/dashboard/machines"
-        className="absolute top-4 left-4 text-amber-500 hover:text-amber-400 transition-colors"
-      >
-        Torna alla lista macchinari
+
+      <Link to="/dashboard/machines" className="absolute top-4 left-4 text-amber-500">
+        ← Torna alla lista
       </Link>
     </div>
   )

@@ -1,83 +1,101 @@
-// .verbose() serve a dare messaggi di errore più dettagliati se qualcosa va storto
+/**
+ * Modulo di persistenza dati basato su SQLite3.
+ * Gestisce la connessione al database, la definizione dello schema relazionale
+ * e il popolamento iniziale delle tabelle per l'ambiente di produzione simulato.
+ */
+
 const sqlite3 = require('sqlite3').verbose()
+
 const db = new sqlite3.Database('./factory.db', (err) => {
   if (err) {
-    console.error(err.message)
+    console.error(`Errore di connessione: ${err.message}`)
   } else {
-    console.log('Connesso al database')
+    console.log('Connessione al database stabilita.')
   }
 })
 
-// Attivazione chiavi esterne per mantenere l'integrità dei dati tra tabelle
+/**
+ * Attivazione forzata dei vincoli sulle chiavi esterne
+ * per garantire l'integrità referenziale tra le tabelle.
+ */
 db.run('PRAGMA foreign_keys = ON', (err) => {
   if (err) {
-    console.error(err.message)
+    console.error(`Impossibile attivare le chiavi esterne: ${err.message}`)
   } else {
-    console.log('Chiavi esterne attivate')
+    console.log('Chiavi esterne attivate.')
   }
 })
 
+/**
+ * Inizializzazione dello Schema.
+ * Utilizzo di db.serialize() per garantire l'esecuzione sequenziale dei comandi.
+ */
 db.serialize(() => {
-  // 1. Creazione Tabella Lines
+  // 1. Tabella 'lines': definisce i cluster logici della fabbrica.
   db.run(`CREATE TABLE IF NOT EXISTS lines (
         id_line TEXT PRIMARY KEY, 
         name TEXT, 
         description TEXT, 
         order_nr INTEGER)`)
 
-  // 2. Creazione Tabella Machines
+  // 2. Tabella 'machines': definisce le unità operative.
   db.run(`CREATE TABLE IF NOT EXISTS machines (
         id_machine TEXT PRIMARY KEY,
         name TEXT,
         type TEXT,
         plc_vendor TEXT,
-        dataCollection TEXT,
+        dataCollection TEXT, 
         plc_model TEXT,
         order_nr INTEGER,
         id_line TEXT,
         FOREIGN KEY (id_line) REFERENCES lines(id_line))`)
 
-  // 3. Creazione Tabella Telemetries (con colonna data per i sensori)
+  // 3. Tabella 'telemetries': archivio cronologico dei dati provenienti dal campo.
   db.run(
     `CREATE TABLE IF NOT EXISTS telemetries (
-        ts TEXT, id_machine TEXT,
+        ts TEXT, 
+        id_machine TEXT,
         state TEXT, 
         orderCode TEXT,
         data TEXT, 
-        alarms TEXT,
+        alarms TEXT, 
         PRIMARY KEY (ts, id_machine),
         FOREIGN KEY (id_machine) REFERENCES machines(id_machine))`,
     (err) => {
-      if (!err) console.log('Tabella telemetries pronta')
+      if (!err) console.log('Schema telemetries inizializzato.')
     },
   )
 
-  // 4. Creazione Tabella Errors
+  // 4. Tabella 'errors': catalogo codificato delle anomalie per specifico macchinario.
   db.run(
     `CREATE TABLE IF NOT EXISTS errors (
-        code TEXT, id_machine TEXT,
+        code TEXT, 
+        id_machine TEXT,
         message TEXT, 
         PRIMARY KEY (code, id_machine),
         FOREIGN KEY (id_machine) REFERENCES machines(id_machine))`,
     (err) => {
       if (!err) {
-        console.log('Tabella errors pronta. Inserimento macchine di default...')
+        console.log('Schema errors inizializzato. Esecuzione seeding dati di default...')
         popolaDatiDefault()
       }
     },
   )
 })
 
-// Funzione per inserire le linee e le macchine se non esistono già
+/**
+ * Inserisce i dati minimi necessari al funzionamento della simulazione.
+ * Utilizza l'istruzione 'INSERT OR IGNORE' per evitare conflitti in caso di riavvii multipli.
+ */
 function popolaDatiDefault() {
   db.serialize(() => {
-    // Inserimento linea principale
+    // Definizione della linea di produzione predefinita.
     db.run(`INSERT OR IGNORE INTO lines VALUES ('line-1', 'Main Line', 'Linea Principale', 1)`)
 
-    // Inserimento configurazione macchine
-    const machines = [
+    // Configurazione del parco macchine iniziale.
+    const listaMacchine = [
       [
-        'press-01',
+        'Press-01',
         'Pressa Idraulica',
         'PRESS',
         'Siemens',
@@ -87,7 +105,7 @@ function popolaDatiDefault() {
         'line-1',
       ],
       [
-        'cnc-01',
+        'Cnc-01',
         'Tornio CNC',
         'CNC',
         'Fanuc',
@@ -97,7 +115,7 @@ function popolaDatiDefault() {
         'line-1',
       ],
       [
-        'robot-01',
+        'Robot-01',
         'Robot ABB',
         'ROBOT',
         'ABB',
@@ -107,7 +125,7 @@ function popolaDatiDefault() {
         'line-1',
       ],
       [
-        'packer-01',
+        'Packer-01',
         'Imballatrice Automatica',
         'PACKER',
         'Siemens',
@@ -117,7 +135,7 @@ function popolaDatiDefault() {
         'line-1',
       ],
       [
-        'qc-01',
+        'Qc-01',
         'Stazione Controllo Qualità',
         'QC',
         'Beckhoff',
@@ -128,11 +146,36 @@ function popolaDatiDefault() {
       ],
     ]
 
-    const stmtM = db.prepare(`INSERT OR IGNORE INTO machines VALUES (?,?,?,?,?,?,?,?)`)
-    machines.forEach((m) => stmtM.run(m))
-    stmtM.finalize()
+    // 1. Si prepara il "modello" per le macchine
+    const inserisciM = db.prepare(`INSERT OR IGNORE INTO machines VALUES (?,?,?,?,?,?,?,?)`)
 
-    console.log('Macchine inserite correttamente!')
+    // 2. Per ogni macchina presente nella lista, si riempie il modello e si salva
+    listaMacchine.forEach((m) => inserisciM.run(m))
+
+    // 3. Si comunica al database che abbiamo finito con questo modello
+    inserisciM.finalize()
+
+    // --- Lista degli errori comuni ---
+    const listaErrori = [
+      ['E01', 'Press-01', 'Pressione Bassa'],
+      ['E02', 'Press-01', 'Pompa Calda'],
+      ['E01', 'Cnc-01', 'Punta Usurata'],
+      ['E01', 'Robot-01', 'Urto Rilevato'],
+      ['E01', 'Packer-01', 'Nastro Fermo'],
+    ]
+
+    // 4. Si prepara il "modello" per gli errori
+    const inserisciE = db.prepare(
+      `INSERT OR IGNORE INTO errors (code, id_machine, message) VALUES (?, ?, ?)`,
+    )
+
+    // 5. Si inserisce ogni errore della lista nel database
+    listaErrori.forEach((err) => inserisciE.run(err))
+
+    // 6. Si chiude il modello degli errori
+    inserisciE.finalize()
+
+    console.log('Salvataggio iniziale completato.')
   })
 }
 

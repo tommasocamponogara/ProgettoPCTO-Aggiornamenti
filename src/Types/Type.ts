@@ -1,65 +1,78 @@
-// Definizione della struttura base di una Macchina
+/**
+ * In questo file vengono definite le "forme" dei dati.
+ */
+
+/**
+ * Viene definita la struttura di una Macchina.
+ * Contiene i dati tecnici, il produttore del computer di controllo (PLC)
+ * e la lista dei segnali che invia.
+ */
 export type Machine = {
-  id: string
-  lineId: string
-  name: string
-  type: string
+  id: string // Il codice unico della macchina
+  lineId: string // A quale linea appartiene
+  name: string // Il nome della macchina
+  type: string // Il tipo (es. Robot, Pressa)
   plc: {
-    vendor: string
-    model: string
+    vendor: string // La marca (es. Siemens)
+    model: string // Il modello del pezzo
   }
-  order: number
-  // Telemetrie associate alla macchina, se presenti, altrimenti sarà un array vuoto
-  telemetries: Telemetry[]
+  order: number // La posizione nella fila
+  telemetries: Telemetry[] // La lista dei segnali ricevuti
 }
 
-// Estensione del tipo Macchina che garantisce la presenza di telemetrie
-// Oggetto che possiede tutte le proprietà di Machine e aggiunge un array di telemetrie
-export type MachineWithTelemetries = Machine & {
-  telemetries: Telemetry[]
-}
-
-// Definizione della struttura di una Linea di produzione
+/**
+ * Si definisce una Linea di produzione.
+ * Una linea è un insieme di macchine e ha uno stato che indica se tutto va bene o no.
+ */
 export type Line = {
   id: string
   name: string
   description: string
   order: number
-  machines: Machine[]
-  telemetries: Telemetry[]
-  status: 'positive' | 'wait' | 'alarm'
+  machines: Machine[] // Tutte le macchine di questa linea
+  telemetries: Telemetry[] // Tutti i segnali di tutte le macchine della linea
+  status: 'positive' | 'wait' | 'alarm' // Stato: Verde (ok), Giallo (attesa), Rosso (allarme)
 }
 
-// Definizione dei dati inviati dai sensori (Telemetria)
+/**
+ * Viene definita la Telemetria (il segnale che arriva dai sensori).
+ * Si stabilisce quali informazioni vengono inviate ogni pochi secondi dalle macchine.
+ */
 export type Telemetry = {
-  machineId: string
-  type: string
-  ts: string // Timestamp del segnale (momento esatto in cui il dato è stato generato: formato data)
+  machineId: string // Da quale macchina arriva il segnale
+  type: string // Che tipo di dato è
+  ts: string // L'ora esatta in cui è stato creato il dato (Timestamp)
+
+  // Informazioni rapide sullo stato attuale
+  state?: 'RUN' | 'IDLE' | 'OFFLINE' | 'FAULT' | 'STOP'
+  orderCode?: string // Cosa sta producendo in questo momento
+
+  /**
+   * Sezione "reported" (Dati riportati).
+   * Qui si trovano i valori fisici misurati dai sensori.
+   */
   reported: {
     state: 'RUN' | 'IDLE' | 'OFFLINE' | 'FAULT' | 'STOP'
     orderCode: string
-    temperature: number
-    pressure: number
-    alarms: // O array vuoto o array che rappresenta gli allarmi attivi sul macchinario
-      | [
-          {
-            code: string
-            message: string
-            locking: boolean // Indica se l'allarme blocca la produzione
-          },
-        ]
-      | [] // Può essere un array vuoto se non ci sono allarmi
+    temperature: number // Gradi della macchina
+    pressure: number // Pressione della macchina
+    alarms:
+      | {
+          // Eventuali errori trovati
+          code: string // Codice errore
+          message: string // Cosa sta succedendo
+          locking: boolean // Vero se la macchina si è bloccata
+        }[]
+      | []
   }
 }
 
-// Proprietà attese dai componenti che leggono file o flussi dati
+/**
+ * Si definiscono le regole per i componenti che leggono i file.
+ * Serve a spiegare al programma come salvare le liste di macchine e linee una volta caricate.
+ */
 export type ReadFileProps = {
   setMachines: (machines: Machine[]) => void
   setLines: (lines: Line[]) => void
   setTelemetries: (telemetries: Telemetry[]) => void
-}
-
-// Proprietà per componenti che mostrano lo stato generale delle linee
-export type StatusProps = {
-  lineMachines: Line[]
 }

@@ -1,3 +1,9 @@
+/**
+ * In questo file viene gestita la pagina principale di monitoraggio dei macchinari.
+ * Si occupa di recuperare la lista di tutte le macchine e di aggiornare i dati
+ * automaticamente ogni 5 secondi, in modo da mostrare sempre le informazioni più recenti.
+ */
+
 import { useEffect, useState } from 'react'
 import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
@@ -6,20 +12,58 @@ import { getMachines } from '../utils/api'
 import type { Machine } from '../Types/Type'
 
 export default function Machines() {
-  // Stato locale per contenere l'array di macchine
-  const [machines, setMachines] = useState<Machine[]>([])
+  /**
+   * Stato locale:
+   * Viene creato uno spazio in memoria per conservare l'elenco dei macchinari.
+   */
+  const [listaMacchine, setListaMacchine] = useState<Machine[]>([])
 
-  // Al caricamento, interroga l'API per ottenere tutte le macchine
+  /**
+   * Funzione di aggiornamento:
+   * Viene effettuata una chiamata al server per ottenere i dati aggiornati.
+   * I nuovi dati vengono salvati nello stato per attivare l'aggiornamento visivo della pagina.
+   */
+  const aggiornaDati = () => {
+    getMachines()
+      .then((dati) => {
+        // Si crea una copia dei dati per essere sicuri che React si accorga del cambiamento
+        setListaMacchine([...dati])
+      })
+      .catch((err) => console.error('Errore durante il recupero dei dati:', err))
+  }
+
+  /**
+   * Gestione del tempo (Polling):
+   * Quando la pagina viene aperta, i dati vengono caricati subito.
+   * Viene poi impostato un timer che ripete l'aggiornamento ogni 5000 millisecondi (5 secondi).
+   */
   useEffect(() => {
-    getMachines().then((machines) => setMachines(machines))
+    // Primo caricamento immediato
+    aggiornaDati()
+
+    // Si avvia il timer per i caricamenti successivi
+    const timer = setInterval(aggiornaDati, 5000)
+
+    /**
+     * Funzione di pulizia:
+     * È fondamentale per fermare il timer quando l'utente cambia pagina.
+     * Evita che il computer continui a lavorare inutilmente in sottofondo.
+     */
+    return () => clearInterval(timer)
   }, [])
 
   return (
     <>
+      {/* Vengono inseriti i componenti fissi della struttura (menu laterale e barra superiore) */}
       <Sidebar />
       <Topbar />
-      {/* Visualizza il widget che contiene la griglia o lista delle macchine */}
-      <Widget_Machines machines={machines} />
+
+      {/**
+       * Visualizzazione:
+       * La lista delle macchine viene passata al componente "Widget_Machines",
+       * che si occuperà di disegnarle graficamente sullo schermo.
+       */}
+      <Widget_Machines machines={listaMacchine} />
     </>
   )
 }

@@ -1,75 +1,80 @@
+/**
+ * In questo file viene gestita la tabella che mostra tutte le linee di produzione.
+ * Si occupa di scaricare i dati dal database, mostrare se una linea è attiva o bloccata
+ * e fornire i tasti per aggiungere, modificare o eliminare le linee.
+ */
+
 import { useEffect, useState } from 'react'
 import { getLines } from '../utils/api'
 import { useNavigate } from 'react-router-dom'
 import type { Line } from '../Types/Type'
 import { getDetailsLineMachine } from '../utils/getDetailsLineMachine'
-import { ManageLines } from '../pages/ManageLines'
 import { deleteLine } from '../pages/ManageLines'
 
-// Componente che mostra una tabella con le linee di produzione (cioe quando l'utente clicca su linee nella sidebar, viene mostrata una tabella con tutte le linee presenti nel database)
-
+/**
+ * Viene creato il componente che visualizza l'elenco delle linee.
+ */
 export function TableLines() {
   const navigate = useNavigate()
-  // Crea un array vuoto di oggetti di tipo Line e un funzione per aggiornarlo
+
+  // Si crea uno spazio in memoria (stato) per conservare la lista delle linee
   const [lines, setLines] = useState<Line[]>([])
 
-  // Al caricamento recupera le linee per avere i dati aggiornati dal database
+  /**
+   * Viene attivato il recupero delle linee non appena la pagina si carica.
+   * Si usa un array di dipendenze vuoto [] per evitare di chiedere i dati all'infinito.
+   */
   useEffect(() => {
-    // Quando il componente viene montato, chiama la funzione getLines presente in API.ts, per recuperare le linee di produzione dal database, per poi aggiornare lo stato del componente
-    getLines().then((lines) => setLines(lines))
-  }, [lines])
+    getLines().then((datiRicevuti) => setLines(datiRicevuti))
+  }, [])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-800 w-full font-mono">
-      <div className="max-h-[70vh] overflow-y-auto w-3/4 max-w-5xl rounded-lg shadow-lg shadow-black/40">
+      <div className="max-h-[70vh] overflow-y-auto w-3/4 max-w-5xl rounded-lg shadow-lg">
+        {/* Pulsante per andare alla pagina di creazione di una nuova linea */}
         <button
           onClick={() => navigate('/dashboard/lines/ManageLines')}
-          className="px-4 py-2 bg-amber-500 text-slate-900 rounded-lg hover:bg-amber-400 transition-colors"
+          className="px-4 py-2 mb-4 bg-amber-500 text-slate-900 rounded-lg hover:bg-amber-400"
         >
-          Aggiungi Linea
+          + Aggiungi Linea
         </button>
+
         <table className="w-full border-collapse">
-          <thead className="bg-amber-700 text-slate-900 sticky top-0 z-10">
+          {/* Intestazione della tabella con i titoli delle colonne */}
+          <thead className="bg-amber-700 text-slate-900 sticky top-0">
             <tr>
-              <th className="px-6 py-4 text-center text-lg font-semibold uppercase tracking-wider">
-                ID#
-              </th>
-              <th className="px-6 py-4 text-center text-lg font-semibold uppercase tracking-wider">
-                Linea
-              </th>
-              <th className="px-6 py-4 text-center text-lg font-semibold uppercase tracking-wider">
-                Stato
-              </th>
-              <th className="px-6 py-4 text-center text-lg font-semibold uppercase tracking-wider">
-                N. Macchine
-              </th>
-              <th className="px-6 py-4 text-center text-lg font-semibold uppercase tracking-wider">
-                Descrizione
-              </th>
-              <th className="px-6 py-4 text-center text-lg font-semibold uppercase tracking-wider">
-                Azioni
-              </th>
+              <th className="px-6 py-4">ID#</th>
+              <th className="px-6 py-4">Linea</th>
+              <th className="px-6 py-4">Stato</th>
+              <th className="px-6 py-4">N. Macchine</th>
+              <th className="px-6 py-4">Descrizione</th>
+              <th className="px-6 py-4">Azioni</th>
             </tr>
           </thead>
+
+          {/* Corpo della tabella dove vengono mostrate le righe con i dati */}
           <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-700 text-center">
             {lines.map((line) => {
-              // Per ogni linea di produzione recupera il numero di allarmi attivi per quella linea (grazie alla funzione numbersOfAlarms definita in getDetailsLineMachine)
-              // Calcola il numero di allarmi attivi per ogni singola linea
+              // Si calcola quanti allarmi sono attivi per questa linea
               const { numbersOfAlarms } = getDetailsLineMachine()
-              const lineNumberAlarms = numbersOfAlarms(line.machines)
+              const numeroAllarmi = numbersOfAlarms(line.machines)
+
               return (
                 <tr key={line.id} className="hover:bg-slate-800 transition-colors">
+                  {/* Codice ID: cliccando qui si apre il dettaglio della linea */}
                   <td
-                    className="px-6 py-4 hover:cursor-pointer hover:text-amber-400"
+                    className="px-6 py-4 cursor-pointer hover:text-amber-400"
                     onClick={() => navigate(`${line.id}`)}
                   >
                     {'#' + line.id}
                   </td>
+
                   <td className="px-6 py-4">{line.name}</td>
+
+                  {/* Badge colorato che cambia in base allo stato della linea */}
                   <td className="px-6 py-4">
-                    {/* Badge colorato in base allo stato della linea */}
                     <span
-                      className={`inline-flex items-center justify-center w-25 h-6 rounded-full text-xs font-semibold ${
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${
                         line.status === 'positive'
                           ? 'bg-green-500 text-slate-900'
                           : line.status === 'wait'
@@ -78,29 +83,32 @@ export function TableLines() {
                       }`}
                     >
                       {line.status === 'positive'
-                        ? `Attiva (${lineNumberAlarms})`
+                        ? `Attiva (${numeroAllarmi})`
                         : line.status === 'wait'
-                          ? `Attesa (${lineNumberAlarms})`
-                          : `Bloccata (${lineNumberAlarms})`}
+                          ? `Attesa (${numeroAllarmi})`
+                          : `Bloccata (${numeroAllarmi})`}
                     </span>
                   </td>
+
                   <td className="px-6 py-4">{line.machines.length}</td>
 
+                  {/* Descrizione: se è troppo lunga viene tagliata con dei puntini (...) */}
                   <td className="px-6 py-4 max-w-xs truncate" title={line.description}>
                     {line.description}
                   </td>
 
+                  {/* Tasti per modificare i dati o eliminare la linea */}
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={() => navigate(`/dashboard/lines/ManageLines/${line.id}`)}
-                        className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded transition-colors"
+                        className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded"
                       >
                         Modifica
                       </button>
                       <button
                         onClick={() => deleteLine(line.id)}
-                        className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-sm rounded transition-colors"
+                        className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-sm rounded"
                       >
                         Elimina
                       </button>

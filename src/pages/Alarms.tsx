@@ -1,28 +1,53 @@
+/**
+ * In questo file viene gestita la pagina principale degli allarmi.
+ * Funge da centro di controllo: scarica dal server tutte le segnalazioni
+ * urgenti (telemetrie critiche) e le mostra all'utente attraverso i componenti della pagina.
+ */
+
 import { useEffect, useState } from 'react'
 import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
-import type { Machine } from '../Types/Type'
-import { getMachines } from '../utils/api'
 import { Widget_Alarms } from '../componenti/Widget_Alarms'
 
 export default function Dashboard() {
-  // Stato per memorizzare la lista delle macchine ottenute dall'API
-  const [telemetries, setTelemetries] = useState([])
+  /**
+   * Stato locale:
+   * Viene creato uno spazio in memoria per conservare i segnali (telemetrie)
+   * che contengono errori o guasti.
+   */
+  const [segnaliCritici, setSegnaliCritici] = useState([])
 
+  /**
+   * Recupero dei dati:
+   * Non appena la pagina viene aperta, viene inviata una richiesta al server.
+   * Si richiede specificamente l'indirizzo "/telemetries/critical" per scaricare
+   * solo i dati che hanno problemi, evitando di caricare quelli inutili.
+   */
   useEffect(() => {
-    // Esempio di chiamata diretta alla tua nuova API
+    // Si interroga il server per avere la lista dei guasti
     fetch('http://localhost:3000/telemetries/critical')
-      .then((res) => res.json())
-      .then((data) => setTelemetries(data))
-  }, [])
+      .then((risposta) => risposta.json())
+      .then((dati) => {
+        // I dati ricevuti vengono salvati nello stato per mostrarli a video
+        setSegnaliCritici(dati)
+      })
+      .catch((errore) => {
+        console.error('Errore nel recupero dei segnali critici:', errore)
+      })
+  }, []) // Le parentesi vuote indicano di farlo solo una volta all'apertura
 
   return (
     <>
-      {/* Componenti di navigazione dell'interfaccia */}
+      {/* Vengono inseriti i componenti della barra laterale e superiore */}
       <Sidebar />
       <Topbar />
-      {/* Widget che mostra gli allarmi passando la lista delle macchine come proprietà */}
-      <Widget_Alarms telemetries={telemetries} />
+
+      {/**
+       * Visualizzazione:
+       * I segnali scaricati vengono passati al "Widget_Alarms", che è il componente
+       * che si occupa di disegnare la tabella degli allarmi che abbiamo visto.
+       */}
+      <Widget_Alarms telemetries={segnaliCritici} />
     </>
   )
 }

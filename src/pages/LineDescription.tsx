@@ -1,3 +1,9 @@
+/**
+ * In questo file viene gestita la pagina che mostra i dettagli di una specifica linea.
+ * Si occupa di capire quale linea è stata cliccata, scaricare i suoi dati dal server
+ * e comporre la pagina unendo i vari pezzi come la barra laterale e il grafico della linea.
+ */
+
 import { useLocation } from 'react-router-dom'
 import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
@@ -8,28 +14,42 @@ import { useEffect, useState } from 'react'
 import type { Line } from '../Types/Type'
 
 export function LineDescription() {
-  // Hook per accedere alle informazioni dell'URL corrente
-  const location = useLocation()
-  // Estrae l'ID della linea prendendo l'ultima parte dell'indirizzo URL
-  const lineId = location.pathname.split('/').pop()
+  /**
+   * Si recupera l'indirizzo della pagina per capire quale linea mostrare.
+   * Viene preso l'ID della linea (es. "line-1") leggendo l'ultima parte dell'URL.
+   */
+  const posizione = useLocation()
+  const idLinea = posizione.pathname.split('/').pop()
 
-  // Stato per memorizzare i dati della singola linea selezionata
-  const [line, setLine] = useState<Line>()
+  /**
+   * Si crea una variabile di stato per memorizzare i dati della linea.
+   * All'inizio è vuota, verrà riempita dopo aver ricevuto risposta dal server.
+   */
+  const [linea, setLinea] = useState<Line>()
 
-  // Effetto che si attiva ogni volta che l'ID della linea cambia
+  /**
+   * Viene avviata la richiesta dei dati ogni volta che l'ID della linea cambia.
+   * Se viene trovato un ID valido, si interroga il database per avere le informazioni complete.
+   */
   useEffect(() => {
-    if (lineId) {
-      // Chiama l'API per ottenere i dettagli della linea specifica
-      getLine(lineId).then((l) => setLine(l))
+    if (idLinea) {
+      getLine(idLinea).then((datiRicevuti) => setLinea(datiRicevuti))
     }
-  }, [lineId])
+  }, [idLinea])
 
   return (
     <>
+      {/* Vengono mostrate le barre di navigazione fisse (laterale e superiore) */}
       <Sidebar />
       <Topbar />
-      {/* Mostra il sinottico della linea solo se i dati della linea sono stati caricati */}
-      {line && <LineSynoptic lineName={line.name} machines={line.machines} line={line} />}
+
+      {/**
+       * Viene mostrato il grafico della linea (Sinottico) solo se i dati sono stati caricati.
+       * Se "linea" esiste, si passano i nomi e i macchinari al componente grafico.
+       */}
+      {linea && <LineSynoptic lineName={linea.name} machines={linea.machines} line={linea} />}
+
+      {/* Viene mostrata la legenda per spiegare il significato dei colori e delle icone */}
       <LegendSinoptic />
     </>
   )
