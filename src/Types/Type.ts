@@ -40,12 +40,20 @@ export type Line = {
  */
 export type Telemetry = {
   machineId: string // Da quale macchina arriva il segnale
+  id_machine?: string // Alias alternativo usato in alcune risposte backend
   type: string // Che tipo di dato è
   ts: string // L'ora esatta in cui è stato creato il dato (Timestamp)
 
   // Informazioni rapide sullo stato attuale
   state?: 'RUN' | 'IDLE' | 'OFFLINE' | 'FAULT' | 'STOP'
   orderCode?: string // Cosa sta producendo in questo momento
+  alarms?:
+    | {
+        code: string // Codice errore
+        message: string // Cosa sta succedendo
+        locking: boolean // Vero se la macchina si è bloccata
+      }[]
+    | []
 
   /**
    * Sezione "reported" (Dati riportati).

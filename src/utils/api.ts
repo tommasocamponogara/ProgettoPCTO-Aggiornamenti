@@ -9,8 +9,12 @@ function normalizeTelemetry(raw: any): Telemetry {
   // Si estrae l'ID della macchina cercando tra i nomi di proprietà possibili
   const idMacchina = raw.machineId || raw.id_machine || ''
 
-  // Viene stabilito lo stato operativo (RUN, STOP, ecc.). Se assente, si imposta OFFLINE
-  const statoVerificato = String(raw.state || 'OFFLINE').toUpperCase()
+  // Viene stabilito lo stato operativo (RUN, STOP, ecc.). Se assente, si imposta OFFLINE.
+  // Alcuni endpoint usano "state", altri usano "reported.state".
+  const statoVerificato = String(raw.state || raw.reported?.state || 'OFFLINE').toUpperCase()
+
+  // Stessa logica anche per il codice ordine
+  const codiceOrdine = String(raw.orderCode || raw.reported?.orderCode || '---')
 
   // Se i dati dei sensori arrivano come testo, vengono convertiti in un oggetto leggibile
   let datiSensori = raw.data
@@ -22,23 +26,58 @@ function normalizeTelemetry(raw: any): Telemetry {
     }
   }
 
+  // Gli allarmi possono arrivare come array o come stringa JSON ("[]")
+  let listaAllarmi = raw.alarms || raw.reported?.alarms || []
+  if (typeof listaAllarmi === 'string') {
+    try {
+      listaAllarmi = JSON.parse(listaAllarmi)
+    } catch (e) {
+      listaAllarmi = []
+    }
+  }
+
   // Si crea l'oggetto finale correttamente formattato per il frontend
   return {
     machineId: String(idMacchina),
+    id_machine: String(idMacchina),
     type: raw.type || '',
     ts: raw.ts || '',
     reported: {
       state: statoVerificato,
-      orderCode: raw.orderCode || '---',
+      orderCode: codiceOrdine,
       temperature: datiSensori?.temperature || 0,
       pressure: datiSensori?.pressure || 0,
-      alarms: raw.alarms || [],
+      alarms: Array.isArray(listaAllarmi) ? listaAllarmi : [],
     },
     // Si mantengono questi campi esterni per facilitare l'accesso rapido ai dati
     state: statoVerificato,
-    orderCode: raw.orderCode || '---',
-    alarms: raw.alarms || [],
+    orderCode: codiceOrdine,
+    alarms: Array.isArray(listaAllarmi) ? listaAllarmi : [],
   } as Telemetry
+}
+
+/**
+ * Questa funzione sistema i campi delle macchine.
+ * Serve per evitare crash se alcuni campi non arrivano dal backend.
+ */
+function normalizeMachine(raw: any, segnaliMacchina: Telemetry[]): Machine {
+  const idMacchina = String(raw.id || raw.id_machine || '').trim()
+  const linea = String(raw.lineId || raw.id_line || 'Senza Linea')
+  const plcVendor = String(raw.plc?.vendor || raw.plc_vendor || 'N/D')
+  const plcModel = String(raw.plc?.model || raw.plc_model || 'N/D')
+
+  return {
+    id: idMacchina,
+    lineId: linea,
+    name: String(raw.name || 'Macchina Ignota'),
+    type: String(raw.type || 'N/D'),
+    plc: {
+      vendor: plcVendor,
+      model: plcModel,
+    },
+    order: Number(raw.order || raw.order_nr || 0),
+    telemetries: segnaliMacchina,
+  }
 }
 
 /**
@@ -61,6 +100,7 @@ export async function getMachines(): Promise<Machine[]> {
   const listaMacchine = await rispostaMacchine.json()
 
   const tutteTelemetrie = await getTelemetries()
+  const listaFinale: Machine[] = []
 
   // Per ogni macchina presente nell'elenco...
   for (let macchina of listaMacchine || []) {
@@ -69,11 +109,11 @@ export async function getMachines(): Promise<Machine[]> {
       return t.machineId === macchina.id || t.machineId === macchina.id_machine
     })
 
-    // I segnali corrispondenti vengono salvati all'interno dell'oggetto macchina
-    macchina.telemetries = segnaliMacchina
+    // La macchina viene "ripulita" e aggiunta alla lista finale
+    listaFinale.push(normalizeMachine(macchina, segnaliMacchina))
   }
 
-  return listaMacchine
+  return listaFinale
 }
 
 /**

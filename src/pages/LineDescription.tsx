@@ -4,7 +4,7 @@
  * e comporre la pagina unendo i vari pezzi come la barra laterale e il grafico della linea.
  */
 
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
 import { LineSynoptic } from './LineSynoptic'
@@ -16,10 +16,9 @@ import type { Line } from '../Types/Type'
 export function LineDescription() {
   /**
    * Si recupera l'indirizzo della pagina per capire quale linea mostrare.
-   * Viene preso l'ID della linea (es. "line-1") leggendo l'ultima parte dell'URL.
+   * Viene preso l'ID della linea (es. "line-1") tramite i parametri della rotta.
    */
-  const posizione = useLocation()
-  const idLinea = posizione.pathname.split('/').pop()
+  const { lineId } = useParams()
 
   /**
    * Si crea una variabile di stato per memorizzare i dati della linea.
@@ -32,10 +31,23 @@ export function LineDescription() {
    * Se viene trovato un ID valido, si interroga il database per avere le informazioni complete.
    */
   useEffect(() => {
-    if (idLinea) {
-      getLine(idLinea).then((datiRicevuti) => setLinea(datiRicevuti))
+    // Se non c'è un ID linea valido, non facciamo richieste
+    if (!lineId) return
+
+    // Funzione unica che aggiorna i dati della linea
+    const aggiornaLinea = () => {
+      getLine(lineId).then((datiRicevuti) => setLinea(datiRicevuti))
     }
-  }, [idLinea])
+
+    // Primo caricamento immediato
+    aggiornaLinea()
+
+    // Aggiornamento automatico ogni 5 secondi
+    const timer = setInterval(aggiornaLinea, 5000)
+
+    // Pulizia timer quando si esce dalla pagina
+    return () => clearInterval(timer)
+  }, [lineId])
 
   return (
     <>
@@ -47,7 +59,11 @@ export function LineDescription() {
        * Viene mostrato il grafico della linea (Sinottico) solo se i dati sono stati caricati.
        * Se "linea" esiste, si passano i nomi e i macchinari al componente grafico.
        */}
-      {linea && <LineSynoptic lineName={linea.name} machines={linea.machines} line={linea} />}
+      {linea ? (
+        <LineSynoptic lineName={linea.name} machines={linea.machines} line={linea} />
+      ) : (
+        <div className="text-slate-400 text-center pt-40">Caricamento linea in corso...</div>
+      )}
 
       {/* Viene mostrata la legenda per spiegare il significato dei colori e delle icone */}
       <LegendSinoptic />

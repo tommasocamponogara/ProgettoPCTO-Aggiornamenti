@@ -25,7 +25,19 @@ export function TableLines() {
    * Si usa un array di dipendenze vuoto [] per evitare di chiedere i dati all'infinito.
    */
   useEffect(() => {
-    getLines().then((datiRicevuti) => setLines(datiRicevuti))
+    // Funzione che ricarica i dati dal backend
+    const aggiornaLinee = () => {
+      getLines().then((datiRicevuti) => setLines(datiRicevuti))
+    }
+
+    // Primo caricamento immediato
+    aggiornaLinee()
+
+    // Aggiornamento automatico ogni 5 secondi
+    const timer = setInterval(aggiornaLinee, 5000)
+
+    // Pulizia del timer quando si cambia pagina
+    return () => clearInterval(timer)
   }, [])
 
   return (

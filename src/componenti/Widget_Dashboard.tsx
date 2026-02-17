@@ -11,13 +11,30 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
   const n_macchinari = lines.reduce((acc, line) => acc + line.machines.length, 0)
   const navigate = useNavigate()
 
-  // Crea una lista di ID macchine univoche che hanno allarmi attivi
-  const listaconta: string[] = []
+  // Qui salviamo solo l'ultima telemetria di ogni macchina
+  const ultimaTelemetriaPerMacchina: Record<string, Telemetry> = {}
+
+  // Si scorrono tutte le telemetrie ricevute
   for (const telemetry of telemetries) {
-    if (telemetry?.reported?.alarms?.length !== 0 && !listaconta.includes(telemetry.machineId)) {
-      listaconta.push(telemetry.machineId)
+    const idMacchina = telemetry.machineId
+    const precedente = ultimaTelemetriaPerMacchina[idMacchina]
+
+    // Se è la prima telemetria trovata per questa macchina, la salviamo subito
+    if (!precedente) {
+      ultimaTelemetriaPerMacchina[idMacchina] = telemetry
+      continue
+    }
+
+    // Se la nuova telemetria è più recente, sostituisce la precedente
+    if (new Date(telemetry.ts).getTime() > new Date(precedente.ts).getTime()) {
+      ultimaTelemetriaPerMacchina[idMacchina] = telemetry
     }
   }
+
+  // Vengono conteggiate solo le macchine che ORA sono in stato di blocco
+  const listaconta = Object.values(ultimaTelemetriaPerMacchina).filter((t) => {
+    return t.reported.state === 'FAULT' || t.reported.state === 'STOP'
+  })
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-800 font-mono font-semi">

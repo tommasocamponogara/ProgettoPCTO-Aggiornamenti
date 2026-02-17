@@ -1,3 +1,10 @@
+/**MachineDescTable({ machine })
+    Recupera l’ultima telemetria via getLastTelemetry.
+    Costruisce una lista coppie etichetta/valore (machineDetails).
+    Usa fallback sicuri per PLC (N/D) se dato mancante.
+    Mostra stato attuale preso dall’ultima telemetria.
+ */
+
 import type { Machine } from '../Types/Type'
 import { getLastTelemetry } from '../utils/getLastTelemetry'
 
@@ -5,7 +12,7 @@ type MachineDescTableProp = {
   machine: Machine
 }
 
-// Definisce un componente che mostra una tabella con le informazioni di una macchina (cioe quando l'utente clicca su una macchina specifica nella pagina macchinari, 
+// Definisce un componente che mostra una tabella con le informazioni di una macchina (cioe quando l'utente clicca su una macchina specifica nella pagina macchinari,
 // viene mostrata una tabella con le informazioni di quella macchina)
 
 export function MachineDescTable({ machine }: MachineDescTableProp) {
@@ -18,8 +25,8 @@ export function MachineDescTable({ machine }: MachineDescTableProp) {
     ['Linea', machine.lineId],
     ['Nome', machine.name],
     ['Tipologia', machine.type],
-    ['Produttore', machine.plc.vendor],
-    ['Modello', machine.plc.model],
+    ['Produttore', machine.plc?.vendor || 'N/D'],
+    ['Modello', machine.plc?.model || 'N/D'],
     // Optional Chaining: se lastTelemetr vuoto non va oltre il punto di domanda, onde evitare crash
     ['Stato Attuale', lastTelemetr?.reported.state],
   ]

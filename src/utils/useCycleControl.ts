@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Telemetry } from '../Types/Type'
 import { getTelemetries } from './api'
-import { BellStatus } from './BellFunctions'
 
 //Controlla ogni 5 minuti se sono arrivati nuovi dati dalle macchine; se non ne sono arrivati, fammi suonare un allarme (la campanella).
 
@@ -19,7 +18,7 @@ export function useCycleControl() {
   const setBellOn = () => setBellStatus(true)
   const setBellOff = () => setBellStatus(false)
 
-  const [telemetriesBefore, setTelemetriesBefore] = useState<Telemetry[]>([])
+  const [, setTelemetriesBefore] = useState<Telemetry[]>([])
   //const [telemetriesAfter, setTelemetriesAfter] = useState<Telemetry[]>([])
 
   // Al primo avvio, salva il numero attuale di telemetrie se non presente

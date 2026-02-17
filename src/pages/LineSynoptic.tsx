@@ -1,5 +1,6 @@
 import type { Line, Machine } from '../Types/Type'
 import { useNavigate } from 'react-router-dom'
+import { getLastTelemetry } from '../utils/getLastTelemetry'
 
 // Definizione delle proprietà attese dal componente
 type SynopticProps = {
@@ -29,8 +30,8 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
 
   // Funzione per determinare la classe CSS (e quindi il colore/animazione) in base allo stato
   const getMachineClass = (machine: Machine) => {
-    // Prende l'ultima telemetria disponibile
-    const lastTelemetry = machine.telemetries?.[machine.telemetries.length - 1]
+    // Prende la telemetria più recente reale (non l'ultima posizione dell'array)
+    const lastTelemetry = getLastTelemetry({ machine })
     if (!lastTelemetry) return 'syn-idle'
 
     // Associa lo stato della telemetria a una classe CSS specifica
@@ -52,7 +53,7 @@ export function LineSynoptic({ lineName, machines }: SynopticProps) {
 
   // Genera il testo che appare al passaggio del mouse (tooltip)
   const getTooltipText = (machine: Machine) => {
-    const lastTelemetry = machine.telemetries?.[machine.telemetries.length - 1]
+    const lastTelemetry = getLastTelemetry({ machine })
     if (!lastTelemetry) return `Stato: N/D`
 
     // Formatta la lista degli allarmi se presenti

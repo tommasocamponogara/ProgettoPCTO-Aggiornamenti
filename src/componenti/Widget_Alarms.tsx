@@ -4,11 +4,6 @@
  * li mostra in una lista ordinata per data e ora, evidenziando quelli più gravi.
  */
 
-import React from 'react'
-
-/**
- * Si definisce come è fatto un singolo allarme nella lista.
- */
 type AlarmItem = {
   machineId: string // Quale macchina ha il problema
   errorMess: string // Cosa sta succedendo (il messaggio)

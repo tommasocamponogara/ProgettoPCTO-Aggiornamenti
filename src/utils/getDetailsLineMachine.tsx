@@ -18,8 +18,8 @@ export function getDetailsLineMachine() {
     // In lineStatus ci saranno tutti gli stati di quella linea produttiva specifica
 
     // Definizione delle priorità degli stati
-    const alarmStates = ['STOP', 'FAULT', 'OFFLINE']
-    const waitState = ['IDLE']
+    const alarmStates = ['STOP', 'FAULT']
+    const waitState = ['IDLE', 'OFFLINE']
 
     // Se anche una sola macchina è in allarme, l'intera linea è in 'alarm'
     // .some() restituisce true se almeno un elemento dell'array soddisfa la condizione specificata

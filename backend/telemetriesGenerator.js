@@ -1,3 +1,26 @@
+/**generaTelemetria()
+  Legge tutte le macchine dal DB (id_machine, dataCollection).
+    Per ogni macchina sceglie uno stato casuale (RUN, IDLE, OFFLINE, FAULT, STOP).
+    Interpreta dataCollection per sapere quali sensori valorizzare.
+    Crea i valori sensore in base allo stato.
+    Se stato FAULT, delega a gestisciErroreESalva, altrimenti salva subito.
+  gestisciErroreESalva(idMacchina, stato, reportedData)
+    Cerca nel DB gli errori possibili di quella macchina.
+    Se ne trova, ne sceglie uno casuale e costruisce l’array allarmi JSON.
+    Chiama salvaNelDatabase(...).
+  salvaNelDatabase(idMacchina, stato, dataObj, allarmeJson)
+    Costruisce timestamp e orderCode.
+    Serializza i dati sensore in JSON.
+    Inserisce la riga in telemetries.
+  loop()
+    È il ciclo ricorsivo del generatore.
+    Se isRunning è false, esce.
+    Se è attivo, aspetta 4-6 secondi, genera dati, poi richiama sé stesso.
+  start() / stop() (export)
+    start() mette isRunning = true e avvia loop().
+    stop() mette isRunning = false, quindi il loop si ferma al giro successivo. 
+*/
+
 /**
  * In questo file viene gestito il "motore" che crea i dati finti.
  * Serve a simulare una fabbrica vera, creando ogni pochi secondi dei segnali

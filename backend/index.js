@@ -11,6 +11,7 @@ app.use(cors())
 app.use(express.json())
 
 // Si avvia il server e si fa partire il generatore di dati automatici
+// Esegue in backend sempre a meno di comando specifico di stop
 app.listen(port, () => {
   console.log(`Server avviato sulla porta ${port}`)
   generatore.start()
