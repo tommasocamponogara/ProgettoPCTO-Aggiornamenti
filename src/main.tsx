@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')!).render(
       <Route path="dashboard/machines/:machineId" element={<MachineDescription />} />
       <Route path="/dashboard/machines" element={<Machines />} />
       <Route path="/dashboard/lines/:lineId/:machineId" element={<MachineDescription />} />
-      <Route path="/dashboard/allarmi" element={<Alarms />} />
+      <Route path="/dashboard/alarms" element={<Alarms />} />
       <Route path="/dashboard/lines/ManageLines/:id?" element={<ManageLines />} />
       <Route path="/dashboard/machines/ManageMachines" element={<ManageMachines />} />
     </Routes>

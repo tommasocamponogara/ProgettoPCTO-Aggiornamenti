@@ -44,7 +44,7 @@ export function Sidebar() {
           </li>
           <li>
             <Link
-              to="/dashboard/allarmi"
+              to="/dashboard/alarms"
               className="flex items-center gap-2 py-3 px-4 rounded-md hover:bg-amber-700 hover:text-slate-900 transition-colors"
             >
               <HiBell /> Allarmi

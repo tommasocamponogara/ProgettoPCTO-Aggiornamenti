@@ -14,7 +14,7 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
   // Crea una lista di ID macchine univoche che hanno allarmi attivi
   const listaconta: string[] = []
   for (const telemetry of telemetries) {
-    if (telemetry.reported.alarms.length !== 0 && !listaconta.includes(telemetry.machineId)) {
+    if (telemetry?.reported?.alarms?.length !== 0 && !listaconta.includes(telemetry.machineId)) {
       listaconta.push(telemetry.machineId)
     }
   }
@@ -44,7 +44,7 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
 
         {/* Card Allarmi - Cambia colore in rosso se ci sono macchine in allarme */}
         <div
-          onClick={() => navigate(`/dashboard/allarmi`)}
+          onClick={() => navigate(`/dashboard`)}
           className={`bg-slate-900 border-b-4 ${listaconta.length > 0 ? 'border-red-500' : 'border-green-500'} rounded-2xl p-10 text-center shadow-lg shadow-black/40 hover:scale-[1.05] hover:cursor-pointer transition-transform`}
         >
           <p className="text-slate-300 uppercase tracking-widest text-lg">Macchinari in allarme</p>

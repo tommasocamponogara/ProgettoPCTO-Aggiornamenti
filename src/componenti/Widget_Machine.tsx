@@ -28,9 +28,9 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
       machinesId: machine.id,
       lineId: machine.lineId,
       name: machine.name,
-      state: lastTelemetry ? lastTelemetry.reported.state : 'N/D',
-      order: lastTelemetry ? lastTelemetry.reported.orderCode : '',
-      lastUpdate: lastTelemetry ? lastTelemetry.reported.alarms : [],
+      state: lastTelemetry ? lastTelemetry?.reported?.state : 'N/D',
+      order: lastTelemetry ? lastTelemetry?.reported?.orderCode : '',
+      lastUpdate: lastTelemetry ? lastTelemetry?.reported?.alarms : [],
     })
   })
 
@@ -115,7 +115,7 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
               <div className="text-slate-200 font-semibold">{machinetoprint.state}</div>
               <div className="text-slate-200 font-semibold">{machinetoprint.order}</div>
               <div className="text-slate-400 text-sm space-y-1">
-                {machinetoprint.lastUpdate.map((alarm, idx) => (
+                {machinetoprint.lastUpdate?.map((alarm, idx) => (
                   <div key={idx} className="flex items-center justify-center gap-1">
                     <span className="text-red-400">•</span>
                     <span className="font-semibold">{alarm.message}</span>

@@ -129,7 +129,13 @@ app.get('/machines/:id', (req, res) => {
 })
 
 app.post('/machines', (req, res) => {
-  const { id_machine, name, type, plc_vendor, plc_model, order_nr, id_line } = req.body
+  const id_machine = req.body.id
+  const name = req.body.name
+  const type = req.body.type
+  const plc_vendor = req.body.plc.vendor
+  const plc_model = req.body.plc.model
+  const id_line = req.body.id_line
+  const order_nr = req.body.order
 
   db.run(
     `INSERT INTO machines (
