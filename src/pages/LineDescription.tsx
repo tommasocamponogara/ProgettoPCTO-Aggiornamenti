@@ -12,6 +12,7 @@ import { LegendSinoptic } from '../componenti/LegendSinoptic'
 import { getLine } from '../utils/api'
 import { useEffect, useState } from 'react'
 import type { Line } from '../Types/Type'
+import { Notification } from '../componenti/ToastNotification'
 
 export function LineDescription() {
   /**
@@ -51,9 +52,10 @@ export function LineDescription() {
 
   return (
     <>
-      {/* Vengono mostrate le barre di navigazione fisse (laterale e superiore) */}
+      {/* Vengono mostrate le barre di navigazione fisse (laterale e superiore) oltre che le eventuali modifiche*/}
       <Sidebar />
       <Topbar />
+      <Notification />
 
       {/**
        * Viene mostrato il grafico della linea (Sinottico) solo se i dati sono stati caricati.

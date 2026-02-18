@@ -1,15 +1,10 @@
 // Generatore lineare congruenziale (LCG)
-// MMIX di Donald Knuth compilator
+// Random class nelle API di Java
 
 export class LCG {
-  constructor(
-    seed = Date.now(),
-    m = 18446744073709551616,
-    a = 6364136223846793005,
-    c = 1442695040888963407,
-  ) {
+  constructor(seed = Date.now(), m = 281474976710656, a = 25214903917, c = 11) {
     // Parametri standard
-    this.m = m //2^32
+    this.m = m //2^64
     this.a = a
     this.c = c
     this.state = seed

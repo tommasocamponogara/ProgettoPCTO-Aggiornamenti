@@ -13,6 +13,7 @@ import { Topbar } from '../componenti/Topbar'
 import type { Line, Telemetry } from '../Types/Type'
 import { getLines, getTelemetries } from '../utils/api'
 import { Widget_Dashboard } from '../componenti/Widget_Dashboard'
+import { Notification } from '../componenti/ToastNotification'
 
 export default function Dashboard() {
   // Stati per gestire i diversi set di dati necessari alla dashboard
@@ -30,8 +31,8 @@ export default function Dashboard() {
     // Primo caricamento
     aggiornaDashboard()
 
-    // Polling ogni 5 secondi
-    const timer = setInterval(aggiornaDashboard, 5000)
+    // Polling ogni secondo
+    const timer = setInterval(aggiornaDashboard, 1000)
 
     // Pulizia timer quando il componente si smonta
     return () => clearInterval(timer)
@@ -41,6 +42,7 @@ export default function Dashboard() {
     <>
       <Sidebar />
       <Topbar />
+      <Notification />
       {/* Widget principale che riceve le linee e le telemetrie per la visualizzazione */}
       <Widget_Dashboard lines={lines} telemetries={telemetries} />
     </>

@@ -4,8 +4,8 @@
     Interpreta dataCollection per sapere quali sensori valorizzare.
     Crea i valori sensore in base allo stato.
     Se stato FAULT, delega a gestisciErroreESalva, altrimenti salva subito.
-  gestisciErroreESalva(idMacchina, stato, reportedData)
-    Cerca nel DB gli errori possibili di quella macchina.
+  gestisciErroreESalva(idMacchina, tipoMacchina, stato, reportedData)
+    Cerca nel DB gli errori possibili per il tipo di quella macchina.
     Se ne trova, ne sceglie uno casuale e costruisce l’array allarmi JSON.
     Chiama salvaNelDatabase(...).
   salvaNelDatabase(idMacchina, stato, dataObj, allarmeJson)
@@ -27,6 +27,7 @@
  * (temperature, stati, errori) per le macchine salvate nel database.
  */
 
+// Usato per generazione indici e codice ordine
 const { LCG } = require('./randomGenerator')
 const lcg = new LCG() // Si usa questo strumento per creare numeri casuali "ordinati"
 
@@ -46,13 +47,14 @@ const db = new sqlite3.Database('./factory.db', (err) => {
  * 3. Si inventano i valori dei sensori in base al tipo di macchina.
  */
 function generaTelemetria() {
-  db.all('SELECT id_machine, dataCollection FROM machines', (err, listaMacchine) => {
+  db.all('SELECT id_machine, type, dataCollection FROM machines', (err, listaMacchine) => {
     if (err || listaMacchine.length === 0) return
 
     // Si sceglie una macchina a sorte tra quelle disponibili
     const indiceM = Math.floor(Math.random() * listaMacchine.length)
     const macchinaScelta = listaMacchine[indiceM]
     const idMacchina = macchinaScelta.id_machine
+    const tipoMacchina = macchinaScelta.type
 
     // Si decide cosa sta facendo la macchina (accesa, spenta, rotta, ecc.)
     const statiPossibili = ['RUN', 'IDLE', 'OFFLINE', 'FAULT', 'STOP']
@@ -80,7 +82,7 @@ function generaTelemetria() {
 
     // Se la macchina è in errore (FAULT), si cerca un messaggio di guasto specifico
     if (statoScelto === 'FAULT') {
-      gestisciErroreESalva(idMacchina, statoScelto, datiSensori)
+      gestisciErroreESalva(idMacchina, tipoMacchina, statoScelto, datiSensori)
     } else {
       salvaNelDatabase(idMacchina, statoScelto, datiSensori, '[]')
     }
@@ -90,10 +92,10 @@ function generaTelemetria() {
 /**
  * Viene cercato un errore specifico nel database se la macchina è guasta.
  */
-function gestisciErroreESalva(idMacchina, stato, datiSensori) {
+function gestisciErroreESalva(idMacchina, tipoMacchina, stato, datiSensori) {
   db.all(
-    'SELECT code, message FROM errors WHERE id_machine = ?',
-    [idMacchina],
+    'SELECT code, message FROM errors WHERE type_machine = ?',
+    [tipoMacchina],
     (err, listaErrori) => {
       let allarmeJson = '[]'
 
@@ -143,8 +145,7 @@ let attivo = false
 
 function cicloInfinito() {
   if (!attivo) return
-  // Si aspetta un tempo casuale tra 4 e 6 secondi
-  const secondiAttesa = lcg.range(4, 6)
+  const secondiAttesa = 4
 
   setTimeout(() => {
     generaTelemetria()

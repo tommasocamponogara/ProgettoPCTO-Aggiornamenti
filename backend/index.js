@@ -117,6 +117,14 @@ app.get('/machines', (req, res) => {
   })
 })
 
+app.get('/machines/:id', (req, res) => {
+  db.get('SELECT * FROM machines WHERE id_machine = ?', [req.params.id], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Errore nella ricerca' })
+    if (!row) return res.status(404).json({ message: 'Macchinario non trovato' })
+    res.json(row)
+  })
+})
+
 /**
  * Si aggiunge un nuovo macchinario.
  * Vengono scelti automaticamente i sensori giusti per ogni macchinario.

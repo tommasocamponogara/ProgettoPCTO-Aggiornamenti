@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { Sidebar } from '../componenti/Sidebar'
 import { Topbar } from '../componenti/Topbar'
 import { Widget_Alarms } from '../componenti/Widget_Alarms'
+import { Notification } from '../componenti/ToastNotification'
 
 export default function Dashboard() {
   /**
@@ -24,23 +25,35 @@ export default function Dashboard() {
    * solo i dati che hanno problemi, evitando di caricare quelli inutili.
    */
   useEffect(() => {
-    // Si interroga il server per avere la lista dei guasti
-    fetch('http://localhost:3000/telemetries/critical')
-      .then((risposta) => risposta.json())
-      .then((dati) => {
-        // I dati ricevuti vengono salvati nello stato per mostrarli a video
-        setSegnaliCritici(dati)
-      })
-      .catch((errore) => {
-        console.error('Errore nel recupero dei segnali critici:', errore)
-      })
-  }, []) // Le parentesi vuote indicano di farlo solo una volta all'apertura
+    function caricaSegnaliCritici() {
+      // Si interroga il server per avere la lista dei guasti
+      fetch('http://localhost:3000/telemetries/critical')
+        .then((risposta) => risposta.json())
+        .then((dati) => {
+          // I dati ricevuti vengono salvati nello stato per mostrarli a video
+          setSegnaliCritici(dati)
+        })
+        .catch((errore) => {
+          console.error('Errore nel recupero dei segnali critici:', errore)
+        })
+    }
+
+    // Primo caricamento immediato
+    caricaSegnaliCritici()
+
+    // Aggiornamento continuo
+    const timer = setInterval(caricaSegnaliCritici, 1000)
+
+    // Pulizia timer quando si cambia pagina
+    return () => clearInterval(timer)
+  }, [])
 
   return (
     <>
-      {/* Vengono inseriti i componenti della barra laterale e superiore */}
+      {/* Vengono inseriti i componenti della barra laterale e superiore oltre che le eventuali notifiche*/}
       <Sidebar />
       <Topbar />
+      <Notification />
 
       {/**
        * Visualizzazione:

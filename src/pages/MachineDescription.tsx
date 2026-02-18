@@ -1,6 +1,4 @@
 /**
- *
- * NON FUNZIONA, DA SISTEMARE
  * In questo file viene gestita la pagina di dettaglio di ogni singolo macchinario.
  * Si occupa di mostrare l'immagine della macchina, le sue specifiche tecniche
  * e la lista di tutti i segnali (telemetrie) ricevuti.
@@ -15,6 +13,7 @@ import type { Machine } from '../Types/Type'
 import { MachineDescTable } from '../componenti/MachineDescTable'
 import { MachineTelemetries } from '../componenti/MachineTelemetries'
 import { getMachines } from '../utils/api'
+import { Notification } from '../componenti/ToastNotification'
 
 /**
  * Viene creato il componente che organizza i dati della macchina in una vista a tre colonne.
@@ -47,8 +46,8 @@ export function MachineDescription() {
     // Primo caricamento immediato
     aggiornaMacchina()
 
-    // Polling ogni 5 secondi per avere telemetrie aggiornate anche nella pagina dettaglio
-    const timer = setInterval(aggiornaMacchina, 5000)
+    // Polling ogni secondo per avere telemetrie aggiornate anche nella pagina dettaglio
+    const timer = setInterval(aggiornaMacchina, 1000)
 
     // Pulizia timer quando si esce dalla pagina
     return () => clearInterval(timer)
@@ -56,12 +55,11 @@ export function MachineDescription() {
 
   return (
     <div className="min-h-screen flex bg-slate-800 text-slate-200">
-      {/* Viene inserita la barra di navigazione laterale */}
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
-        {/* Viene inserita la barra di navigazione superiore */}
         <Topbar />
+        <Notification />
 
         {/**
          * STRUTTURA DELLA PAGINA (Sistema a tre colonne):

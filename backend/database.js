@@ -1,7 +1,6 @@
 /**
  * Modulo di persistenza dati basato su SQLite3.
- * Gestisce la connessione al database, la definizione dello schema relazionale
- * e il popolamento iniziale delle tabelle per l'ambiente di produzione simulato.
+ * Configurato per gestire gli errori basati sul TIPO di macchinario.
  */
 
 const sqlite3 = require('sqlite3').verbose()
@@ -15,30 +14,22 @@ const db = new sqlite3.Database('./factory.db', (err) => {
 })
 
 /**
- * Attivazione forzata dei vincoli sulle chiavi esterne
- * per garantire l'integrità referenziale tra le tabelle.
+ * Attivazione vincoli sulle chiavi esterne.
  */
-db.run('PRAGMA foreign_keys = ON', (err) => {
-  if (err) {
-    console.error(`Impossibile attivare le chiavi esterne: ${err.message}`)
-  } else {
-    console.log('Chiavi esterne attivate.')
-  }
-})
+db.run('PRAGMA foreign_keys = ON')
 
 /**
  * Inizializzazione dello Schema.
- * Utilizzo di db.serialize() per garantire l'esecuzione sequenziale dei comandi.
  */
 db.serialize(() => {
-  // 1. Tabella 'lines': definisce i cluster logici della fabbrica.
+  // 1. Tabella 'lines'
   db.run(`CREATE TABLE IF NOT EXISTS lines (
         id_line TEXT PRIMARY KEY, 
         name TEXT, 
         description TEXT, 
         order_nr INTEGER)`)
 
-  // 2. Tabella 'machines': definisce le unità operative.
+  // 2. Tabella 'machines'
   db.run(`CREATE TABLE IF NOT EXISTS machines (
         id_machine TEXT PRIMARY KEY,
         name TEXT,
@@ -50,9 +41,8 @@ db.serialize(() => {
         id_line TEXT,
         FOREIGN KEY (id_line) REFERENCES lines(id_line))`)
 
-  // 3. Tabella 'telemetries': archivio cronologico dei dati provenienti dal campo.
-  db.run(
-    `CREATE TABLE IF NOT EXISTS telemetries (
+  // 3. Tabella 'telemetries'
+  db.run(`CREATE TABLE IF NOT EXISTS telemetries (
         ts TEXT, 
         id_machine TEXT,
         state TEXT, 
@@ -60,39 +50,30 @@ db.serialize(() => {
         data TEXT, 
         alarms TEXT, 
         PRIMARY KEY (ts, id_machine),
-        FOREIGN KEY (id_machine) REFERENCES machines(id_machine))`,
-    (err) => {
-      if (!err) console.log('Schema telemetries inizializzato.')
-    },
-  )
+        FOREIGN KEY (id_machine) REFERENCES machines(id_machine))`)
 
-  // 4. Tabella 'errors': catalogo codificato delle anomalie per specifico macchinario.
+  // 4. Tabella 'errors' - MODIFICATA: rimosso il vincolo FOREIGN KEY per permettere l'uso dei TIPI
   db.run(
     `CREATE TABLE IF NOT EXISTS errors (
         code TEXT, 
-        id_machine TEXT,
+        type_machine TEXT, 
         message TEXT, 
-        PRIMARY KEY (code, id_machine),
-        FOREIGN KEY (id_machine) REFERENCES machines(id_machine))`,
+        PRIMARY KEY (code, type_machine))`,
     (err) => {
       if (!err) {
-        console.log('Schema errors inizializzato. Esecuzione seeding dati di default...')
+        console.log('Schema errors inizializzato. Esecuzione seeding...')
         popolaDatiDefault()
       }
     },
   )
 })
 
-/**
- * Inserisce i dati minimi necessari al funzionamento della simulazione.
- * Utilizza l'istruzione 'INSERT OR IGNORE' per evitare conflitti in caso di riavvii multipli.
- */
 function popolaDatiDefault() {
   db.serialize(() => {
-    // Definizione della linea di produzione predefinita.
+    // 1. Inserimento Linea
     db.run(`INSERT OR IGNORE INTO lines VALUES ('line-1', 'Main Line', 'Linea Principale', 1)`)
 
-    // Configurazione del parco macchine iniziale.
+    // 2. Configurazione Macchine (ID specifici)
     const listaMacchine = [
       [
         'Press-01',
@@ -146,36 +127,81 @@ function popolaDatiDefault() {
       ],
     ]
 
-    // 1. Si prepara il "modello" per le macchine
     const inserisciM = db.prepare(`INSERT OR IGNORE INTO machines VALUES (?,?,?,?,?,?,?,?)`)
-
-    // 2. Per ogni macchina presente nella lista, si riempie il modello e si salva
     listaMacchine.forEach((m) => inserisciM.run(m))
-
-    // 3. Si comunica al database che abbiamo finito con questo modello
     inserisciM.finalize()
 
-    // --- Lista degli errori comuni ---
+    // 3. Lista degli errori basata sul TIPO (10 per ogni tipo)
     const listaErrori = [
-      ['E01', 'Press-01', 'Pressione Bassa'],
-      ['E02', 'Press-01', 'Pompa Calda'],
-      ['E01', 'Cnc-01', 'Punta Usurata'],
-      ['E01', 'Robot-01', 'Urto Rilevato'],
-      ['E01', 'Packer-01', 'Nastro Fermo'],
+      // Errori per tipo PRESS
+      ['E01', 'PRESS', 'Pressione Sotto Soglia'],
+      ['E02', 'PRESS', 'Surriscaldamento Circuito Idraulico'],
+      ['E03', 'PRESS', 'Livello Olio Insufficiente'],
+      ['E04', 'PRESS', 'Usura Guarnizione Pistone'],
+      ['E05', 'PRESS', 'Ciclo di Compressione Incompleto'],
+      ['E06', 'PRESS', 'Anomalia Valvola di Sfiato'],
+      ['E07', 'PRESS', 'Guasto Sensore di Tonnellaggio'],
+      ['E08', 'PRESS', 'Interruzione Alimentazione Elettrica'],
+      ['E09', 'PRESS', 'Barriera di Sicurezza Interrotta'],
+      ['E10', 'PRESS', 'Sovraccarico Motore Pompa'],
+
+      // Errori per tipo CNC
+      ['E01', 'CNC', 'Usura Utensile Rilevata'],
+      ['E02', 'CNC', 'Errore Posizionamento Asse'],
+      ['E03', 'CNC', 'Flusso Refrigerante Assente'],
+      ['E04', 'CNC', 'Velocità Rotazione Incoerente'],
+      ['E05', 'CNC', 'Malfunzionamento Cambio Utensile'],
+      ['E06', 'CNC', 'Vibrazioni Oltre Limite'],
+      ['E07', 'CNC', 'Blocco Porta Operatore'],
+      ['E08', 'CNC', 'Errore Lettura File Programma'],
+      ['E09', 'CNC', 'Temperatura Mandrino Critica'],
+      ['E10', 'CNC', 'Raggiungimento Fine Corsa'],
+
+      // Errori per tipo ROBOT
+      ['E01', 'ROBOT', 'Collisione Rilevata'],
+      ['E02', 'ROBOT', 'Errore Encoder Giunto'],
+      ['E03', 'ROBOT', 'Timeout Comunicazione Controller'],
+      ['E04', 'ROBOT', 'Batteria Tampone Scarica'],
+      ['E05', 'ROBOT', 'Carico Utile Eccessivo'],
+      ['E06', 'ROBOT', 'Singolarità Cinematica Raggiunta'],
+      ['E07', 'ROBOT', 'Perdita Pressione Pinza'],
+      ['E08', 'ROBOT', 'Area di Lavoro Ostruita'],
+      ['E09', 'ROBOT', 'Errore Sincronizzazione Assi'],
+      ['E10', 'ROBOT', 'Arresto di Emergenza Attivo'],
+
+      // Errori per tipo PACKER
+      ['E01', 'PACKER', 'Inceppamento Materiale Imballo'],
+      ['E02', 'PACKER', 'Esaurimento Scorte Magazzino'],
+      ['E03', 'PACKER', 'Mancata Formazione Scatola'],
+      ['E04', 'PACKER', 'Temperatura Saldatrice Bassa'],
+      ['E05', 'PACKER', 'Errore Lettura Codice a Barre'],
+      ['E06', 'PACKER', 'Sfasamento Nastro Trasportatore'],
+      ['E07', 'PACKER', 'Errore Sistema di Etichettatura'],
+      ['E08', 'PACKER', 'Surriscaldamento Motore Traino'],
+      ['E09', 'PACKER', 'Sensore Presenza Prodotto Guasto'],
+      ['E10', 'PACKER', 'Protezione Mobile Aperta'],
+
+      // Errori per tipo QC
+      ['E01', 'QC', 'Ottica Sensore Oscurata'],
+      ['E02', 'QC', 'Illuminazione Ispezione Insufficiente'],
+      ['E03', 'QC', 'Errore Elaborazione Immagine'],
+      ['E04', 'QC', 'Mancata Corrispondenza Master'],
+      ['E05', 'QC', 'Scostamento Tolleranza Dimensionale'],
+      ['E06', 'QC', 'Cadenza Produttiva Troppo Alta'],
+      ['E07', 'QC', 'Attuatore Scarto Bloccato'],
+      ['E08', 'QC', 'Errore Trigger Esterno'],
+      ['E09', 'QC', 'Disconnessione Server Qualità'],
+      ['E10', 'QC', 'Errore Bilancia di Precisione'],
     ]
 
-    // 4. Si prepara il "modello" per gli errori
+    // 4. Inserimento Errori
     const inserisciE = db.prepare(
-      `INSERT OR IGNORE INTO errors (code, id_machine, message) VALUES (?, ?, ?)`,
+      `INSERT OR IGNORE INTO errors (code, type_machine, message) VALUES (?, ?, ?)`,
     )
-
-    // 5. Si inserisce ogni errore della lista nel database
     listaErrori.forEach((err) => inserisciE.run(err))
-
-    // 6. Si chiude il modello degli errori
     inserisciE.finalize()
 
-    console.log('Salvataggio iniziale completato.')
+    console.log('Salvataggio completato: 50 errori inseriti per categoria.')
   })
 }
 

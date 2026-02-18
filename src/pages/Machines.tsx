@@ -10,6 +10,7 @@ import { Topbar } from '../componenti/Topbar'
 import { Widget_Machines } from '../componenti/Widget_Machine'
 import { getMachines } from '../utils/api'
 import type { Machine } from '../Types/Type'
+import { Notification } from '../componenti/ToastNotification'
 
 export default function Machines() {
   /**
@@ -42,7 +43,7 @@ export default function Machines() {
     aggiornaDati()
 
     // Si avvia il timer per i caricamenti successivi
-    const timer = setInterval(aggiornaDati, 5000)
+    const timer = setInterval(aggiornaDati, 1000)
 
     /**
      * Funzione di pulizia:
@@ -57,6 +58,7 @@ export default function Machines() {
       {/* Vengono inseriti i componenti fissi della struttura (menu laterale e barra superiore) */}
       <Sidebar />
       <Topbar />
+      <Notification />
 
       {/**
        * Visualizzazione:
