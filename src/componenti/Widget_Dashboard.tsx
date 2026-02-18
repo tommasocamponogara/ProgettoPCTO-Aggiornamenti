@@ -31,9 +31,9 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
     }
   }
 
-  // Vengono conteggiate solo le macchine che ORA sono in stato di blocco
+  // Vengono conteggiate solo le macchine che ORA sono in stato di fault
   const listaconta = Object.values(ultimaTelemetriaPerMacchina).filter((t) => {
-    return t.reported.state === 'FAULT' || t.reported.state === 'STOP'
+    return t.reported.state === 'FAULT'
   })
 
   return (
