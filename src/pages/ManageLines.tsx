@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { getMachines } from '../utils/api'
 
 export async function deleteLine(id: string) {
+  const machines = await getMachines()
+  const lineHasMachines = machines.some((machine) => machine.lineId === id)
+
+  if (lineHasMachines) {
+    alert("Errore nell'eliminazione della linea! Sono presenti macchinari associati a questa linea")
+    return
+  }
+
   const conferma = confirm("Sei sicuro di voler eliminare questa linea? L'azione e' irreversibile")
   if (conferma) {
     try {
@@ -51,7 +60,7 @@ export function ManageLines() {
     // Aggiorniamo solo il campo che è stato cambiato
     setLine({
       ...line,
-      [name]: name === 'order' ? (value === '' ? 0 : parseInt(value)) : value,
+      [name]: name === 'order_nr' ? (value === '' ? 0 : parseInt(value, 10)) : value,
     })
   }
 
@@ -105,7 +114,7 @@ export function ManageLines() {
       try {
         const response = await fetch(`http://localhost:3000/lines/${id}`, {
           method: 'PUT',
-          headers: { 'content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(dataToSave),
         })
 
@@ -125,7 +134,7 @@ export function ManageLines() {
         onSubmit={handleSubmit}
       >
         <h1 className="text-3xl font-bold text-amber-500 mb-6">
-          {editMode ? 'MModifica Linea di Produzione  ' : 'Aggiungi Linea di Produzione'}{' '}
+          {editMode ? 'Modifica Linea di Produzione' : 'Aggiungi Linea di Produzione'}{' '}
         </h1>
 
         <input
