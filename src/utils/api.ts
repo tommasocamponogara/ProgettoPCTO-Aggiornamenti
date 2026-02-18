@@ -16,14 +16,28 @@ function normalizeTelemetry(raw: any): Telemetry {
   // Stessa logica anche per il codice ordine
   const codiceOrdine = String(raw.orderCode || raw.reported?.orderCode || '---')
 
-  // Se i dati dei sensori arrivano come testo, vengono convertiti in un oggetto leggibile
-  let datiSensori = raw.data
+  // Sensori dinamici: manteniamo tutti i campi reali invece di forzare temperature/pressure
+  let datiSensori: Record<string, unknown> = {}
+
+  if (raw.reported && typeof raw.reported === 'object') {
+    for (const [key, value] of Object.entries(raw.reported)) {
+      if (!['state', 'orderCode', 'alarms'].includes(key)) {
+        datiSensori[key] = value
+      }
+    }
+  }
+
   if (typeof raw.data === 'string') {
     try {
-      datiSensori = JSON.parse(raw.data)
+      const parsed = JSON.parse(raw.data)
+      if (parsed && typeof parsed === 'object') {
+        datiSensori = { ...datiSensori, ...parsed }
+      }
     } catch (e) {
-      datiSensori = {}
+      // Se il JSON non e valido, manteniamo solo i dati gia raccolti
     }
+  } else if (raw.data && typeof raw.data === 'object') {
+    datiSensori = { ...datiSensori, ...raw.data }
   }
 
   // Gli allarmi possono arrivare come array o come stringa JSON ("[]")
@@ -43,10 +57,9 @@ function normalizeTelemetry(raw: any): Telemetry {
     type: raw.type || '',
     ts: raw.ts || '',
     reported: {
+      ...datiSensori,
       state: statoVerificato,
       orderCode: codiceOrdine,
-      temperature: datiSensori?.temperature || 0,
-      pressure: datiSensori?.pressure || 0,
       alarms: Array.isArray(listaAllarmi) ? listaAllarmi : [],
     },
     // Si mantengono questi campi esterni per facilitare l'accesso rapido ai dati

@@ -4,7 +4,7 @@
 export class LCG {
   constructor(seed = Date.now(), m = 281474976710656, a = 25214903917, c = 11) {
     // Parametri standard
-    this.m = m //2^64
+    this.m = m //2^48
     this.a = a
     this.c = c
     this.state = seed

@@ -62,8 +62,6 @@ export type Telemetry = {
   reported: {
     state: 'RUN' | 'IDLE' | 'OFFLINE' | 'FAULT' | 'STOP'
     orderCode: string
-    temperature: number // Gradi della macchina
-    pressure: number // Pressione della macchina
     alarms:
       | {
           // Eventuali errori trovati
@@ -72,6 +70,7 @@ export type Telemetry = {
           locking: boolean // Vero se la macchina si è bloccata
         }[]
       | []
+    [key: string]: unknown // Campi sensore dinamici (rpm, speed, pressure, ecc.)
   }
 }
 
