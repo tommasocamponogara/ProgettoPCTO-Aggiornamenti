@@ -38,7 +38,7 @@ createRoot(document.getElementById('root')!).render(
 
       {/* --- PAGINE PER AGGIUNGERE O MODIFICARE I DATI --- */}
       {/* Pagina per creare o gestire le linee di produzione */}
-      <Route path="/dashboard/lines/ManageLines/:id?" element={<ManageLines />} />
+      <Route path="/dashboard/lines/ManageLines/:id?/:command?" element={<ManageLines />} />
 
       {/* Pagina per aggiungere o modificare nuovi macchinari al sistema */}
       <Route path="/dashboard/machines/ManageMachines/:id?" element={<ManageMachines />} />
