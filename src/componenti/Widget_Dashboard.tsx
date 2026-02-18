@@ -61,7 +61,7 @@ export function Widget_Dashboard({ lines, telemetries }: WidgetDashboardProps) {
 
         {/* Card Allarmi - Cambia colore in rosso se ci sono macchine in allarme */}
         <div
-          onClick={() => navigate(`/dashboard`)}
+          onClick={() => navigate(`/dashboard/alarms`)}
           className={`bg-slate-900 border-b-4 ${listaconta.length > 0 ? 'border-red-500' : 'border-green-500'} rounded-2xl p-10 text-center shadow-lg shadow-black/40 hover:scale-[1.05] hover:cursor-pointer transition-transform`}
         >
           <p className="text-slate-300 uppercase tracking-widest text-lg">Macchinari in allarme</p>

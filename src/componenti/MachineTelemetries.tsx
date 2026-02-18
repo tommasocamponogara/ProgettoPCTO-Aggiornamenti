@@ -4,7 +4,7 @@ type MachineTelemetriesProp = {
   machine: Machine
 }
 
-// Definisce un componente che mostra una tabella con le telemetrie di una macchina (cioe quando l'utente clicca su una macchina specifica nella pagina macchinari, 
+// Definisce un componente che mostra una tabella con le telemetrie di una macchina (cioe quando l'utente clicca su una macchina specifica nella pagina macchinari,
 // viene mostrata una tabella con le telemetrie di quella macchina)
 
 export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
@@ -51,18 +51,23 @@ export function MachineTelemetries({ machine }: MachineTelemetriesProp) {
                     <td className="px-6 py-4">{data}</td>
                     <td className="px-6 py-4">{telemetry.reported.state}</td>
                     <td className="px-6 py-4">{telemetry.reported.orderCode}</td>
-                    <td className="px-6 py-4">
-                      {/* 
-                        Mostra dinamicamente dati extra (es. pressione/temp) escludendo i campi standard.
-                        Object.entries: Prende l'oggetto reported (che contiene pressione, temperatura, ecc.) e lo trasforma in una lista di coppie [nome, valore].
-                        .filter: Qui il codice dice: "Voglio mostrare tutto, tranne le chiavi 'state', 'orderCode' e 'alarms' perché le ho già messe in altre colonne".
-                      */}
-                      {Object.entries(telemetry.reported ?? {})
-                        .filter(([key]) => !['state', 'orderCode', 'alarms'].includes(key))
+                    <td className="px-6 py-4 text-sm">
+                      {Object.entries(telemetry.reported || {})
+                        .filter(([key, value]) => {
+                          // 1. Escludiamo i campi che hanno già una loro colonna dedicata
+                          const isStandard = ['state', 'orderCode', 'alarms'].includes(key)
+
+                          // 2. Escludiamo i valori nulli o undefined
+                          const hasValue = value !== null && value !== undefined
+
+                          return !isStandard && hasValue
+                        })
                         .map(([key, value]) => (
-                          <div key={key}>
-                            <span className="text-slate-400 mr-1">{key}:</span>
-                            <span>{String(value)}</span>
+                          <div key={key} className="text-left">
+                            <span className="text-slate-500 uppercase text-[10px] font-bold">
+                              {key}:
+                            </span>
+                            <span className="ml-2 text-amber-500">{String(value)}</span>
                           </div>
                         ))}
                     </td>

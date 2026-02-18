@@ -38,7 +38,7 @@ export function TableLines() {
 
     // Pulizia del timer quando si cambia pagina
     return () => clearInterval(timer)
-  }, [])
+  }, [lines])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-800 w-full font-mono">

@@ -15,18 +15,6 @@ const db = new sqlite3.Database('./factory.db', (err) => {
 })
 
 /**
- * Attivazione forzata dei vincoli sulle chiavi esterne
- * per garantire l'integrità referenziale tra le tabelle.
- */
-db.run('PRAGMA foreign_keys = ON', (err) => {
-  if (err) {
-    console.error(`Impossibile attivare le chiavi esterne: ${err.message}`)
-  } else {
-    console.log('Chiavi esterne attivate.')
-  }
-})
-
-/**
  * Inizializzazione dello Schema.
  * Utilizzo di db.serialize() per garantire l'esecuzione sequenziale dei comandi.
  */
