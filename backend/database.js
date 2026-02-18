@@ -66,7 +66,7 @@ db.serialize(() => {
 function popolaDatiDefault() {
   db.serialize(() => {
     // 1. Inserimento Linea
-    db.run(`INSERT OR IGNORE INTO lines VALUES ('line-1', 'Main Line', 'Linea Principale', 1)`)
+    db.run(`INSERT OR IGNORE INTO lines VALUES ('Line-1', 'Main Line', 'Linea Principale', 1)`)
 
     // 2. Configurazione Macchine (ID specifici)
     const listaMacchine = [
@@ -78,7 +78,7 @@ function popolaDatiDefault() {
         JSON.stringify(['temperature', 'pressure']),
         'S7-1500',
         10,
-        'line-1',
+        'Line-1',
       ],
       [
         'Cnc-01',
@@ -88,7 +88,7 @@ function popolaDatiDefault() {
         JSON.stringify(['rpm', 'temperature']),
         'Series 0i',
         20,
-        'line-1',
+        'Line-1',
       ],
       [
         'Robot-01',
@@ -98,7 +98,7 @@ function popolaDatiDefault() {
         JSON.stringify(['speed', 'partsChecked']),
         'IRC5',
         30,
-        'line-1',
+        'Line-1',
       ],
       [
         'Packer-01',
@@ -108,7 +108,7 @@ function popolaDatiDefault() {
         JSON.stringify(['speed', 'temperature']),
         'S7-1200',
         40,
-        'line-1',
+        'Line-1',
       ],
       [
         'Qc-01',
@@ -118,7 +118,7 @@ function popolaDatiDefault() {
         JSON.stringify(['partsChecked', 'speed']),
         'CX2040',
         50,
-        'line-1',
+        'Line-1',
       ],
     ]
 
