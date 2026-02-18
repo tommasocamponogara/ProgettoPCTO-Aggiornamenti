@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import type { Machine } from '../Types/Type'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { deleteMachine } from '../pages/ManageMachines'
+import { sendCommand } from '../utils/api' // Assicurati che esista in api.ts
 
 type WidgetMachineProps = { machines: Machine[] }
 
@@ -73,10 +74,19 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
     }
   }
 
+  // --- LOGICA COMANDI ---
+  const handleMachineCommand = async (id: string, cmd: 'START' | 'STOP' | 'RESET') => {
+    const success = await sendCommand(id, cmd)
+    if (!success) {
+      console.error("Errore nell'invio del comando")
+    }
+    // Nota: il cambio di stato visivo avverrà al prossimo ciclo di polling della Dashboard
+  }
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-slate-800 w-full font-mono p-10">
       <div className="w-full max-w-7xl mt-20">
-        {/* TOOLBAR: Filtri e Bottone */}
+        {/* TOOLBAR */}
         <div className="flex justify-between items-center mb-6 w-full">
           <div className="flex gap-4">
             <select
@@ -105,7 +115,7 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
           </button>
         </div>
 
-        {/* TABELLA SEMANTICA */}
+        {/* TABELLA */}
         <div className="max-h-[70vh] overflow-y-auto rounded-xl shadow-2xl border border-slate-700">
           <table className="w-full border-collapse">
             <thead className="bg-amber-700 text-slate-900 sticky top-0 z-10">
@@ -184,23 +194,54 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
                       )}
                     </td>
 
-                    {/* AZIONI */}
+                    {/* AZIONI (COMANDI + GESTIONE) */}
                     <td className="px-6 py-4">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          onClick={() =>
-                            navigate(`/dashboard/machines/ManageMachines/${m.machinesId}`)
-                          }
-                          className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded"
-                        >
-                          Modifica
-                        </button>
-                        <button
-                          onClick={() => deleteMachine(m.machinesId)}
-                          className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-sm rounded"
-                        >
-                          Elimina
-                        </button>
+                      <div className="flex flex-col gap-3">
+                        {/* BOTTONI DI COMANDO DINAMICI */}
+                        <div className="flex justify-center gap-1">
+                          {m.state === 'STOP' && (
+                            <button
+                              onClick={() => handleMachineCommand(m.machinesId, 'START')}
+                              className="w-full bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                            >
+                              START
+                            </button>
+                          )}
+                          {m.state === 'RUN' && (
+                            <button
+                              onClick={() => handleMachineCommand(m.machinesId, 'STOP')}
+                              className="w-full bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                            >
+                              STOP
+                            </button>
+                          )}
+                          {m.state === 'FAULT' && (
+                            <button
+                              onClick={() => handleMachineCommand(m.machinesId, 'RESET')}
+                              className="w-full bg-orange-500 hover:bg-orange-400 text-slate-900 text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                            >
+                              RESET
+                            </button>
+                          )}
+                        </div>
+
+                        {/* BOTTONI MODIFICA/ELIMINA */}
+                        <div className="flex justify-center gap-2 border-t border-slate-700 pt-2">
+                          <button
+                            onClick={() =>
+                              navigate(`/dashboard/machines/ManageMachines/${m.machinesId}`)
+                            }
+                            className="text-blue-400 hover:text-blue-300 text-xs transition-colors"
+                          >
+                            Modifica
+                          </button>
+                          <button
+                            onClick={() => deleteMachine(m.machinesId)}
+                            className="text-red-500 hover:text-red-400 text-xs transition-colors"
+                          >
+                            Elimina
+                          </button>
+                        </div>
                       </div>
                     </td>
                   </tr>

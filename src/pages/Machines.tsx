@@ -37,21 +37,17 @@ export default function Machines() {
    * Quando la pagina viene aperta, i dati vengono caricati subito.
    * Viene poi impostato un timer che ripete l'aggiornamento ogni 5000 millisecondi (5 secondi).
    */
+  // Nel componente che contiene <Widget_Machines />
   useEffect(() => {
-    // Primo caricamento immediato
-    aggiornaDati()
+    const fetchDati = () => {
+      getMachines().then((res) => setListaMacchine(res))
+    }
 
-    // Si avvia il timer per i caricamenti successivi
-    const timer = setInterval(aggiornaDati, 5000)
+    fetchDati() // Carica subito
+    const interval = setInterval(fetchDati, 5000) // Aggiorna ogni 5 secondi
 
-    /**
-     * Funzione di pulizia:
-     * È fondamentale per fermare il timer quando l'utente cambia pagina.
-     * Evita che il computer continui a lavorare inutilmente in sottofondo.
-     */
-    return () => clearInterval(timer)
+    return () => clearInterval(interval)
   }, [])
-
   return (
     <>
       {/* Vengono inseriti i componenti fissi della struttura (menu laterale e barra superiore) */}

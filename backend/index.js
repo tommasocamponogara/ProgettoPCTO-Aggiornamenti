@@ -174,6 +174,27 @@ app.post('/machines', (req, res) => {
   )
 })
 
+// Gestione dei comandi Start/Stop/Reset
+// CORREZIONE QUERY NEL BACKEND
+app.post('/machines/:id/command', (req, res) => {
+  const { command } = req.body
+  const id_machine = req.params.id // Cambiato nome variabile per chiarezza
+
+  let nextState = ''
+  if (command === 'START') nextState = 'RUN'
+  else if (command === 'STOP' || command === 'RESET') nextState = 'STOP'
+
+  // USIAMO "id_machine" invece di "machineId" se è così che si chiama nel DB
+  const query = `INSERT INTO telemetries (id_machine, ts, state, orderCode, alarms) VALUES (?, ?, ?, ?, ?)`
+
+  db.run(query, [id_machine, new Date().toISOString(), nextState, 'REMOTE_CTRL', '[]'], (err) => {
+    if (err) {
+      console.error('ERRORE DB:', err.message)
+      return res.status(500).json({ error: err.message })
+    }
+    res.json({ message: 'OK' })
+  })
+})
 /**
  * Si modificano i dati di un macchinario già esistente.
  */

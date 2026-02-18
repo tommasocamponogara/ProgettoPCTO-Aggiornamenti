@@ -129,6 +129,28 @@ export async function getMachines(): Promise<Machine[]> {
   return listaFinale
 }
 
+export async function sendCommand(id: string, command: string) {
+  try {
+    const response = await fetch(`http://localhost:3000/machines/${id}/command`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ command }), // Invia il comando nel corpo della richiesta
+    })
+
+    if (!response.ok) {
+      console.error('Risposta del server non valida:', response.status)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('Errore di rete:', error)
+    return false
+  }
+}
+
 /**
  * Si recuperano i dati di una singola macchina specifica tramite il suo ID.
  */
