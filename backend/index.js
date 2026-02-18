@@ -109,6 +109,11 @@ app.get('/machines', (req, res) => {
           name: m.name,
           lineId: m.id_line || 'L-01',
           type: m.type,
+          order: m.order_nr,
+          plc: {
+            vendor: m.plc_vendor,
+            model: m.plc_model,
+          },
           telemetries: segnaliFiltrati,
         }
       })
@@ -121,7 +126,24 @@ app.get('/machines/:id', (req, res) => {
   db.get('SELECT * FROM machines WHERE id_machine = ?', [req.params.id], (err, row) => {
     if (err) return res.status(500).json({ error: 'Errore nella ricerca' })
     if (!row) return res.status(404).json({ message: 'Macchinario non trovato' })
-    res.json(row)
+
+    // TRASFORMAZIONE (Mapping)
+    // Trasformiamo i dati del DB nel formato che il Frontend si aspetta
+    const machineFormattata = {
+      id: row.id_machine,
+      name: row.name,
+      lineId: row.id_line, // Mappiamo id_line su lineId
+      type: row.type,
+      plc: {
+        vendor: row.plc_vendor, // Mappiamo plc_vendor dentro l'oggetto plc
+        model: row.plc_model,
+      },
+      order: row.order_nr,
+      telemetries: [], // Inizialmente vuoto, come nel tuo initialMachine
+    }
+    console.log('Dato inviato:', machineFormattata.order)
+
+    res.json(machineFormattata)
   })
 })
 
@@ -157,16 +179,35 @@ app.post('/machines', (req, res) => {
  */
 app.put('/machines/:id', (req, res) => {
   const machineId = req.params.id
+  // Estraiamo i dati dal body. Nota che 'plc' è un oggetto {vendor, model}
   const { name, type, plc, lineId, order } = req.body
 
   db.run(
-    `UPDATE machines
-     SET name = ?, type = ?, plc = ?, lineId = ?, "order" = ?
-     WHERE id = ?`,
-    [name, type, plc, lineId, order, machineId],
+    `UPDATE machines 
+     SET name = ?, 
+         type = ?, 
+         plc_vendor = ?, 
+         plc_model = ?, 
+         id_line = ?, 
+         order_nr = ? 
+     WHERE id_machine = ?`,
+    [
+      name,
+      type,
+      plc.vendor, // Estraiamo il vendor dall'oggetto
+      plc.model, // Estraiamo il model dall'oggetto
+      lineId,
+      order,
+      machineId,
+    ],
     function (err) {
-      if (err) return res.status(500).json({ error: "Errore nell'aggiornamento" })
-      if (this.changes === 0) return res.status(404).json({ error: 'Macchinario non trovato' })
+      if (err) {
+        console.error(err.message)
+        return res.status(500).json({ error: "Errore nell'aggiornamento" })
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ error: 'Macchinario non trovato' })
+      }
       res.status(200).json({ message: 'Macchinario modificato' })
     },
   )

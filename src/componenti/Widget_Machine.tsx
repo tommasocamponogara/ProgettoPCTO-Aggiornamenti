@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import type { Machine } from '../Types/Type'
 import { useState, useEffect } from 'react'
+import { deleteMachine } from '../pages/ManageMachines'
 
 type WidgetMachineProps = { machines: Machine[] }
 
@@ -19,21 +20,13 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (machines.length > 0) {
-      console.log('Dati ricevuti:', machines)
-    }
-  }, [machines])
-
-  // --- LOGICA DI TRASFORMAZIONE DATI (STANDARD) ---
+  // --- LOGICA DI TRASFORMAZIONE DATI ---
   const printedMachines: PrintedMachine[] = (machines || []).map((machine) => {
     const rawId = machine.id || (machine as any).id_machine || 'N/D'
     const telemetries = Array.isArray(machine.telemetries) ? machine.telemetries : []
-
-    // Ordiniamo per data decrescente
-    const sortedTele = [...telemetries].sort((a, b) => {
-      return new Date(b.ts || 0).getTime() - new Date(a.ts || 0).getTime()
-    })
+    const sortedTele = [...telemetries].sort(
+      (a, b) => new Date(b.ts || 0).getTime() - new Date(a.ts || 0).getTime(),
+    )
     const lastTelemetry = sortedTele[0]
 
     let parsedAlarms = []
@@ -53,138 +46,168 @@ export function Widget_Machines({ machines }: WidgetMachineProps) {
       lineId: String(machine.lineId || (machine as any).id_line || 'Senza Linea'),
       name: machine.name || 'Macchina Ignota',
       state: (lastTelemetry?.state || 'OFFLINE').toUpperCase(),
-      order: String(lastTelemetry?.orderCode || machine.order || '---'),
+      order: String(machine.order),
       lastUpdate: Array.isArray(parsedAlarms) ? parsedAlarms : [],
       lastTs: lastTelemetry?.ts || '',
     }
   })
 
-  // --- FILTRO RICERCA ---
   const filteredMachines = printedMachines.filter((m) => {
     if (order === 'IdMachine') return m.machinesId.toLowerCase().includes(search.toLowerCase())
     if (order === 'IdLine') return m.lineId.toLowerCase().includes(search.toLowerCase())
     return true
   })
 
-  // --- GESTIONE COLORI ---
-  // Restituisce le classi CSS esatte per Bordo e Quadratino in base allo stato
-  const getStatusStyles = (state: string) => {
+  const getStatusColor = (state: string) => {
     switch (state) {
       case 'RUN':
-        return { border: 'border-green-600', box: 'bg-green-600' }
+        return 'bg-green-500'
       case 'IDLE':
-        return { border: 'border-orange-500', box: 'bg-orange-500' } // Arancione come richiesto
+        return 'bg-amber-500'
       case 'STOP':
-        return { border: 'border-red-600', box: 'bg-red-600' }
+        return 'bg-red-500'
       case 'FAULT':
-        return { border: 'border-pink-600', box: 'bg-pink-600' } // Rosa come richiesto
+        return 'bg-pink-600'
       default:
-        return { border: 'border-gray-500', box: 'bg-gray-500' } // OFFLINE/Grigio
+        return 'bg-slate-500'
     }
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen pt-32 bg-slate-800 font-mono">
-      <div className="w-11/12 max-w-7xl mt-20">
-        {/* BARRA SUPERIORE (Filtri e Bottone) */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex gap-4 items-center">
+    <div className="flex flex-col items-center min-h-screen bg-slate-800 w-full font-mono p-10">
+      <div className="w-full max-w-7xl mt-20">
+        {/* TOOLBAR: Filtri e Bottone */}
+        <div className="flex justify-between items-center mb-6 w-full">
+          <div className="flex gap-4">
             <select
               value={order}
               onChange={(e) => setOrder(e.target.value as typeof order)}
-              className="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-4 py-2 outline-none focus:border-amber-500"
+              className="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-amber-500"
             >
               <option value="">MOSTRA TUTTI</option>
               <option value="IdMachine">ID MACCHINARIO</option>
               <option value="IdLine">ID LINEA</option>
             </select>
-
             <input
               type="text"
               placeholder="Cerca..."
               value={search}
               disabled={order === ''}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-4 py-2 w-64 outline-none focus:border-amber-500"
+              className="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-4 py-2 w-64 outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
-
           <button
-            className="px-6 py-2 bg-amber-500 text-slate-900 font-bold rounded-lg hover:bg-amber-400"
             onClick={() => navigate('/dashboard/machines/ManageMachines')}
+            className="px-6 py-2 bg-amber-500 text-slate-900 font-bold rounded-lg hover:bg-amber-400 transition-colors shadow-lg"
           >
             + Aggiungi Macchinario
           </button>
         </div>
 
-        {/* INTESTAZIONE TABELLA */}
-        <div className="grid grid-cols-[120px_1fr_120px_150px_180px_250px] gap-4 px-6 py-5 bg-amber-700 text-slate-900 text-sm font-bold text-center rounded-t-xl shadow-xl">
-          <div>ID MACCHINA</div>
-          <div>DESCRIZIONE</div>
-          <div>LINEA</div>
-          <div>STATO</div>
-          <div>ORDINE</div>
-          <div>DIAGNOSTICA / ALLARMI</div>
-        </div>
+        {/* TABELLA SEMANTICA */}
+        <div className="max-h-[70vh] overflow-y-auto rounded-xl shadow-2xl border border-slate-700">
+          <table className="w-full border-collapse">
+            <thead className="bg-amber-700 text-slate-900 sticky top-0 z-10">
+              <tr className="text-sm uppercase tracking-wider">
+                <th className="px-6 py-4 text-left">ID Macchina</th>
+                <th className="px-6 py-4 text-left">Descrizione</th>
+                <th className="px-6 py-4 text-center">Linea</th>
+                <th className="px-6 py-4 text-center">Stato</th>
+                <th className="px-6 py-4 text-center">Ordine</th>
+                <th className="px-6 py-4 text-left">Diagnostica</th>
+                <th className="px-6 py-4 text-center">Azioni</th>
+              </tr>
+            </thead>
 
-        {/* CORPO TABELLA */}
-        <div className="max-h-[600px] overflow-y-auto bg-slate-900/40 p-2 rounded-b-xl border border-slate-700">
-          {filteredMachines.length === 0 ? (
-            <div className="text-center text-slate-500 p-12">Nessun dato trovato.</div>
-          ) : (
-            filteredMachines.map((m, index) => {
-              // Recupero lo stile specifico per questa riga
-              const styles = getStatusStyles(m.state)
-
-              return (
-                <div
-                  key={`${m.machinesId}-${index}`}
-                  // Qui applico il bordo colorato dinamico e mantengo il "riquadro" scuro
-                  className={`grid grid-cols-[120px_1fr_120px_150px_180px_250px] gap-4 items-center px-6 py-4 rounded-lg bg-slate-900/80 mb-2 border-l-4 ${styles.border}`}
-                >
-                  {/* ID Macchina */}
-                  <div
-                    onClick={() => navigate(`${m.machinesId}`)}
-                    className="text-amber-500 font-bold cursor-pointer hover:underline"
+            <tbody className="bg-slate-900 text-slate-200 divide-y divide-slate-800">
+              {filteredMachines.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-10 text-center text-slate-500">
+                    Nessun macchinario trovato.
+                  </td>
+                </tr>
+              ) : (
+                filteredMachines.map((m, index) => (
+                  <tr
+                    key={`${m.machinesId}-${index}`}
+                    className="hover:bg-slate-800/50 transition-colors group"
                   >
-                    {m.machinesId}
-                  </div>
+                    {/* ID */}
+                    <td
+                      className="px-6 py-4 font-bold text-amber-500 cursor-pointer hover:underline"
+                      onClick={() => navigate(`${m.machinesId}`)}
+                    >
+                      {m.machinesId}
+                    </td>
 
-                  <div className="text-slate-100">{m.name}</div>
-                  <div className="text-slate-400 text-sm">{m.lineId}</div>
+                    {/* NOME */}
+                    <td className="px-6 py-4 text-slate-100">{m.name}</td>
 
-                  {/* STATO: Uso il quadratino colorato come nel tuo esempio */}
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-4 h-4 border border-slate-500 ${styles.box}`} />
-                      <span className="text-sm text-slate-200 font-semibold">{m.state}</span>
-                    </div>
-                    {/* Timestamp piccolo sotto */}
-                    <span className="text-[10px] text-slate-500 mt-1">
-                      {m.lastTs ? m.lastTs.split('T')[1]?.split('.')[0] : '--:--:--'}
-                    </span>
-                  </div>
+                    {/* LINEA */}
+                    <td className="px-6 py-4 text-center text-slate-400 text-sm">{m.lineId}</td>
 
-                  <div className="text-slate-300 text-xs text-center">{m.order}</div>
-
-                  {/* Messaggi di errore o stato */}
-                  <div className="text-[11px]">
-                    {m.lastUpdate.length > 0 ? (
-                      m.lastUpdate.map((alarm: any, idx: number) => (
-                        <div key={idx} className="text-red-400 font-bold">
-                          ⚠ {String(alarm.message || 'ERRORE').toUpperCase()}
+                    {/* STATO */}
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`w-3 h-3 rounded-full animate-pulse ${getStatusColor(m.state)}`}
+                          />
+                          <span className="text-xs font-bold uppercase">{m.state}</span>
                         </div>
-                      ))
-                    ) : m.state === 'RUN' ? (
-                      <span className="text-green-500 font-bold">OPERATIVO</span>
-                    ) : (
-                      <span className="text-slate-600 italic">-</span>
-                    )}
-                  </div>
-                </div>
-              )
-            })
-          )}
+                        <span className="text-[10px] text-slate-500 lowercase">
+                          {m.lastTs ? m.lastTs.split('T')[1]?.split('.')[0] : '--:--:--'}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* ORDINE */}
+                    <td className="px-6 py-4 text-center text-slate-300 font-mono text-xs">
+                      {m.order}
+                    </td>
+
+                    {/* DIAGNOSTICA */}
+                    <td className="px-6 py-4 text-[11px] max-w-[200px]">
+                      {m.lastUpdate.length > 0 ? (
+                        m.lastUpdate.map((alarm, idx) => (
+                          <div key={idx} className="text-red-400 font-bold leading-tight">
+                            ⚠ {String(alarm.message || 'ERRORE').toUpperCase()}
+                          </div>
+                        ))
+                      ) : m.state === 'RUN' ? (
+                        <span className="text-green-500 font-bold opacity-80 uppercase">
+                          Operativo
+                        </span>
+                      ) : (
+                        <span className="text-slate-600 italic">Nessun dato</span>
+                      )}
+                    </td>
+
+                    {/* AZIONI */}
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() =>
+                            navigate(`/dashboard/machines/ManageMachines/${m.machinesId}`)
+                          }
+                          className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded"
+                        >
+                          Modifica
+                        </button>
+                        <button
+                          onClick={() => deleteMachine(m.machinesId)}
+                          className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-sm rounded"
+                        >
+                          Elimina
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

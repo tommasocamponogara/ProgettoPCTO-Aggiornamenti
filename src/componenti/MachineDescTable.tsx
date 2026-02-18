@@ -1,10 +1,3 @@
-/**MachineDescTable({ machine })
-    Recupera l’ultima telemetria via getLastTelemetry.
-    Costruisce una lista coppie etichetta/valore (machineDetails).
-    Usa fallback sicuri per PLC (N/D) se dato mancante.
-    Mostra stato attuale preso dall’ultima telemetria.
- */
-
 import type { Machine } from '../Types/Type'
 import { getLastTelemetry } from '../utils/getLastTelemetry'
 
@@ -12,22 +5,20 @@ type MachineDescTableProp = {
   machine: Machine
 }
 
-// Definisce un componente che mostra una tabella con le informazioni di una macchina (cioe quando l'utente clicca su una macchina specifica nella pagina macchinari,
-// viene mostrata una tabella con le informazioni di quella macchina)
-
 export function MachineDescTable({ machine }: MachineDescTableProp) {
-  // Ottiene l'ultimo stato registrato per la macchina
   const lastTelemetr = getLastTelemetry({ machine })
 
-  // Organizza i dati in una struttura a coppie [etichetta, valore]
+  // Costruiamo la lista solo se machine esiste
   const machineDetails: [string, string | undefined][] = [
     ['ID#', machine.id],
     ['Linea', machine.lineId],
     ['Nome', machine.name],
     ['Tipologia', machine.type],
+    // Usiamo l'Optional Chaining ?. per sicurezza
+    // Modifica la riga dell'ordine e dei PLC così:
     ['Produttore', machine.plc?.vendor || 'N/D'],
     ['Modello', machine.plc?.model || 'N/D'],
-    // Optional Chaining: se lastTelemetr vuoto non va oltre il punto di domanda, onde evitare crash
+    ['Ordine', machine.order !== undefined ? String(machine.order) : 'N/D'],
     ['Stato Attuale', lastTelemetr?.reported.state],
   ]
 
@@ -37,8 +28,10 @@ export function MachineDescTable({ machine }: MachineDescTableProp) {
         <tbody>
           {machineDetails.map(([label, value]) => (
             <tr key={label} className="hover:bg-slate-800 transition-colors">
-              <td className="px-6 py-3 font-semibold bg-slate-700 text-slate-100 w-36">{label}</td>
-              <td className="px-6 py-3">{value}</td>
+              <td className="px-6 py-3 font-semibold bg-slate-700 text-slate-100 w-36 text-sm">
+                {label}
+              </td>
+              <td className="px-6 py-3 text-sm">{value || 'N/D'}</td>
             </tr>
           ))}
         </tbody>

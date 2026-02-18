@@ -14,11 +14,6 @@ const db = new sqlite3.Database('./factory.db', (err) => {
 })
 
 /**
- * Attivazione vincoli sulle chiavi esterne.
- */
-db.run('PRAGMA foreign_keys = ON')
-
-/**
  * Inizializzazione dello Schema.
  */
 db.serialize(() => {

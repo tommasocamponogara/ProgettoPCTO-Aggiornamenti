@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 export async function deleteLine(id: string) {
   const conferma = confirm("Sei sicuro di voler eliminare questa linea? L'azione e' irreversibile")

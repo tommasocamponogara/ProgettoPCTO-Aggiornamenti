@@ -40,8 +40,8 @@ createRoot(document.getElementById('root')!).render(
       {/* Pagina per creare o gestire le linee di produzione */}
       <Route path="/dashboard/lines/ManageLines/:id?" element={<ManageLines />} />
 
-      {/* Pagina per aggiungere nuovi macchinari al sistema */}
-      <Route path="/dashboard/machines/ManageMachines" element={<ManageMachines />} />
+      {/* Pagina per aggiungere o modificare nuovi macchinari al sistema */}
+      <Route path="/dashboard/machines/ManageMachines/:id?" element={<ManageMachines />} />
     </Routes>
   </HashRouter>,
 )
