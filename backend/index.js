@@ -144,6 +144,36 @@ app.post('/machines', (req, res) => {
   )
 })
 
+/**
+ * Si modificano i dati di un macchinario già esistente.
+ */
+app.put('/machines/:id', (req, res) => {
+  const machineId = req.params.id
+  const { name, type, plc, lineId, order } = req.body
+
+  db.run(
+    `UPDATE machines
+     SET name = ?, type = ?, plc = ?, lineId = ?, "order" = ?
+     WHERE id = ?`,
+    [name, type, plc, lineId, order, machineId],
+    function (err) {
+      if (err) return res.status(500).json({ error: "Errore nell'aggiornamento" })
+      if (this.changes === 0) return res.status(404).json({ error: 'Macchinario non trovato' })
+      res.status(200).json({ message: 'Macchinario modificato' })
+    },
+  )
+})
+
+/**
+ * Si cancella un macchinario dal database.
+ */
+app.delete('/machines/:id', (req, res) => {
+  db.run(`DELETE FROM machines WHERE id_machine = ?`, [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: 'Errore nella cancellazione' })
+    res.status(200).json({ message: 'Macchinario eliminato' })
+  })
+})
+
 // --- GESTIONE DEI SEGNALI (TELEMETRIE) ---
 
 /**
