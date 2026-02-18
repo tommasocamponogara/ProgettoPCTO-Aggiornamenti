@@ -44,10 +44,10 @@ export default function Machines() {
       getMachines().then((res) => setListaMacchine(res))
     }
 
-    fetchDati() // Carica subito
-    const interval = setInterval(fetchDati, 1000) // Aggiorna ogni 1 secondo
+    // Si avvia il timer per i caricamenti successivi
+    const timer = setInterval(aggiornaDati, 1000)
 
-    return () => clearInterval(interval)
+    return () => clearInterval(timer)
   }, [])
   return (
     <>

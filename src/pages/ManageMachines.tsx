@@ -156,6 +156,9 @@ export function ManageMachines() {
 
         if (response.ok) {
           alert('Macchinario aggiunto correttamente!')
+        } else {
+          const errorData = await response.json()
+          alert(`Errore: ${errorData.error}`)
         }
       } catch (error) {
         alert('Errore')

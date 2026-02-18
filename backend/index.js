@@ -50,7 +50,7 @@ app.post('/lines', (req, res) => {
     `INSERT INTO lines (id_line, name, description, order_nr) VALUES (?, ?, ?, ?)`,
     [id_line, name, description, order_nr],
     (err) => {
-      if (err) return res.status(500).json({ error: 'Errore nel salvataggio' })
+      if (err) return res.status(500).json({ error: 'Linea gia presente!' })
       res.status(201).json({ message: 'Linea creata' })
     },
   )
@@ -168,7 +168,7 @@ app.post('/machines', (req, res) => {
     `INSERT INTO machines (id_machine, name, type, plc_vendor, plc_model, order_nr, id_line, dataCollection) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [id, name, type, plc?.vendor, plc?.model, order || 0, lineId, JSON.stringify(sensoriScelti)],
     (err) => {
-      if (err) return res.status(500).json({ error: 'Errore creazione macchina' })
+      if (err) return res.status(500).json({ error: 'Macchina gia presente!' })
       res.status(201).json({ message: 'Macchinario creato' })
     },
   )
